@@ -10,7 +10,7 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/titulos")
 public class TitulosController {
-
+    //prueba commit
     @GetMapping("/{codUsuario}")
     public List<Titulo> getTitulosByCodUsuario(@PathVariable String codUsuario) {
         List<Titulo> titulos = new ArrayList<>();
