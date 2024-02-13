@@ -16,7 +16,7 @@ public class TitulosController {
         List<Titulo> titulos = new ArrayList<>();
         String[] accionistas = {"0010"};
         Titulo t1 = Titulo.builder()
-                .idTitulo(123)
+                .conseTitulo(123)
                 .accionistas(accionistas)
                 .canAccTit(3)
                 .valAccTit(15000)
@@ -25,7 +25,7 @@ public class TitulosController {
                 .tipAccTit("O")
                 .build();
         Titulo t2 = Titulo.builder()
-                .idTitulo(124)
+                .conseTitulo(124)
                 .accionistas(accionistas)
                 .canAccTit(2)
                 .valAccTit(10000)

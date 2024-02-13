@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class Titulo {
 
     @Id
-    private Integer idTitulo;
+    private Integer conseTitulo;
     private String[] accionistas;
     private Integer canAccTit;
     private Integer valAccTit;
