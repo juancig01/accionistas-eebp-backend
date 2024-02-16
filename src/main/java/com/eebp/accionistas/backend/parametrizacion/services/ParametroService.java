@@ -30,4 +30,8 @@ public class ParametroService {
         return parametroRepository.save(parametro);
     }
 
+    public void deleteParametroById(Integer id) {
+        parametroRepository.deleteById(id);
+    }
+
 }

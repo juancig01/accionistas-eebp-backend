@@ -1,5 +1,7 @@
 package com.eebp.accionistas.backend.accionistas.entities;
 
+import com.eebp.accionistas.backend.acciones.entities.Titulo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
+import java.util.List;
 
 @Data
 @Builder
@@ -184,6 +187,13 @@ public class Persona {
 
     @Transient
     private String esAccionista;
+
+    @ManyToMany
+    @JoinTable(
+            name = "titulos_persona",
+            joinColumns = @JoinColumn(name = "idePer"),
+            inverseJoinColumns = @JoinColumn(name = "conseTitulo"))
+    List<Titulo> titulos;
 
 }
 

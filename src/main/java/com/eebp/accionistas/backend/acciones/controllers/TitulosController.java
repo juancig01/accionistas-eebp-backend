@@ -1,40 +1,25 @@
 package com.eebp.accionistas.backend.acciones.controllers;
 
 import com.eebp.accionistas.backend.acciones.entities.Titulo;
+import com.eebp.accionistas.backend.acciones.services.TituloService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/titulos")
 public class TitulosController {
-    //prueba commit
-    @GetMapping("/{codUsuario}")
-    public List<Titulo> getTitulosByCodUsuario(@PathVariable String codUsuario) {
-        List<Titulo> titulos = new ArrayList<>();
-        String[] accionistas = {"0010"};
-        Titulo t1 = Titulo.builder()
-                .conseTitulo(123)
-                .accionistas(accionistas)
-                .canAccTit(3)
-                .valAccTit(15000)
-                .estTit("A")
-                .claAccTit("A")
-                .tipAccTit("O")
-                .build();
-        Titulo t2 = Titulo.builder()
-                .conseTitulo(124)
-                .accionistas(accionistas)
-                .canAccTit(2)
-                .valAccTit(10000)
-                .estTit("A")
-                .claAccTit("A")
-                .tipAccTit("O")
-                .build();
-        titulos.add(t1);
-        titulos.add(t2);
-        return titulos;
+
+    @Autowired
+    TituloService tituloService;
+
+    @GetMapping("/{id}")
+    public Optional<Titulo> findTituloById(@PathVariable Integer id) {
+        return tituloService.findTituloById(id);
     }
+
 }

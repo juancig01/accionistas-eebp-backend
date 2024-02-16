@@ -36,4 +36,9 @@ public class ParametroController {
         return parametroService.updateParametro(parametro);
     }
 
+    @DeleteMapping("{id}")
+    public void deleteParametroById(@PathVariable Integer id) {
+        parametroService.deleteParametroById(id);
+    }
+
 }

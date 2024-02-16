@@ -1,7 +1,9 @@
 package com.eebp.accionistas.backend.acciones.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import com.eebp.accionistas.backend.accionistas.entities.Persona;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,24 +11,33 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "titulos")
 public class Titulo {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer conseTitulo;
-    private String[] accionistas;
     private Integer canAccTit;
     private Integer valAccTit;
     private String claAccTit;
     private String tipAccTit;
     private String estTit;
     private LocalDate fecCreTit;
-    private String codUsuReg;
     private LocalDateTime fecFinTit;
     private String obsAccTit;
+
+    /*@ManyToMany
+    @JoinTable(
+            name = "titulos_persona",
+            joinColumns = @JoinColumn(name = "conseTitulo"),
+            inverseJoinColumns = @JoinColumn(name = "idePer"))
+    List<Persona> personas;*/
 }
