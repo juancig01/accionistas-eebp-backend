@@ -1,8 +1,5 @@
 package com.eebp.accionistas.backend.acciones.entities;
 
-import com.eebp.accionistas.backend.accionistas.entities.Persona;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
 
 @Data
 @Builder
@@ -34,10 +29,4 @@ public class Titulo {
     private LocalDateTime fecFinTit;
     private String obsAccTit;
 
-    /*@ManyToMany
-    @JoinTable(
-            name = "titulos_persona",
-            joinColumns = @JoinColumn(name = "conseTitulo"),
-            inverseJoinColumns = @JoinColumn(name = "idePer"))
-    List<Persona> personas;*/
 }

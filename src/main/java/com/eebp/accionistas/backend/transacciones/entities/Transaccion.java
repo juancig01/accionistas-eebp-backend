@@ -1,5 +1,6 @@
 package com.eebp.accionistas.backend.transacciones.entities;
 
+import com.eebp.accionistas.backend.acciones.entities.Titulo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -20,7 +23,6 @@ public class Transaccion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer conseTrans;
     private Date fecTrans;
-    private Integer conseTitulo;
     private String idePer;
     private Integer canAccTran;
     private String tipMovTran;
@@ -31,8 +33,11 @@ public class Transaccion {
     private Integer conseTitAnt;
     private Integer conseTitTraslado;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "codTipTran")
     private TipoTransaccion tipoTransaccion;
+
+    @Transient
+    private List<TransaccionTitulo> transaccionTitulo;
 
 }
