@@ -24,14 +24,7 @@ public class Transaccion {
     private Integer conseTrans;
     private Date fecTrans;
     private String idePer;
-    private Integer canAccTran;
-    private String tipMovTran;
     private Integer valTran;
-    private Integer saldoAcc;
-    private String ideAccRecibe;
-    private String conseTitNuevo;
-    private Integer conseTitAnt;
-    private Integer conseTitTraslado;
 
     @OneToOne
     @JoinColumn(name = "codTipTran")
