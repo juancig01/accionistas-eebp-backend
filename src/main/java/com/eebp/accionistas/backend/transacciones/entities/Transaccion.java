@@ -30,6 +30,10 @@ public class Transaccion {
     @JoinColumn(name = "codTipTran")
     private TipoTransaccion tipoTransaccion;
 
+    @OneToOne
+    @JoinColumn(name = "ideEstado")
+    private TransaccionEstado estadoTransaccion;
+
     @Transient
     private List<TransaccionTitulo> transaccionTitulo;
 

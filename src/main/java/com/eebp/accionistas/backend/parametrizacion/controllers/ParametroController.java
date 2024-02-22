@@ -38,6 +38,7 @@ public class ParametroController {
 
     @DeleteMapping("{id}")
     public void deleteParametroById(@PathVariable Integer id) {
+
         parametroService.deleteParametroById(id);
     }
 
