@@ -85,6 +85,16 @@ public class TransaccionService {
                 .findById(transaccion.getEstadoTransaccion().getIdeEstado());
         TransaccionEstado estadoTransaccion = estadoTransaccionOptional.get();
         transaccion.setEstadoTransaccion(estadoTransaccion);
+
+        if (estadoTransaccion.getIdeEstado() == 3) {
+            List<TransaccionTitulo> transaccionTitulos = transaccion.getTransaccionTitulo();
+            for (TransaccionTitulo transaccionTitulo : transaccionTitulos) {
+                Titulo tempTitulo = tituloRepository.findById(transaccionTitulo.getConseTitulo()).get();
+                tempTitulo.setEstadoTitulo(EstadoTitulo.builder().ideEstadoTitulo(1).build()); // Estado activo
+                tituloRepository.save(tempTitulo);
+            }
+        }
+
         return transaccionRepository.save(transaccion);
     }
 
