@@ -1,16 +1,13 @@
 package com.eebp.accionistas.backend.transacciones.entities;
 
-import com.eebp.accionistas.backend.acciones.entities.Titulo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.type.descriptor.jdbc.TinyIntAsSmallIntJdbcType;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Builder

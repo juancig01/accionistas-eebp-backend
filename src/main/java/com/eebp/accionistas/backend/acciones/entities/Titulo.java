@@ -29,4 +29,8 @@ public class Titulo {
     private LocalDateTime fecFinTit;
     private String obsAccTit;
 
+    @OneToOne
+    @JoinColumn(name = "ideEstadoTitulo")
+    private EstadoTitulo estadoTitulo;
+
 }

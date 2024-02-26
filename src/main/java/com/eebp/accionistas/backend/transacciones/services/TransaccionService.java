@@ -1,5 +1,8 @@
 package com.eebp.accionistas.backend.transacciones.services;
 
+import com.eebp.accionistas.backend.acciones.entities.EstadoTitulo;
+import com.eebp.accionistas.backend.acciones.entities.Titulo;
+import com.eebp.accionistas.backend.acciones.repositories.TituloRepository;
 import com.eebp.accionistas.backend.transacciones.entities.Transaccion;
 import com.eebp.accionistas.backend.transacciones.entities.TransaccionEstado;
 import com.eebp.accionistas.backend.transacciones.entities.TransaccionTitulo;
@@ -22,6 +25,9 @@ public class TransaccionService {
 
     @Autowired
     TransaccionEstadoRepository transaccionEstadoRepository;
+
+    @Autowired
+    TituloRepository tituloRepository;
 
     public List<Transaccion> getTransaccionesTramite() {
         List<Transaccion> transacciones = transaccionRepository.findAll();
@@ -58,7 +64,12 @@ public class TransaccionService {
         transaccion.setEstadoTransaccion(transaccionEstado);
         Transaccion t = transaccionRepository.save(transaccion);
         t.getTransaccionTitulo().stream()
-                .forEach(transaccionTitulo -> transaccionTitulo.setConseTrans(t.getConseTrans()));
+                .forEach(transaccionTitulo -> {
+                    transaccionTitulo.setConseTrans(t.getConseTrans());
+                    Titulo tempTitulo = tituloRepository.findById(transaccionTitulo.getConseTitulo()).get();
+                    tempTitulo.setEstadoTitulo(EstadoTitulo.builder().ideEstadoTitulo(2).build());
+                    tituloRepository.save(tempTitulo);
+                });
         transaccionTituloRepository.saveAll(t.getTransaccionTitulo());
         return t;
     }

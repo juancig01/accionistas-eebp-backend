@@ -1,6 +1,5 @@
 package com.eebp.accionistas.backend.transacciones.entities;
 
-import com.eebp.accionistas.backend.acciones.entities.Titulo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
