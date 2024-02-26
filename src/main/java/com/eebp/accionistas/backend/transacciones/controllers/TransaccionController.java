@@ -27,7 +27,12 @@ public class TransaccionController {
 
     @GetMapping
     public List<Transaccion> getTransaccion() {
-        return transaccionService.getTransaccion();
+        return transaccionService.getTransaccionesTramite();
+    }
+
+    @GetMapping("/aprobado")
+    public List<Transaccion> getTransaccionAprobado() {
+        return transaccionService.getTransaccionesAprobado();
     }
 
     @GetMapping("/{id}")
@@ -38,6 +43,11 @@ public class TransaccionController {
     @PutMapping
     public Transaccion addTransaccion(@RequestBody Transaccion transaccion) {
         return transaccionService.addTransaccion(transaccion);
+    }
+
+    @PostMapping
+    public Transaccion updateTransaccion(@RequestBody Transaccion transaccion) {
+        return transaccionService.updateTransaccion(transaccion);
     }
 
     @PostMapping("/uploadFile")

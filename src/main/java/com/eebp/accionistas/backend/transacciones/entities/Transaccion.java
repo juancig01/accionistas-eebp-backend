@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.type.descriptor.jdbc.TinyIntAsSmallIntJdbcType;
 
 import java.util.Date;
 import java.util.List;
@@ -25,6 +26,7 @@ public class Transaccion {
     private Date fecTrans;
     private String idePer;
     private Integer valTran;
+    private Boolean intencionCompra;
 
     @OneToOne
     @JoinColumn(name = "codTipTran")

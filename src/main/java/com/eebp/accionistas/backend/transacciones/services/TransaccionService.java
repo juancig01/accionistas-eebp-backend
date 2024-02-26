@@ -23,13 +23,34 @@ public class TransaccionService {
     @Autowired
     TransaccionEstadoRepository transaccionEstadoRepository;
 
-    public List<Transaccion> getTransaccion() {
+    public List<Transaccion> getTransaccionesTramite() {
         List<Transaccion> transacciones = transaccionRepository.findAll();
+        List<Transaccion> transaccionesTramite = new ArrayList<>();
+
         for (Transaccion transaccion : transacciones) {
-            List<TransaccionTitulo> transaccionTitulos = transaccionTituloRepository.findByConseTrans(transaccion.getConseTrans());
-            transaccion.setTransaccionTitulo(transaccionTitulos);
+            TransaccionEstado estadoTransaccion = transaccion.getEstadoTransaccion();
+            if (estadoTransaccion != null && estadoTransaccion.getDescEstado().equals("En tramite")) {
+                List<TransaccionTitulo> transaccionTitulos = transaccionTituloRepository.findByConseTrans(transaccion.getConseTrans());
+                transaccion.setTransaccionTitulo(transaccionTitulos);
+                transaccionesTramite.add(transaccion);
+            }
         }
-        return transacciones;
+        return transaccionesTramite;
+    }
+
+    public List<Transaccion> getTransaccionesAprobado() {
+        List<Transaccion> transacciones = transaccionRepository.findAll();
+        List<Transaccion> transaccionesAprobado = new ArrayList<>();
+
+        for (Transaccion transaccion : transacciones) {
+            TransaccionEstado estadoTransaccion = transaccion.getEstadoTransaccion();
+            if (estadoTransaccion != null && estadoTransaccion.getDescEstado().equals("Aprobado")) {
+                List<TransaccionTitulo> transaccionTitulos = transaccionTituloRepository.findByConseTrans(transaccion.getConseTrans());
+                transaccion.setTransaccionTitulo(transaccionTitulos);
+                transaccionesAprobado.add(transaccion);
+            }
+        }
+        return transaccionesAprobado;
     }
 
     public Transaccion addTransaccion(Transaccion transaccion) {
@@ -46,6 +67,14 @@ public class TransaccionService {
         Transaccion t = transaccionRepository.findById(id).get();
         t.setTransaccionTitulo(transaccionTituloRepository.findByConseTrans(t.getConseTrans()));
         return transaccionRepository.findById(id);
+    }
+
+    public Transaccion updateTransaccion(Transaccion transaccion) {
+        Optional<TransaccionEstado> estadoTransaccionOptional = transaccionEstadoRepository
+                .findById(transaccion.getEstadoTransaccion().getIdeEstado());
+        TransaccionEstado estadoTransaccion = estadoTransaccionOptional.get();
+        transaccion.setEstadoTransaccion(estadoTransaccion);
+        return transaccionRepository.save(transaccion);
     }
 
 }
