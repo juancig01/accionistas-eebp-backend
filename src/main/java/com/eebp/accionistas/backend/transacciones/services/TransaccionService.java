@@ -3,6 +3,11 @@ package com.eebp.accionistas.backend.transacciones.services;
 import com.eebp.accionistas.backend.acciones.entities.EstadoTitulo;
 import com.eebp.accionistas.backend.acciones.entities.Titulo;
 import com.eebp.accionistas.backend.acciones.repositories.TituloRepository;
+import com.eebp.accionistas.backend.accionistas.entities.Persona;
+import com.eebp.accionistas.backend.accionistas.repositories.PersonaRepository;
+import com.eebp.accionistas.backend.accionistas.services.PersonaService;
+import com.eebp.accionistas.backend.seguridad.entities.EmailDetails;
+import com.eebp.accionistas.backend.seguridad.services.EmailServiceImpl;
 import com.eebp.accionistas.backend.transacciones.entities.Transaccion;
 import com.eebp.accionistas.backend.transacciones.entities.TransaccionEstado;
 import com.eebp.accionistas.backend.transacciones.entities.TransaccionTitulo;
@@ -28,6 +33,15 @@ public class TransaccionService {
 
     @Autowired
     TituloRepository tituloRepository;
+
+    @Autowired
+    PersonaRepository personaRepository;
+
+    @Autowired
+    private EmailServiceImpl emailService;
+
+    @Autowired
+    private PersonaService personaService;
 
     public List<Transaccion> getTransaccionesTramite() {
         List<Transaccion> transacciones = transaccionRepository.findAll();
@@ -93,6 +107,98 @@ public class TransaccionService {
                 tempTitulo.setEstadoTitulo(EstadoTitulo.builder().ideEstadoTitulo(1).build()); // Estado activo
                 tituloRepository.save(tempTitulo);
             }
+
+            String idePer = transaccion.getIdePer();
+
+            Persona persona = personaRepository.findById(idePer).orElse(null);
+
+            EmailDetails emailDetails = EmailDetails.builder()
+                    .recipient(persona.getCorreoPersona())
+                    .subject("Notificación de rechazo de transacción")
+                    .msgBody("<table border=\"0\" cellspacing=\"0\" style=\"border-collapse:collapse; height:147px; width:600px\">\n" +
+                            "\t<tbody>\n" +
+                            "\t\t<tr>\n" +
+                            "\t\t\t<td style=\"height:91px; text-align:center; width:23.5796%\"><img src=\"https://eebpsa.com.co/wp-content/uploads/2020/08/lOGO-2.1.png\" /></td>\n" +
+                            "\t\t\t<td style=\"height:91px; width:67.4766%\">\n" +
+                            "\t\t\t<h3 style=\"text-align:center\"><strong>BIENVENIDO AL SISTEMA DE ACCIONISTAS </strong></h3>\n" +
+                            "\n" +
+                            "\t\t\t<h3 style=\"text-align:center\"><strong>Empresa de Energ&iacute;a del Bajo Putumayo S.A. E.S.P.</strong></h3>\n" +
+                            "\t\t\t</td>\n" +
+                            "\t\t</tr>\n" +
+                            "\t\t<tr>\n" +
+                            "\t\t\t<td colspan=\"2\" style=\"height:10px; text-align:center; width:91.0562%\">\n" +
+                            "\t\t\t<p>&nbsp;</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">Se&ntilde;or(a) " + persona.getNomPri() + " " + persona.getNomSeg() + " " + persona.getApePri() +  " " + persona.getApeSeg()  + ",</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">Queremos informarle que lamentablemente la transacción que intentó realizar ha sido RECHAZADA.</p>\n" +
+                            "\t\t\t</td>\n" +
+                            "\t\t</tr>\n" +
+                            "\t\t<tr>\n" +
+                            "\t\t\t<td colspan=\"2\" style=\"text-align:center; width:91.0562%\">\n" +
+                            "\t\t\t<p style=\"text-align:left\">&nbsp;</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\"><u>En caso de alguna duda, favor contactarse con servicio al cliente.</u></p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">&nbsp;</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">Acceso al sistema: <a href=\"http://localhost:4200\">http://localhost:4200</a></p>\n" +
+                            "\t\t\t</td>\n" +
+                            "\t\t</tr>\n" +
+                            "\t</tbody>\n" +
+                            "</table>\n" +
+                            "\n" +
+                            "<p><strong>&nbsp;</strong></p>")
+                    .build();
+
+            emailService.sendSimpleMail(emailDetails);
+        } else if (estadoTransaccion.getIdeEstado() == 2) {
+
+            String idePer = transaccion.getIdePer();
+
+            Persona persona = personaRepository.findById(idePer).orElse(null);
+
+            EmailDetails emailDetails = EmailDetails.builder()
+                    .recipient(persona.getCorreoPersona())
+                    .subject("Notificación de rechazo de transacción")
+                    .msgBody("<table border=\"0\" cellspacing=\"0\" style=\"border-collapse:collapse; height:147px; width:600px\">\n" +
+                            "\t<tbody>\n" +
+                            "\t\t<tr>\n" +
+                            "\t\t\t<td style=\"height:91px; text-align:center; width:23.5796%\"><img src=\"https://eebpsa.com.co/wp-content/uploads/2020/08/lOGO-2.1.png\" /></td>\n" +
+                            "\t\t\t<td style=\"height:91px; width:67.4766%\">\n" +
+                            "\t\t\t<h3 style=\"text-align:center\"><strong>BIENVENIDO AL SISTEMA DE ACCIONISTAS </strong></h3>\n" +
+                            "\n" +
+                            "\t\t\t<h3 style=\"text-align:center\"><strong>Empresa de Energ&iacute;a del Bajo Putumayo S.A. E.S.P.</strong></h3>\n" +
+                            "\t\t\t</td>\n" +
+                            "\t\t</tr>\n" +
+                            "\t\t<tr>\n" +
+                            "\t\t\t<td colspan=\"2\" style=\"height:10px; text-align:center; width:91.0562%\">\n" +
+                            "\t\t\t<p>&nbsp;</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">Se&ntilde;or(a) " + persona.getNomPri() + " " + persona.getNomSeg() + " " + persona.getApePri() +  " " + persona.getApeSeg()  + ",</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">Queremos informarle que la transacción ha sido APROBADA.</p>\n" +
+                            "\t\t\t</td>\n" +
+                            "\t\t</tr>\n" +
+                            "\t\t<tr>\n" +
+                            "\t\t\t<td colspan=\"2\" style=\"text-align:center; width:91.0562%\">\n" +
+                            "\t\t\t<p style=\"text-align:left\">&nbsp;</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\"><u>En caso de alguna duda, favor contactarse con servicio al cliente.</u></p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">&nbsp;</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">Acceso al sistema: <a href=\"http://localhost:4200\">http://localhost:4200</a></p>\n" +
+                            "\t\t\t</td>\n" +
+                            "\t\t</tr>\n" +
+                            "\t</tbody>\n" +
+                            "</table>\n" +
+                            "\n" +
+                            "<p><strong>&nbsp;</strong></p>")
+                    .build();
+
+            emailService.sendSimpleMail(emailDetails);
+
         }
 
         return transaccionRepository.save(transaccion);
