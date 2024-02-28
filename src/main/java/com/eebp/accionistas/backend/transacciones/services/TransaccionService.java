@@ -6,8 +6,10 @@ import com.eebp.accionistas.backend.acciones.repositories.TituloRepository;
 import com.eebp.accionistas.backend.accionistas.entities.Persona;
 import com.eebp.accionistas.backend.accionistas.repositories.PersonaRepository;
 import com.eebp.accionistas.backend.accionistas.services.PersonaService;
+import com.eebp.accionistas.backend.seguridad.entities.Asset;
 import com.eebp.accionistas.backend.seguridad.entities.EmailDetails;
 import com.eebp.accionistas.backend.seguridad.services.EmailServiceImpl;
+import com.eebp.accionistas.backend.seguridad.utils.FileUploadUtil;
 import com.eebp.accionistas.backend.transacciones.entities.Transaccion;
 import com.eebp.accionistas.backend.transacciones.entities.TransaccionEstado;
 import com.eebp.accionistas.backend.transacciones.entities.TransaccionTitulo;
@@ -16,8 +18,10 @@ import com.eebp.accionistas.backend.transacciones.repositories.TransaccionReposi
 import com.eebp.accionistas.backend.transacciones.repositories.TransaccionTituloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TransaccionService {
@@ -43,6 +47,24 @@ public class TransaccionService {
     @Autowired
     private PersonaService personaService;
 
+    public List<Asset> getFilesTransaccion(@PathVariable String conseTrans) {
+        return FileUploadUtil.files(conseTrans, "transaccion").stream().map(file -> {
+            file.setUrl("/assets/images/avatars/" + file.getFileName());
+            return file;
+        }).collect(Collectors.toList());
+    }
+
+    public List<Transaccion> getTransacciones() {
+        List<Transaccion> transacciones = transaccionRepository.findAll();
+        for (Transaccion transaccion : transacciones) {
+            List<TransaccionTitulo> transaccionTitulos = transaccionTituloRepository.findByConseTrans(transaccion.getConseTrans());
+            transaccion.setTransaccionTitulo(transaccionTitulos);
+
+            transaccion.setFiles(getFilesTransaccion(String.valueOf(transaccion.getConseTrans())));
+        }
+        return transacciones;
+    }
+
     public List<Transaccion> getTransaccionesTramite() {
         List<Transaccion> transacciones = transaccionRepository.findAll();
         List<Transaccion> transaccionesTramite = new ArrayList<>();
@@ -54,6 +76,7 @@ public class TransaccionService {
                 transaccion.setTransaccionTitulo(transaccionTitulos);
                 transaccionesTramite.add(transaccion);
             }
+            transaccion.setFiles(getFilesTransaccion(String.valueOf(transaccion.getConseTrans())));
         }
         return transaccionesTramite;
     }

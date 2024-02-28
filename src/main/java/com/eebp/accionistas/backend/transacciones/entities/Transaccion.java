@@ -1,5 +1,6 @@
 package com.eebp.accionistas.backend.transacciones.entities;
 
+import com.eebp.accionistas.backend.seguridad.entities.Asset;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,5 +36,9 @@ public class Transaccion {
 
     @Transient
     private List<TransaccionTitulo> transaccionTitulo;
+
+    @Transient
+    private List<Asset> files;
+
 
 }

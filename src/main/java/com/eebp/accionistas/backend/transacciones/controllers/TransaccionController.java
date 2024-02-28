@@ -26,7 +26,12 @@ public class TransaccionController {
     TransaccionService transaccionService;
 
     @GetMapping
-    public List<Transaccion> getTransaccion() {
+    public List<Transaccion> getTransacciones() {
+        return transaccionService.getTransacciones();
+    }
+
+    @GetMapping("/tramite")
+    public List<Transaccion> getTransaccionTramite() {
         return transaccionService.getTransaccionesTramite();
     }
 
@@ -67,10 +72,7 @@ public class TransaccionController {
     }
 
     @GetMapping("/aprobar/archivos/{conseTrans}")
-    public List<Asset> getAprobacionTransaccionFiles(@PathVariable String conseTrans) {
-        return FileUploadUtil.files(conseTrans, "transaccion").stream().map(file -> {
-            file.setUrl("/assets/images/avatars/" + file.getFileName());
-            return file;
-        }).collect(Collectors.toList());
+    public List<Asset> getFilesTransaccion(@PathVariable String conseTrans) {
+        return transaccionService.getFilesTransaccion(conseTrans);
     }
 }
