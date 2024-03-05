@@ -24,7 +24,6 @@ public class Titulo {
     private Integer valAccTit;
     private String claAccTit;
     private String tipAccTit;
-    private String estTit;
     private LocalDate fecCreTit;
     private LocalDateTime fecFinTit;
     private String obsAccTit;
