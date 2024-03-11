@@ -27,14 +27,15 @@ public class TitulosController {
     }
 
     @PostMapping("/comprar")
-    public ResponseEntity<String> comprarTitulos(@RequestBody List<TransaccionDatos> transaccionDatos) {
-        tituloService.comprarAcciones(transaccionDatos);
+    public ResponseEntity<String> comprarTitulos(@RequestBody List<TransaccionDatos> transaccionesCompra) {
+        tituloService.comprarAcciones(transaccionesCompra);
         return ResponseEntity.status(HttpStatus.OK).body("Títulos comprados exitosamente.");
     }
 
+
     @PostMapping("/donar")
     public ResponseEntity<String> donarTitulos(@RequestBody List<TransaccionDatos> transaccionDatos) {
-        tituloService.donarTitulos(transaccionDatos);
+        tituloService.donarAcciones(transaccionDatos);
         return ResponseEntity.ok("Titulos donados exitosamente.");
     }
 
@@ -55,6 +56,5 @@ public class TitulosController {
         tituloService.embargarTitulo(titulos);
         return ResponseEntity.ok("Titulos embargados exitosamente.");
     }
-
 
 }
