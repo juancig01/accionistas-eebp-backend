@@ -92,6 +92,7 @@ public class TransaccionService {
                 transaccion.setTransaccionTitulo(transaccionTitulos);
                 transaccionesAprobado.add(transaccion);
             }
+            transaccion.setFiles(getFilesTransaccion(String.valueOf(transaccion.getConseTrans())));
         }
         return transaccionesAprobado;
     }

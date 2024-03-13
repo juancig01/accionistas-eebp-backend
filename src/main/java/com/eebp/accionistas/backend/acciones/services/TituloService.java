@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 @Service
@@ -158,7 +157,7 @@ public class TituloService {
 
             Optional<Persona> personaCorrespondienteOptional = null;
             List<Persona> personasAsociadas = null;
-            List<Persona> personasA = null;
+            List<Persona> personasA = new ArrayList<>();
             for (TransaccionTitulo titulo : transaccionCompra.getTitulos()) {
                 if (accionesCompradas >= cantAccionesAComprar) {
                     break; // Ya se compraron todas las acciones necesarias
