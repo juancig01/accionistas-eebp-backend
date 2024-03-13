@@ -2,6 +2,7 @@ package com.eebp.accionistas.backend.acciones.controllers;
 
 import com.eebp.accionistas.backend.acciones.entities.Titulo;
 import com.eebp.accionistas.backend.acciones.services.TituloService;
+import com.eebp.accionistas.backend.transacciones.entities.Transaccion;
 import com.eebp.accionistas.backend.transacciones.entities.TransaccionDatos;
 import com.eebp.accionistas.backend.transacciones.entities.TransaccionTitulo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,33 +28,32 @@ public class TitulosController {
     }
 
     @PostMapping("/comprar")
-    public ResponseEntity<String> comprarTitulos(@RequestBody List<TransaccionDatos> transaccionesCompra) {
-        tituloService.comprarAcciones(transaccionesCompra);
+    public ResponseEntity<String> comprarTitulos(@RequestBody TransaccionDatos transaccionCompra) {
+        tituloService.comprarAcciones(transaccionCompra);
         return ResponseEntity.status(HttpStatus.OK).body("Títulos comprados exitosamente.");
     }
 
-
     @PostMapping("/donar")
-    public ResponseEntity<String> donarTitulos(@RequestBody List<TransaccionDatos> transaccionDatos) {
-        tituloService.donarAcciones(transaccionDatos);
+    public ResponseEntity<String> donarTitulos(@RequestBody TransaccionDatos transaccionDonacion) {
+        tituloService.donarAcciones(transaccionDonacion);
         return ResponseEntity.ok("Titulos donados exitosamente.");
     }
 
     @PostMapping("/endosar")
-    public ResponseEntity<String> endosarTitulos(@RequestBody List<TransaccionDatos> transaccionDatos) {
-        tituloService.endosarTitulos(transaccionDatos);
+    public ResponseEntity<String> endosarTitulos(@RequestBody TransaccionDatos transaccionEndoso) {
+        tituloService.endosarTitulos(transaccionEndoso);
         return ResponseEntity.ok("Titulos endosados exitosamente.");
     }
 
     @PostMapping("/sucesion")
-    public ResponseEntity<String> sucesionTitulos(@RequestBody List<TransaccionDatos> transaccionDatos) {
-        tituloService.sucesionTitulos(transaccionDatos);
+    public ResponseEntity<String> sucesionTitulos(@RequestBody TransaccionDatos transaccionSucesion) {
+        tituloService.sucesionTitulos(transaccionSucesion);
         return ResponseEntity.ok("Titulos endosados exitosamente.");
     }
 
     @PostMapping("/embargar")
-    public ResponseEntity<String> embargarTitulos(@RequestBody List<Titulo> titulos) {
-        tituloService.embargarTitulo(titulos);
+    public ResponseEntity<String> embargarTitulos(@RequestBody Transaccion transaccionEmbargo) {
+        tituloService.embargarTitulo(transaccionEmbargo);
         return ResponseEntity.ok("Titulos embargados exitosamente.");
     }
 
