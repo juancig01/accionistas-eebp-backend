@@ -174,7 +174,7 @@ public class TituloService {
         List<Persona> personasA = new ArrayList<>();
 
         for (TransaccionTitulo titulo : transaccionCompra.getTitulos()) {
-            if (accionesCompradas >= cantAccionesAComprar) {
+            if (accionesCompradas == cantAccionesAComprar) {
                 break; // Ya se compraron todas las acciones necesarias
             }
 
