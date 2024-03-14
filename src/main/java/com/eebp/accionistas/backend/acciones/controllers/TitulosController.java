@@ -29,8 +29,8 @@ public class TitulosController {
 
     @PostMapping("/comprar")
     public ResponseEntity<String> comprarTitulos(@RequestBody TransaccionDatos transaccionCompra) {
-        tituloService.comprarAcciones(transaccionCompra);
-        return ResponseEntity.status(HttpStatus.OK).body("Títulos comprados exitosamente.");
+        String respuesta = String.valueOf(tituloService.comprarAcciones(transaccionCompra));
+        return ResponseEntity.ok(respuesta);
     }
 
     @PostMapping("/donar")
@@ -48,7 +48,7 @@ public class TitulosController {
     @PostMapping("/sucesion")
     public ResponseEntity<String> sucesionTitulos(@RequestBody TransaccionDatos transaccionSucesion) {
         tituloService.sucesionTitulos(transaccionSucesion);
-        return ResponseEntity.ok("Titulos endosados exitosamente.");
+        return ResponseEntity.ok("Sucesion exitosa.");
     }
 
     @PostMapping("/embargar")

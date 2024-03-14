@@ -13,6 +13,8 @@ import com.eebp.accionistas.backend.transacciones.repositories.TransaccionEstado
 import com.eebp.accionistas.backend.transacciones.repositories.TransaccionRepository;
 import com.eebp.accionistas.backend.transacciones.repositories.TransaccionTituloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -159,7 +161,7 @@ public class TituloService {
 */
 
 
-    public void comprarAcciones(TransaccionDatos transaccionCompra) {
+    public ResponseEntity<String> comprarAcciones(TransaccionDatos transaccionCompra) {
         LocalDateTime fechaHoraActual = LocalDateTime.now();
 
         int cantAccionesAComprar = transaccionCompra.getCantAcciones();
@@ -298,6 +300,11 @@ public class TituloService {
         transaccionTitulo.setConseTrans(transaccion.getConseTrans());
 
         transaccionTituloRepository.save(transaccionTitulo);
+
+        // Asignar el conseTrans a la respuesta
+        String conseTrans = String.valueOf(transaccion.getConseTrans());
+
+        return ResponseEntity.ok("Títulos comprados exitosamente. conseTrans: " + conseTrans);
 
     }
 
