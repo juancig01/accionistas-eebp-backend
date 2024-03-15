@@ -57,7 +57,7 @@ public class TransaccionService {
     public List<Transaccion> getTransacciones() {
         List<Transaccion> transacciones = transaccionRepository.findAll();
         for (Transaccion transaccion : transacciones) {
-            List<TransaccionTitulo> transaccionTitulos = transaccionTituloRepository.findByConseTrans(transaccion.getConseTrans());
+            List<TransaccionTitulo> transaccionTitulos = transaccionTituloRepository.findTransaccionesPorConseTrans(transaccion.getConseTrans());
             transaccion.setTransaccionTitulo(transaccionTitulos);
 
             transaccion.setFiles(getFilesTransaccion(String.valueOf(transaccion.getConseTrans())));
@@ -72,7 +72,7 @@ public class TransaccionService {
         for (Transaccion transaccion : transacciones) {
             TransaccionEstado estadoTransaccion = transaccion.getEstadoTransaccion();
             if (estadoTransaccion != null && estadoTransaccion.getDescEstado().equals("En tramite")) {
-                List<TransaccionTitulo> transaccionTitulos = transaccionTituloRepository.findByConseTrans(transaccion.getConseTrans());
+                List<TransaccionTitulo> transaccionTitulos = transaccionTituloRepository.findTransaccionesPorConseTrans(transaccion.getConseTrans());
                 transaccion.setTransaccionTitulo(transaccionTitulos);
                 transaccionesTramite.add(transaccion);
             }
@@ -88,7 +88,7 @@ public class TransaccionService {
         for (Transaccion transaccion : transacciones) {
             TransaccionEstado estadoTransaccion = transaccion.getEstadoTransaccion();
             if (estadoTransaccion != null && estadoTransaccion.getDescEstado().equals("Aprobado")) {
-                List<TransaccionTitulo> transaccionTitulos = transaccionTituloRepository.findByConseTrans(transaccion.getConseTrans());
+                List<TransaccionTitulo> transaccionTitulos = transaccionTituloRepository.findTransaccionesPorConseTrans(transaccion.getConseTrans());
                 transaccion.setTransaccionTitulo(transaccionTitulos);
                 transaccionesAprobado.add(transaccion);
             }
@@ -114,7 +114,7 @@ public class TransaccionService {
 
     public Optional<Transaccion> findTransaccionById(Integer id) {
         Transaccion t = transaccionRepository.findById(id).get();
-        t.setTransaccionTitulo(transaccionTituloRepository.findByConseTrans(t.getConseTrans()));
+        t.setTransaccionTitulo(transaccionTituloRepository.findTransaccionesPorConseTrans(t.getConseTrans()));
         return transaccionRepository.findById(id);
     }
 

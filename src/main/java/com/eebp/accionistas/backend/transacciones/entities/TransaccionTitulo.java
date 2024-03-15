@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -23,4 +25,7 @@ public class TransaccionTitulo {
     private Integer conseTitulo;
 
     private Integer numAcciones;
+
+    @Transient
+    private String descEstado;
 }
