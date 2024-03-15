@@ -28,9 +28,8 @@ public class TitulosController {
     }
 
     @PostMapping("/comprar")
-    public ResponseEntity<String> comprarTitulos(@RequestBody TransaccionDatos transaccionCompra) {
-        String respuesta = String.valueOf(tituloService.comprarAcciones(transaccionCompra));
-        return ResponseEntity.ok(respuesta);
+    public Transaccion comprarTitulos(@RequestBody TransaccionDatos transaccionCompra) {
+       return tituloService.comprarAcciones(transaccionCompra);
     }
 
     @PostMapping("/donar")

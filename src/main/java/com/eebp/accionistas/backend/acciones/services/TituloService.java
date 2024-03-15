@@ -161,7 +161,7 @@ public class TituloService {
 */
 
 
-    public ResponseEntity<String> comprarAcciones(TransaccionDatos transaccionCompra) {
+    public Transaccion comprarAcciones(TransaccionDatos transaccionCompra) {
         LocalDateTime fechaHoraActual = LocalDateTime.now();
 
         int cantAccionesAComprar = transaccionCompra.getCantAcciones();
@@ -301,11 +301,7 @@ public class TituloService {
 
         transaccionTituloRepository.save(transaccionTitulo);
 
-        // Asignar el conseTrans a la respuesta
-        String conseTrans = String.valueOf(transaccion.getConseTrans());
-
-        return ResponseEntity.ok("Títulos comprados exitosamente. conseTrans: " + conseTrans);
-
+        return transaccion;
     }
 
     public void donarAcciones(TransaccionDatos transaccionDonacion) {
