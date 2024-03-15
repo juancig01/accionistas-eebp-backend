@@ -25,6 +25,7 @@ public class Transaccion {
     private String idePer;
     private Integer valTran;
     private Boolean intencionCompra;
+    private String obsTransaccion;
 
     @OneToOne
     @JoinColumn(name = "codTipTran")
