@@ -304,7 +304,7 @@ public class TituloService {
         return transaccion;
     }
 
-    public void donarAcciones(TransaccionDatos transaccionDonacion) {
+    public TransaccionDatos donarAcciones(TransaccionDatos transaccionDonacion) {
         LocalDateTime fechaHoraActual = LocalDateTime.now();
 
             for (TransaccionTitulo titulo : transaccionDonacion.getTitulos()) {
@@ -371,9 +371,11 @@ public class TituloService {
                     }
                 }
             }
+
+            return transaccionDonacion;
     }
 
-    public void endosarTitulos(TransaccionDatos transaccionEndoso) {
+    public TransaccionDatos endosarTitulos(TransaccionDatos transaccionEndoso) {
 
         LocalDateTime fechaHoraActual = LocalDateTime.now();
 
@@ -442,9 +444,10 @@ public class TituloService {
                 }
             }
         }
+        return transaccionEndoso;
     }
 
-    public void  sucesionTitulos(TransaccionDatos transaccionSucesion) {
+    public TransaccionDatos  sucesionTitulos(TransaccionDatos transaccionSucesion) {
 
         LocalDateTime fechaHoraActual = LocalDateTime.now();
 
@@ -512,10 +515,10 @@ public class TituloService {
                 }
             }
         }
-
+        return transaccionSucesion;
     }
 
-    public void embargarTitulo(Transaccion transaccionEmbargo) {
+    public Transaccion embargarTitulo(Transaccion transaccionEmbargo) {
 
         List<TransaccionTitulo> titulos = transaccionEmbargo.getTransaccionTitulo();
 
@@ -531,6 +534,8 @@ public class TituloService {
         TransaccionEstado transaccionEstado = transaccionEstadoRepository.findByDescEstado("inactivo");
         transaccionEmbargo.setEstadoTransaccion(transaccionEstado);
         Transaccion t = transaccionRepository.save(transaccionEmbargo);
+
+        return transaccionEmbargo;
     }
 
 }

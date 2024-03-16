@@ -33,27 +33,26 @@ public class TitulosController {
     }
 
     @PostMapping("/donar")
-    public ResponseEntity<String> donarTitulos(@RequestBody TransaccionDatos transaccionDonacion) {
-        tituloService.donarAcciones(transaccionDonacion);
-        return ResponseEntity.ok("Titulos donados exitosamente.");
+    public TransaccionDatos donarTitulos(@RequestBody TransaccionDatos transaccionDonacion) {
+        return tituloService.donarAcciones(transaccionDonacion);
     }
 
     @PostMapping("/endosar")
-    public ResponseEntity<String> endosarTitulos(@RequestBody TransaccionDatos transaccionEndoso) {
-        tituloService.endosarTitulos(transaccionEndoso);
-        return ResponseEntity.ok("Titulos endosados exitosamente.");
+    public TransaccionDatos endosarTitulos(@RequestBody TransaccionDatos transaccionEndoso) {
+        return tituloService.endosarTitulos(transaccionEndoso);
+
     }
 
     @PostMapping("/sucesion")
-    public ResponseEntity<String> sucesionTitulos(@RequestBody TransaccionDatos transaccionSucesion) {
-        tituloService.sucesionTitulos(transaccionSucesion);
-        return ResponseEntity.ok("Sucesion exitosa.");
+    public TransaccionDatos sucesionTitulos(@RequestBody TransaccionDatos transaccionSucesion) {
+        return tituloService.sucesionTitulos(transaccionSucesion);
+
     }
 
     @PostMapping("/embargar")
-    public ResponseEntity<String> embargarTitulos(@RequestBody Transaccion transaccionEmbargo) {
-        tituloService.embargarTitulo(transaccionEmbargo);
-        return ResponseEntity.ok("Titulos embargados exitosamente.");
+    public Transaccion embargarTitulos(@RequestBody Transaccion transaccionEmbargo) {
+        return tituloService.embargarTitulo(transaccionEmbargo);
+
     }
 
 }
