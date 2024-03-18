@@ -8,6 +8,8 @@ import com.eebp.accionistas.backend.acciones.repositories.TituloPersonaRepositor
 import com.eebp.accionistas.backend.acciones.repositories.TituloRepository;
 import com.eebp.accionistas.backend.accionistas.entities.Persona;
 import com.eebp.accionistas.backend.accionistas.repositories.PersonaRepository;
+import com.eebp.accionistas.backend.seguridad.entities.EmailDetails;
+import com.eebp.accionistas.backend.seguridad.services.EmailServiceImpl;
 import com.eebp.accionistas.backend.transacciones.entities.*;
 import com.eebp.accionistas.backend.transacciones.repositories.TransaccionEstadoRepository;
 import com.eebp.accionistas.backend.transacciones.repositories.TransaccionRepository;
@@ -44,6 +46,9 @@ public class TituloService {
 
     @Autowired
     TransaccionTituloRepository transaccionTituloRepository;
+
+    @Autowired
+    private EmailServiceImpl emailService;
 
     public Optional<Titulo> findTituloById(Integer id) {
         return tituloRepository.findById(id);
@@ -257,15 +262,93 @@ public class TituloService {
             personaOptionalA.ifPresent(persona1 -> {
                 persona1.getTitulos().add(tituloDisponible); // Usar la variable final dentro de la expresión lambda
             });
+            EmailDetails emailDetails = EmailDetails.builder()
+                    .recipient(personaOptionalA.get().getCorreoPersona())
+                    .subject("Notificación de nuevo Titulo")
+                    .msgBody("<table border=\"0\" cellspacing=\"0\" style=\"border-collapse:collapse; height:147px; width:600px\">\n" +
+                            "\t<tbody>\n" +
+                            "\t\t<tr>\n" +
+                            "\t\t\t<td style=\"height:91px; text-align:center; width:23.5796%\"><img src=\"https://eebpsa.com.co/wp-content/uploads/2020/08/lOGO-2.1.png\" /></td>\n" +
+                            "\t\t\t<td style=\"height:91px; width:67.4766%\">\n" +
+                            "\t\t\t<h3 style=\"text-align:center\"><strong>BIENVENIDO AL SISTEMA DE ACCIONISTAS </strong></h3>\n" +
+                            "\n" +
+                            "\t\t\t<h3 style=\"text-align:center\"><strong>Empresa de Energ&iacute;a del Bajo Putumayo S.A. E.S.P.</strong></h3>\n" +
+                            "\t\t\t</td>\n" +
+                            "\t\t</tr>\n" +
+                            "\t\t<tr>\n" +
+                            "\t\t\t<td colspan=\"2\" style=\"height:10px; text-align:center; width:91.0562%\">\n" +
+                            "\t\t\t<p>&nbsp;</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">Se&ntilde;or(a) " + personaOptionalA.get().getNomPri() + " " + personaOptionalA.get().getNomSeg() + " " + personaOptionalA.get().getApePri() +  " " + personaOptionalA.get().getApeSeg()  + ",</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">Le informamos que de las acciones ofertadas se ha creado un nuevo Titulo"+ " " + tituloDisponible.getConseTitulo() + " " + "con" + " " + tituloDisponible.getCanAccTit() + " " + "acciones restantes.\n" +
+                            "\t\t\t</td>\n" +
+                            "\t\t</tr>\n" +
+                            "\t\t<tr>\n" +
+                            "\t\t\t<td colspan=\"2\" style=\"text-align:center; width:91.0562%\">\n" +
+                            "\t\t\t<p style=\"text-align:left\">&nbsp;</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\"><u>En caso de alguna duda, favor contactarse con servicio al cliente.</u></p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">&nbsp;</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">Acceso al sistema: <a href=\"http://localhost:4200\">http://localhost:4200</a></p>\n" +
+                            "\t\t\t</td>\n" +
+                            "\t\t</tr>\n" +
+                            "\t</tbody>\n" +
+                            "</table>\n" +
+                            "\n" +
+                            "<p><strong>&nbsp;</strong></p>")
+                    .build();
+            emailService.sendSimpleMail(emailDetails); // Enviar el correo electrónico
         }
 
         // Asociar el nuevo título a los tomadores
         for (TomadorTitulo tomador : transaccionCompra.getTomadores()) {
-            final Titulo tituloCompradasFinal = tituloCompradas; // Declarar la variable final aquí
+            final Titulo tituloCompradasFinal = tituloCompradas;
             Optional<Persona> personaOptional = personaRepository.findById(tomador.getIdePer());
             personaOptional.ifPresent(persona -> {
-                persona.getTitulos().add(tituloCompradasFinal); // Usar la variable final dentro de la expresión lambda
+                persona.getTitulos().add(tituloCompradasFinal);
             });
+            EmailDetails emailDetails = EmailDetails.builder()
+                    .recipient(personaOptional.get().getCorreoPersona())
+                    .subject("Notificación de adquisición de acciones")
+                    .msgBody("<table border=\"0\" cellspacing=\"0\" style=\"border-collapse:collapse; height:147px; width:600px\">\n" +
+                            "\t<tbody>\n" +
+                            "\t\t<tr>\n" +
+                            "\t\t\t<td style=\"height:91px; text-align:center; width:23.5796%\"><img src=\"https://eebpsa.com.co/wp-content/uploads/2020/08/lOGO-2.1.png\" /></td>\n" +
+                            "\t\t\t<td style=\"height:91px; width:67.4766%\">\n" +
+                            "\t\t\t<h3 style=\"text-align:center\"><strong>BIENVENIDO AL SISTEMA DE ACCIONISTAS </strong></h3>\n" +
+                            "\n" +
+                            "\t\t\t<h3 style=\"text-align:center\"><strong>Empresa de Energ&iacute;a del Bajo Putumayo S.A. E.S.P.</strong></h3>\n" +
+                            "\t\t\t</td>\n" +
+                            "\t\t</tr>\n" +
+                            "\t\t<tr>\n" +
+                            "\t\t\t<td colspan=\"2\" style=\"height:10px; text-align:center; width:91.0562%\">\n" +
+                            "\t\t\t<p>&nbsp;</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">Se&ntilde;or(a) " + personaOptional.get().getNomPri() + " " + personaOptional.get().getNomSeg() + " " + personaOptional.get().getApePri() +  " " + personaOptional.get().getApeSeg()  + ",</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">Le informamos que se han adquirido acciones en su nombre y se ha generado el Titulo" + " " + tituloCompradasFinal.getConseTitulo() + " " + "con" + " " +tituloCompradasFinal.getCanAccTit() + " " + "acciones.\n" +
+                            "\t\t\t</td>\n" +
+                            "\t\t</tr>\n" +
+                            "\t\t<tr>\n" +
+                            "\t\t\t<td colspan=\"2\" style=\"text-align:center; width:91.0562%\">\n" +
+                            "\t\t\t<p style=\"text-align:left\">&nbsp;</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\"><u>En caso de alguna duda, favor contactarse con servicio al cliente.</u></p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">&nbsp;</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">Acceso al sistema: <a href=\"http://localhost:4200\">http://localhost:4200</a></p>\n" +
+                            "\t\t\t</td>\n" +
+                            "\t\t</tr>\n" +
+                            "\t</tbody>\n" +
+                            "</table>\n" +
+                            "\n" +
+                            "<p><strong>&nbsp;</strong></p>")
+                    .build();
+            emailService.sendSimpleMail(emailDetails); // Enviar el correo electrónico
         }
 
         //Crear la transaccion

@@ -184,7 +184,7 @@ public class TransaccionService {
 
             EmailDetails emailDetails = EmailDetails.builder()
                     .recipient(persona.getCorreoPersona())
-                    .subject("Notificación de rechazo de transacción")
+                    .subject("Notificación de aprobación de transacción")
                     .msgBody("<table border=\"0\" cellspacing=\"0\" style=\"border-collapse:collapse; height:147px; width:600px\">\n" +
                             "\t<tbody>\n" +
                             "\t\t<tr>\n" +
