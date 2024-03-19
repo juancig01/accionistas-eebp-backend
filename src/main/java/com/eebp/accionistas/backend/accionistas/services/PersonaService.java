@@ -30,6 +30,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class PersonaService {
@@ -103,6 +104,8 @@ public class PersonaService {
 
     public byte[] getPDFDatosPersonales(String codUsuario) throws IOException {
         Persona datosPersona = personaRepository.findById(codUsuario).get();
+
+        //System.out.println(System.getProperty("user.dir"));
 
         File inputHTML = new File("src/main/resources/registro.html");
         Document document = Jsoup.parse(inputHTML, "UTF-8");

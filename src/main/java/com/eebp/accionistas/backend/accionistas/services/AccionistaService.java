@@ -17,9 +17,9 @@ import com.eebp.accionistas.backend.seguridad.exceptions.UserNotFoundException;
 import com.eebp.accionistas.backend.seguridad.services.EmailServiceImpl;
 import com.eebp.accionistas.backend.seguridad.services.UserServiceImpl;
 import com.eebp.accionistas.backend.seguridad.utils.PasswordGenerator;
-import com.itextpdf.text.*;
+/*import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.PdfWriter;*/
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -392,8 +392,8 @@ public class AccionistaService {
         return lista;
     }
 
-    public byte[] getAccionistasPendientesPorAprobar() throws DocumentException, UserNotFoundException {
-        List<AccionistaRepresentanteResponse> lista = getListaAccionistasPendientesAprobar();
+    /*public byte[] getAccionistasPendientesPorAprobar() throws DocumentException, UserNotFoundException {
+        /*List<AccionistaRepresentanteResponse> lista = getListaAccionistasPendientesAprobar();
         Document document = new Document();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PdfWriter.getInstance(document, outputStream);
@@ -414,5 +414,6 @@ public class AccionistaService {
         document.add(table);
         document.close();
         return outputStream.toByteArray();
-    }
+        return null;
+    }*/
 }
