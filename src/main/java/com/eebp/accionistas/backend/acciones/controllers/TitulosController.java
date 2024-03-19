@@ -7,9 +7,11 @@ import com.eebp.accionistas.backend.transacciones.entities.TransaccionDatos;
 import com.eebp.accionistas.backend.transacciones.entities.TransaccionTitulo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +27,11 @@ public class TitulosController {
     @GetMapping("/{id}")
     public Optional<Titulo> findTituloById(@PathVariable Integer id) {
         return tituloService.findTituloById(id);
+    }
+
+    @PostMapping
+    public Titulo updateTitulo(@RequestBody Titulo titulo) {
+        return tituloService.updateTitulo(titulo);
     }
 
     @PostMapping("/comprar")
@@ -53,6 +60,11 @@ public class TitulosController {
     public Transaccion embargarTitulos(@RequestBody Transaccion transaccionEmbargo) {
         return tituloService.embargarTitulo(transaccionEmbargo);
 
+    }
+
+    @GetMapping(value = "/formatoTituloAcciones/{conseTitulo}", produces = MediaType.APPLICATION_PDF_VALUE)
+    public @ResponseBody byte[] getFormatoAcciones(@PathVariable Integer conseTitulo) throws IOException {
+        return tituloService.getFormatoTitulo(conseTitulo);
     }
 
 }

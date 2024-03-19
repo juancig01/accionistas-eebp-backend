@@ -14,11 +14,20 @@ import com.eebp.accionistas.backend.transacciones.entities.*;
 import com.eebp.accionistas.backend.transacciones.repositories.TransaccionEstadoRepository;
 import com.eebp.accionistas.backend.transacciones.repositories.TransaccionRepository;
 import com.eebp.accionistas.backend.transacciones.repositories.TransaccionTituloRepository;
+import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
+import org.jsoup.Jsoup;
+import org.jsoup.helper.W3CDom;
+import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -52,6 +61,10 @@ public class TituloService {
 
     public Optional<Titulo> findTituloById(Integer id) {
         return tituloRepository.findById(id);
+    }
+
+    public Titulo updateTitulo(Titulo titulo) {
+        return tituloRepository.save(titulo);
     }
 
    /* public void comprarAcciones(List<TransaccionDatos> transaccionesCompra) {
@@ -619,6 +632,58 @@ public class TituloService {
         Transaccion t = transaccionRepository.save(transaccionEmbargo);
 
         return transaccionEmbargo;
+    }
+
+    public byte[] getFormatoTitulo(Integer conseTitulo) throws IOException {
+        // Buscar el título del cual sobraron las acciones
+
+        Titulo datosTitulo = tituloRepository.findById(conseTitulo).get();
+        Optional<TitulosPersona> tituloPersona = Optional.ofNullable(tituloPersonaRepository.findByConseTitulo(datosTitulo.getConseTitulo()));
+        Optional<Persona> datosPersona = personaRepository.findById(String.valueOf(tituloPersona.get().getIdePer()));
+
+        File inputHTML = new File("src/main/resources/formatoTituloAcciones.html");
+        Document document = Jsoup.parse(inputHTML, "UTF-8");
+
+        //document.selectFirst("#codUsuario").text(datosPersona.getCodUsuario());
+        document.selectFirst("#numAcciones").text(String.valueOf(datosTitulo.getCanAccTit()));
+        document.selectFirst("#valAccTit").text(String.valueOf(datosTitulo.getValAccTit()));
+        document.selectFirst("#conseTitulo").text(String.valueOf(datosTitulo.getConseTitulo()));
+
+        if (datosTitulo.getClaAccTit().equalsIgnoreCase("A")) {
+            document.selectFirst("#claseA").text("x");
+        }else {
+            document.selectFirst("#claseB").text("x");
+        }
+
+        if (datosTitulo.getTipAccTit().equalsIgnoreCase("O")) {
+            document.selectFirst("#tipAccTitO").text("x");
+        }else {
+            document.selectFirst("#tipAccTitP").text("x");
+        }
+
+        if (datosPersona.get().getNomPri() != null && !datosPersona.get().getNomPri().equalsIgnoreCase("")) {
+            document.selectFirst("#nomAccionista").text(
+                    datosPersona.get().getNomPri().toUpperCase() + " " +
+                            datosPersona.get().getNomSeg().toUpperCase() + " " +
+                            datosPersona.get().getApePri().toUpperCase() + " " +
+                            datosPersona.get().getApeSeg().toUpperCase());
+        } else {
+            document.selectFirst("#nomAccionista").text(datosPersona.get().getRazonSocial().toUpperCase());
+        }
+
+        document.selectFirst("#codUsuario").text(datosPersona.get().getCodUsuario());
+        document.selectFirst("#valor").text(datosTitulo.getObsAccTit());
+        document.selectFirst("#firmaRepresentanteRepresentanteLegal").html("<img width=\"150\" src=\"data:image/png;base64, " + "<img width=\"150\" src=\"data:image/png;base64, " + Base64.getEncoder().encodeToString(datosPersona.get().getFirma()) + "\">");
+
+
+        document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        PdfRendererBuilder builder = new PdfRendererBuilder();
+        builder.useDefaultPageSize(Float.valueOf(210), Float.valueOf(297), BaseRendererBuilder.PageSizeUnits.MM);
+        builder.toStream(os);
+        builder.withW3cDocument(new W3CDom().fromJsoup(document), "/");
+        builder.run();
+        return os.toByteArray();
     }
 
 }

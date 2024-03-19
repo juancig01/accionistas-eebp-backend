@@ -30,6 +30,7 @@ public class Titulo {
     private LocalDate fecCreTit;
     private LocalDateTime fecFinTit;
     private String obsAccTit;
+    private Integer folio;
 
     @OneToOne
     @JoinColumn(name = "ideEstadoTitulo")
