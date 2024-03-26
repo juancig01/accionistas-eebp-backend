@@ -104,7 +104,11 @@ public class PersonaService {
 
     public byte[] getPDFDatosPersonales(String codUsuario) throws IOException {
         Persona datosPersona = personaRepository.findById(codUsuario).get();
-
+        Accionista datosAccionista = accionistaRepository.findById(codUsuario).get();
+        Persona representante = null;
+        if (datosAccionista != null && datosAccionista.getCodRepresentante() != null) {
+            representante = personaRepository.findById(datosAccionista.getCodRepresentante()).get();
+        }
         //System.out.println(System.getProperty("user.dir"));
 
         File inputHTML = new File("src/main/resources/registro.html");
@@ -173,27 +177,28 @@ public class PersonaService {
         }
 
         if (datosPersona.getTipDocumento().equalsIgnoreCase("TI")) {
-            /*if (datosPersona.getOpcPotestad().equalsIgnoreCase("S")) {
+            if (datosPersona.getOpcPotestad().equalsIgnoreCase("S")) {
                 document.selectFirst("#opcPotestadSi").text("X");
             } else {
                 document.selectFirst("#opcPotestadNo").text("X");
             }
-            document.selectFirst("#nomRepresentante").text(datosPersona.getNomRepresentante().toUpperCase());
-            document.selectFirst("#tipoDocRepresentante" + datosPersona.getTipoDocRepresentante()).text("X");
-            document.selectFirst("#codRepresentante").text(datosPersona.getCodRepresentante());
-            document.selectFirst("#munRepresentante").text(municipioRepository.findById(Integer.parseInt(datosPersona.getMunicipioRepresentante())).get().getNombreMunicipio().toUpperCase());
-            document.selectFirst("#depRepresentante").text(municipioRepository.findById(Integer.parseInt(datosPersona.getMunicipioRepresentante())).get().getDepartamento().getNombreDepartamento().toUpperCase());
-            document.selectFirst("#fecNacRepresentante").text(datosPersona.getFecNacRepresentante().split("T")[0]);
-            document.selectFirst("#lugNacRepresentante").text(municipioRepository.findById(Integer.parseInt(datosPersona.getLugNacRepresentante())).get().getNombreMunicipio().toUpperCase());
-            if (datosPersona.getGenRepresentante().equalsIgnoreCase("M")) {
+            document.selectFirst("#nomRepresentante").text(representante.getNomPri().toUpperCase() + " " + representante.getNomSeg().toUpperCase() + " " + representante.getApePri().toUpperCase() + " " + representante.getApeSeg().toUpperCase());
+            document.selectFirst("#tipoDocRepresentante" + representante.getTipDocumento()).text("X");
+            document.selectFirst("#codRepresentante").text(representante.getCodUsuario());
+            document.selectFirst("#municipioExpRepresentante").text(municipioRepository.findById(Integer.parseInt(representante.getMunicipioDomicilio())).get().getNombreMunicipio().toUpperCase());
+            //document.selectFirst("#depRepresentante").text(municipioRepository.findById(Integer.parseInt(representante.getDepartamentoDomicilio())).get().getDepartamento().getNombreDepartamento().toUpperCase());
+            document.selectFirst("#fecNacimientoRepresentante").text(representante.getFecNacimiento().split("T")[0]);
+            document.selectFirst("#lugNacimientoRepresentante").text(municipioRepository.findById(Integer.parseInt(representante.getLugNacimiento())).get().getNombreMunicipio().toUpperCase());
+
+            if (representante.getGenPersona().equalsIgnoreCase("M")) {
                 document.selectFirst("#genRepresentanteM").text("X");
             } else {
                 document.selectFirst("#genRepresentanteF").text("X");
             }
-            document.selectFirst("#estCivRepresentante").text(datosPersona.getEstCivPersona().toUpperCase());
-            document.selectFirst("#numCelRepresentante").text(datosPersona.getCelRepresentante());
-            document.selectFirst("#actEcoRepresentante").text(datosPersona.getProfActRepresentante().toUpperCase());
-            document.selectFirst("#correoRepresentante").text(datosPersona.getCorreoRepresentante().toUpperCase());*/
+            //document.selectFirst("#estCivRepresentante").text(representante.getEstCivPersona().toUpperCase());
+            document.selectFirst("#celRepresentante").text(representante.getCelPersona());
+            document.selectFirst("#actEcoRepresentante").text(representante.getActEcoPersona().toUpperCase());
+            document.selectFirst("#correoRepresentante").text(representante.getCorreoPersona().toUpperCase());
         }
 
         document.selectFirst("#firma").html("<img width=\"150\" src=\"data:image/png;base64, " + "<img width=\"150\" src=\"data:image/png;base64, " + Base64.getEncoder().encodeToString(datosPersona.getFirma()) + "\">");
@@ -225,6 +230,11 @@ public class PersonaService {
 
     public byte[] getPDFAutorizacion(String codUsuario) throws IOException {
         Persona datosPersona = personaRepository.findById(codUsuario).get();
+        Accionista datosAccionista = accionistaRepository.findById(codUsuario).get();
+        Persona representante = null;
+        if (datosAccionista != null && datosAccionista.getCodRepresentante() != null) {
+            representante = personaRepository.findById(datosAccionista.getCodRepresentante()).get();
+        }
 
         File inputHTML = new File("src/main/resources/pdfAutorizacion.html");
         Document document = Jsoup.parse(inputHTML, "UTF-8");
@@ -283,8 +293,8 @@ public class PersonaService {
         } else {
             document.selectFirst("#autorizaTodasNo").text("x");
         }
-        document.selectFirst("#firma").html("<img width=\"150\" src=\"data:image/png;base64, " + "<img width=\"150\" src=\"data:image/png;base64, " + Base64.getEncoder().encodeToString(datosPersona.getFirma()) + "\">");
-        document.selectFirst("#identificacion").text(datosPersona.getCodUsuario());
+        document.selectFirst("#firma").html("<img width=\"150\" src=\"data:image/png;base64, " + "<img width=\"150\" src=\"data:image/png;base64, " + Base64.getEncoder().encodeToString(representante.getFirma()) + "\">");
+        document.selectFirst("#identificacion").text(representante.getCodUsuario());
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         Date date = new Date();
         document.selectFirst("#fecha").text("Fecha                                 " + formatter.format(date));
@@ -301,6 +311,12 @@ public class PersonaService {
 
     public byte[] getPDFDeclaracion(String codUsuario) throws IOException, UserNotFoundException {
         Persona datosPersona = personaRepository.findById(codUsuario).get();
+        Accionista datosAccionista = accionistaRepository.findById(codUsuario).get();
+        Persona representante = null;
+        if (datosAccionista != null && datosAccionista.getCodRepresentante() != null) {
+            representante = personaRepository.findById(datosAccionista.getCodRepresentante()).get();
+        }
+
         File inputHTML = new File("src/main/resources/pdfDeclaracion.html");
         Document document = Jsoup.parse(inputHTML, "UTF-8");
 
@@ -364,7 +380,7 @@ public class PersonaService {
         document.selectFirst("#mes").text(meses.get(fecha.getMonth().getValue()));
         document.selectFirst("#anio").text(String.valueOf(fecha.getYear()));
 
-        document.selectFirst("#firma").html("<img width=\"150\" src=\"data:image/png;base64, " + "<img width=\"150\" src=\"data:image/png;base64, " + Base64.getEncoder().encodeToString(datosPersona.getFirma()) + "\">");
+        document.selectFirst("#firma").html("<img width=\"150\" src=\"data:image/png;base64, " + "<img width=\"150\" src=\"data:image/png;base64, " + Base64.getEncoder().encodeToString(representante.getFirma()) + "\">");
         try {
             byte[] bytes = datosPersona.getHuella();
             ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
@@ -378,7 +394,7 @@ public class PersonaService {
         } catch (Exception e) {
 
         }
-        document.selectFirst("#cc").text(datosPersona.getCodUsuario());
+        document.selectFirst("#cc").text(representante.getCodUsuario());
 
         document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
