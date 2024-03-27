@@ -23,8 +23,8 @@ public interface AccionistaRepository extends JpaRepository<Accionista, String> 
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE Accionista SET tipoAccionista=:tipoAccionista WHERE codUsuario =:codUsuario")
-    void actualizarTipoAccionista(@Param("codUsuario") String codUsuario, @Param("tipoAccionista") Integer tipoAccionista);
+    @Query(value = "UPDATE Accionista SET tipoAccionista=:tipoAccionista, aprobado=:aprobado WHERE codUsuario =:codUsuario")
+    void actualizarTipoAccionista(@Param("codUsuario") String codUsuario, @Param("tipoAccionista") Integer tipoAccionista, @Param("aprobado") String aprobado);
 
     @Modifying
     @Transactional

@@ -59,6 +59,9 @@ public class PersonaService {
     }
 
     public Persona addPersona(Persona persona) {
+        if (persona.getTipDocumento() != null && persona.getTipDocumento().equalsIgnoreCase("TI")) {
+            persona.setOpcPotestad("S");
+        }
         logRegistroAccionistaService.add(LogRegistroAccionistas.builder()
                 .codUsuario(persona.getCodUsuario())
                 .tipo("AGREGAR")

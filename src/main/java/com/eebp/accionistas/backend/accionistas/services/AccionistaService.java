@@ -307,7 +307,7 @@ public class AccionistaService {
     }
 
     public void actualizarTipoAccionista(ActualizarTipoAccionistaRequest request) {
-        accionistaRepository.actualizarTipoAccionista(request.getCodUsuario(), request.getTipoAccionista());
+        accionistaRepository.actualizarTipoAccionista(request.getCodUsuario(), request.getTipoAccionista(), request.getAprobado());
     }
 
     public AccionistaRepresentanteResponse getAccionistaRepresentante(String codUsuario) throws UserNotFoundException {

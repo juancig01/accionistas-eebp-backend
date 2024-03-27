@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class ActualizarTipoAccionistaRequest {
     private String codUsuario;
     private Integer tipoAccionista;
+    private String aprobado;
 }
