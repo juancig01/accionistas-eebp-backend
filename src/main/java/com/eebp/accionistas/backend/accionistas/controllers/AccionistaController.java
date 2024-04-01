@@ -101,7 +101,7 @@ public class AccionistaController {
         return accionistaService.getAccionistasPendientesPorAprobar();
     }*/
 
-    @GetMapping("/pendientesPorAprobar")
+    @GetMapping("/pendientesAprobar")
     public ResponseEntity<InputStreamResource> excelPendientesAprobar() throws Exception {
         ByteArrayInputStream stream = accionistaService.excelPendientesAprobar();
 
