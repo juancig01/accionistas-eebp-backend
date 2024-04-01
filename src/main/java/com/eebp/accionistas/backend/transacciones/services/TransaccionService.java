@@ -104,7 +104,10 @@ public class TransaccionService {
         t.getTransaccionTitulo().stream()
                 .forEach(transaccionTitulo -> {
                     transaccionTitulo.setConseTrans(t.getConseTrans());
+                    int numAcciones = transaccionTitulo.getNumAcciones();
                     Titulo tempTitulo = tituloRepository.findById(transaccionTitulo.getConseTitulo()).get();
+                    int cantAccTitUpdate = tempTitulo.getCanAccTit() - numAcciones;
+                    tempTitulo.setCanAccTit(cantAccTitUpdate);
                     tempTitulo.setEstadoTitulo(EstadoTitulo.builder().ideEstadoTitulo(2).build());
                     tituloRepository.save(tempTitulo);
                 });
@@ -127,7 +130,10 @@ public class TransaccionService {
         if (estadoTransaccion.getIdeEstado() == 3) {
             List<TransaccionTitulo> transaccionTitulos = transaccion.getTransaccionTitulo();
             for (TransaccionTitulo transaccionTitulo : transaccionTitulos) {
+                int numAcciones = transaccionTitulo.getNumAcciones();
                 Titulo tempTitulo = tituloRepository.findById(transaccionTitulo.getConseTitulo()).get();
+                int cantAccTitUpdate = tempTitulo.getCanAccTit() + numAcciones;
+                tempTitulo.setCanAccTit(cantAccTitUpdate);
                 tempTitulo.setEstadoTitulo(EstadoTitulo.builder().ideEstadoTitulo(1).build()); // Estado activo
                 tituloRepository.save(tempTitulo);
             }
