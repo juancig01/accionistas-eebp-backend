@@ -16,9 +16,13 @@ import com.eebp.accionistas.backend.seguridad.exceptions.UserNotFoundException;
 import com.eebp.accionistas.backend.seguridad.utils.FileUploadUtil;
 //import com.itextpdf.text.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -96,6 +100,16 @@ public class AccionistaController {
     public @ResponseBody byte[] getPDFPendientesAprobar() throws DocumentException, UserNotFoundException {
         return accionistaService.getAccionistasPendientesPorAprobar();
     }*/
+
+    @GetMapping("/pendientesPorAprobar")
+    public ResponseEntity<InputStreamResource> excelPendientesAprobar() throws Exception {
+        ByteArrayInputStream stream = accionistaService.excelPendientesAprobar();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=pendientes.xls");
+
+        return ResponseEntity.ok().headers(headers).body(new InputStreamResource(stream));
+    }
 
 
 }

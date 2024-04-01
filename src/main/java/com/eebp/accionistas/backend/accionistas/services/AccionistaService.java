@@ -21,11 +21,18 @@ import com.eebp.accionistas.backend.seguridad.utils.PasswordGenerator;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;*/
 import lombok.extern.log4j.Log4j2;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -390,6 +397,34 @@ public class AccionistaService {
                     .build());
         }
         return lista;
+    }
+
+    public ByteArrayInputStream excelPendientesAprobar() throws UserNotFoundException, IOException {
+        String [] columns = {"Identificación", "Nombre"};
+
+        Workbook workbook = new HSSFWorkbook();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+        Sheet sheet = workbook.createSheet("Pendietes por Aprobar");
+        Row row = sheet.createRow(0);
+
+        for (int i = 0; i<columns.length; i ++) {
+            Cell cell = row.createCell(i);
+            cell.setCellValue(columns[i]);
+        }
+
+        List<AccionistaRepresentanteResponse> lista = getListaAccionistasPendientesAprobar();
+        int initRow= 1;
+        for (AccionistaRepresentanteResponse listas : lista) {
+            row = sheet.createRow(initRow);
+            row.createCell(0).setCellValue(listas.getCodAccionista());
+            row.createCell(1).setCellValue(listas.getNomAccionista());
+
+            initRow++;
+        }
+        workbook.write(stream);
+        workbook.close();
+        return new ByteArrayInputStream(stream.toByteArray());
     }
 
     /*public byte[] getAccionistasPendientesPorAprobar() throws DocumentException, UserNotFoundException {
