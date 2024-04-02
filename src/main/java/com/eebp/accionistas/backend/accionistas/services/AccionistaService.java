@@ -416,11 +416,13 @@ public class AccionistaService {
         List<AccionistaRepresentanteResponse> lista = getListaAccionistasPendientesAprobar();
         int initRow= 1;
         for (AccionistaRepresentanteResponse listas : lista) {
-            row = sheet.createRow(initRow);
-            row.createCell(0).setCellValue(listas.getCodAccionista());
-            row.createCell(1).setCellValue(listas.getNomAccionista());
+            if (listas.getEsAccionista().equalsIgnoreCase("N") || listas.getEsAccionista().equalsIgnoreCase("P")) {
+                row = sheet.createRow(initRow);
+                row.createCell(0).setCellValue(listas.getCodAccionista());
+                row.createCell(1).setCellValue(listas.getNomAccionista());
 
-            initRow++;
+                initRow++;
+            }
         }
         workbook.write(stream);
         workbook.close();
