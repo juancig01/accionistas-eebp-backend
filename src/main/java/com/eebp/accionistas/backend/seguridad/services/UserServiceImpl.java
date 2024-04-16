@@ -1,5 +1,7 @@
 package com.eebp.accionistas.backend.seguridad.services;
 
+import com.eebp.accionistas.backend.accionistas.entities.Persona;
+import com.eebp.accionistas.backend.accionistas.repositories.PersonaRepository;
 import com.eebp.accionistas.backend.seguridad.entities.EmailDetails;
 import com.eebp.accionistas.backend.seguridad.entities.User;
 import com.eebp.accionistas.backend.seguridad.entities.UsuarioPerfil;
@@ -35,6 +37,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PerfilesRepository perfilesRepository;
+
+    @Autowired
+    private PersonaRepository personaRepository;
 
     @Autowired
     private EmailServiceImpl emailService;
@@ -136,8 +141,22 @@ public class UserServiceImpl implements UserService {
 
     public List<User> obtenerUsuarios() {
         return userRepository.findAll().stream().map(user -> {
-            user.setPerfil(usuarioPerfilRepository.getUsuarioPerfilByCodUsuario(user.getCodUsuario()).getCodPerfil());
-            user.setNomPerfil(perfilesRepository.findById(usuarioPerfilRepository.getUsuarioPerfilByCodUsuario(user.getCodUsuario()).getCodPerfil()).get().getNomPerfil());
+            String codUsuario = user.getCodUsuario();
+            Optional<Persona> personaOptional = personaRepository.findById(codUsuario);
+
+            if (personaOptional.isPresent()) {
+                Persona persona = personaOptional.get();
+                if (persona.getRazonSocial() != null && "NIT".equals(persona.getTipDocumento())) {
+                    user.setNombreUsuario(persona.getRazonSocial());
+                    user.setApellidoUsuario(persona.getRazonSocial());
+                } else {
+                    // Si no es un NIT o la razón social es nula, usar otros valores para el nombre
+                    user.setNombreUsuario(persona.getNomPri());
+                }
+            }
+
+            user.setPerfil(usuarioPerfilRepository.getUsuarioPerfilByCodUsuario(codUsuario).getCodPerfil());
+            user.setNomPerfil(perfilesRepository.findById(usuarioPerfilRepository.getUsuarioPerfilByCodUsuario(codUsuario).getCodPerfil()).get().getNomPerfil());
             return user;
         }).collect(Collectors.toList());
     }

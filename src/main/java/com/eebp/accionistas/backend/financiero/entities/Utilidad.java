@@ -21,12 +21,13 @@ public class Utilidad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer ideUtilidad;
-    private Float numAccMercado;
-    private Float numAccUtilidades;
-    private Float participacionAccion;
-    private Float valNomAccion;
-    private Float valIntrinseco;
-    private Float divParticipacion;
+    private Integer numAccMercado;
+    private Integer numAccUtilidades;
+    private Integer participacionAccion;
+    private Integer valNomAccion;
+    private Integer valIntrinseco;
+    private Integer divParticipacion;
     private Date fecUtilidad;
+    private Integer pagoUtilidad;
 
 }
