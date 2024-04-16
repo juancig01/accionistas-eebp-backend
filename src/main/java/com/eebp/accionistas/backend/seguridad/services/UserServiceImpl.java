@@ -129,9 +129,30 @@ public class UserServiceImpl implements UserService {
 
     public Optional<User> obtenerUsuario(String codUsuario) throws UserNotFoundException {
         Optional<User> response = userRepository.findByCodUsuario(codUsuario);
-        if (!response.isEmpty()) {
-            response.get().setPerfil(usuarioPerfilRepository.getUsuarioPerfilByCodUsuario(response.get().getCodUsuario()).getCodPerfil());
-            response.get().setNomPerfil(perfilesRepository.findById(usuarioPerfilRepository.getUsuarioPerfilByCodUsuario(response.get().getCodUsuario()).getCodPerfil()).get().getNomPerfil());
+        if (response.isPresent()) {
+            User user = response.get();
+
+            // Buscar la persona correspondiente al usuario
+            Optional<Persona> personaOptional = personaRepository.findById(codUsuario);
+
+            if (personaOptional.isPresent()) {
+                Persona persona = personaOptional.get();
+
+                // Verificar si la persona tiene una razón social no nula y su tipo de documento es "NIT"
+                if (persona.getRazonSocial() != null && "NIT".equals(persona.getTipDocumento())) {
+                    // Establecer tanto el nombre como el apellido del usuario como la razón social de la persona
+                    user.setNombreUsuario(persona.getRazonSocial());
+                    user.setApellidoUsuario(persona.getRazonSocial());
+                } else {
+                    // Si la persona no es un NIT o la razón social es nula, establecer el nombre del usuario como el primer nombre de la persona
+                    user.setNombreUsuario(persona.getNomPri());
+                }
+            }
+
+            // Establecer el perfil y el nombre del perfil del usuario
+            user.setPerfil(usuarioPerfilRepository.getUsuarioPerfilByCodUsuario(codUsuario).getCodPerfil());
+            user.setNomPerfil(perfilesRepository.findById(usuarioPerfilRepository.getUsuarioPerfilByCodUsuario(codUsuario).getCodPerfil()).get().getNomPerfil());
+
             return response;
         } else {
             log.info("Usuario no encontrado: " + codUsuario);
