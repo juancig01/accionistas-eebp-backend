@@ -29,6 +29,11 @@ public class PersonaController {
         return personaService.addPersona(persona);
     }
 
+    @DeleteMapping("/borrar/{codUsuario}")
+    public void deletePersonaById(@PathVariable String codUsuario) {
+        personaService.deletePersonaById(codUsuario);
+    }
+
     @GetMapping("/{codUsuario}")
     public Optional<Persona> getPersona(@PathVariable String codUsuario) throws UserNotFoundException {
         return personaService.getPersona(codUsuario);

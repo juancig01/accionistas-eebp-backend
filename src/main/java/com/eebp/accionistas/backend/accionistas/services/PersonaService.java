@@ -71,6 +71,10 @@ public class PersonaService {
         return personaRepository.save(persona);
     }
 
+    public void deletePersonaById(String codUsuario) {
+        personaRepository.deleteById(codUsuario);
+    }
+
     public Optional<Persona> getPersona(String codUsuario) throws UserNotFoundException {
         Optional<Persona> response = personaRepository.findById(codUsuario);
         if (response.isPresent()) {

@@ -62,7 +62,8 @@ public class SecurityConfiguration {
                                 "/api/transaccion/*",
                                 "/api/transaccion/aprobar/archivos/*",
                                 "/api/titulos/formatoTituloAcciones/*",
-                                "/api/utilidades/*")
+                                "/api/utilidades/*",
+                                "/api/accionistas/borrar/*")
                         .permitAll().anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
