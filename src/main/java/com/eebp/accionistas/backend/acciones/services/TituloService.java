@@ -207,7 +207,7 @@ public class TituloService {
 
                     // Anular el título utilizado
                     EstadoTitulo estadoTituloAnulado = new EstadoTitulo();
-                    estadoTituloAnulado.setIdeEstadoTitulo(2); // Anula el título
+                    estadoTituloAnulado.setIdeEstadoTitulo(3); // Anula el título
                     tituloDB.setEstadoTitulo(estadoTituloAnulado);
                     tituloRepository.save(tituloDB);
 
@@ -259,6 +259,7 @@ public class TituloService {
                     }
                 }
             }
+            titulo.setDescEstado("Aprobado");
         }
         // Guardar los títulos en la base de datos
         if (tituloCompradas != null) {
