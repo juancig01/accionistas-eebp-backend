@@ -259,7 +259,6 @@ public class TituloService {
                     }
                 }
             }
-            titulo.setDescEstado("Aprobado");
         }
         // Guardar los títulos en la base de datos
         if (tituloCompradas != null) {

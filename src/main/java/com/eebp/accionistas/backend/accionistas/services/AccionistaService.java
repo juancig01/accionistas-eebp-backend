@@ -355,15 +355,19 @@ public class AccionistaService {
                 pAccionista.setApePri("");
                 pAccionista.setApeSeg("");
             }
-            lista.add(AccionistaRepresentanteResponse.builder()
-                    .nomAccionista(pAccionista.getNomPri() + " " + pAccionista.getNomSeg() + " " + pAccionista.getApePri() + " " + pAccionista.getApeSeg())
-                    .nomRepresentante(pRepresentante.getNomPri() + " " + pRepresentante.getNomSeg() + " " + pRepresentante.getApePri() + " " + pRepresentante.getApeSeg())
-                    .codAccionista(accionista.getCodUsuario())
-                    .codRepresentante(pRepresentante.getCodUsuario())
-                    .esAccionista("S")
-                    .tipoDocAccionista(pAccionista.getTipDocumento())
-                    .tipoDocRepresentante(pRepresentante.getTipDocumento())
-                    .build());
+
+            // Agregar esta condición
+            if ("S".equals(accionista.getAprobado())) {
+                lista.add(AccionistaRepresentanteResponse.builder()
+                        .nomAccionista(pAccionista.getNomPri() + " " + pAccionista.getNomSeg() + " " + pAccionista.getApePri() + " " + pAccionista.getApeSeg())
+                        .nomRepresentante(pRepresentante.getNomPri() + " " + pRepresentante.getNomSeg() + " " + pRepresentante.getApePri() + " " + pRepresentante.getApeSeg())
+                        .codAccionista(accionista.getCodUsuario())
+                        .codRepresentante(pRepresentante.getCodUsuario())
+                        .esAccionista("S")
+                        .tipoDocAccionista(pAccionista.getTipDocumento())
+                        .tipoDocRepresentante(pRepresentante.getTipDocumento())
+                        .build());
+            }
         }
         return lista;
     }
