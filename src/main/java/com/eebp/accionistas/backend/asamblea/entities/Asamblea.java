@@ -22,7 +22,7 @@ public class Asamblea {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer consecutivo;
     private Date fechaAsamblea;
-    private Time horaAsamblea;
+    private String horaAsamblea;
     private String estado;
     private String tipoAsamblea;
 
