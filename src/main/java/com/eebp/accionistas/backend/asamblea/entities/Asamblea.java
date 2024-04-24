@@ -21,7 +21,7 @@ public class Asamblea {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer consecutivo;
-    private Date fechaAsamblea;
+    private String fechaAsamblea;
     private String horaAsamblea;
     private String estado;
     private String tipoAsamblea;
