@@ -38,16 +38,20 @@ public class AsambleaController {
     }
 
     @PostMapping("/enviar-invitacion/{id}")
-    public ResponseEntity<String> enviarEmailAccionistas(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, String>> enviarEmailAccionistas(@PathVariable Integer id) {
+        Map<String, String> response = new HashMap<>();
         try {
             Asamblea asamblea = asambleaService.sendEmailAccionistas(id);
             if (asamblea != null) {
-                return ResponseEntity.ok("Correos electrónicos enviados correctamente a los accionistas.");
+                response.put("message", "Correos electrónicos enviados correctamente a los accionistas.");
+                return ResponseEntity.ok(response);
             } else {
-                return ResponseEntity.notFound().build();
+                response.put("error", "No se encontró la asamblea con el ID proporcionado.");
+                return ResponseEntity.badRequest().body(response);
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al enviar los correos electrónicos.");
+            response.put("error", "Error al enviar los correos electrónicos: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
