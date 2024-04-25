@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -26,6 +28,13 @@ public class AsambleaController {
     @GetMapping("/obtener-asambleas")
     public List<Asamblea> getAsambleas() {
         return asambleaService.getAsambleas();
+    }
+    @GetMapping("/obtener-consecutivo-asamblea")
+    public Map<String, Integer> obtenerUltimoConsecutivoAsamblea() {
+        Integer ultimoConsecutivo = asambleaService.getUltimoConsecutivoAsamblea();
+        Map<String, Integer> response = new HashMap<>();
+        response.put("consecutivo", ultimoConsecutivo);
+        return response;
     }
 
     @PostMapping("/enviar-invitacion/{id}")

@@ -43,6 +43,22 @@ public class AsambleaService {
         return asambleas;
     }
 
+    public Integer getUltimoConsecutivoAsamblea() {
+        List<Asamblea> asambleas = asambleaRepository.findAll();
+
+        // Verificar si hay asambleas en la lista
+        if (!asambleas.isEmpty()) {
+            // Obtener la última asamblea (la lista está ordenada por el ID ascendente por defecto)
+            Asamblea ultimaAsamblea = asambleas.get(asambleas.size() - 1);
+
+            // Obtener el consecutivo de la última asamblea
+            return ultimaAsamblea.getConsecutivo() + 1;
+        } else {
+            // No hay asambleas creadas, devolver null o algún valor predeterminado
+            return null;
+        }
+    }
+
     public Asamblea sendEmailAccionistas(Integer id) {
         Optional<Asamblea> asamblea = asambleaRepository.findById(id);
 
