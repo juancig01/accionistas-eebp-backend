@@ -4,6 +4,8 @@ import com.eebp.accionistas.backend.asamblea.entities.Asamblea;
 import com.eebp.accionistas.backend.asamblea.services.AsambleaService;
 import com.eebp.accionistas.backend.transacciones.entities.Transaccion;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +26,20 @@ public class AsambleaController {
     @GetMapping("/obtener-asambleas")
     public List<Asamblea> getAsambleas() {
         return asambleaService.getAsambleas();
+    }
+
+    @PostMapping("/enviar-invitacion/{id}")
+    public ResponseEntity<String> enviarEmailAccionistas(@PathVariable Integer id) {
+        try {
+            Asamblea asamblea = asambleaService.sendEmailAccionistas(id);
+            if (asamblea != null) {
+                return ResponseEntity.ok("Correos electrónicos enviados correctamente a los accionistas.");
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al enviar los correos electrónicos.");
+        }
     }
 
 }
