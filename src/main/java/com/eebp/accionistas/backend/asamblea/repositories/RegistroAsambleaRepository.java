@@ -33,6 +33,7 @@ public interface RegistroAsambleaRepository extends JpaRepository<RegistroAsambl
             "nombres, " +
             "apellidos, " +
             "p.celPersona, " +
-            "p.correoPersona")
+            "p.correoPersona " +
+            "ORDER BY ra.idAsistente")
     List<AsistentesAsambleaDTO> obtenerRegistroAsamblea();
 }
