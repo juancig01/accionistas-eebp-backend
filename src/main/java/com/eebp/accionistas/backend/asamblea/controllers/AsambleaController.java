@@ -33,6 +33,11 @@ public class AsambleaController {
         return asambleaService.getAsambleas();
     }
 
+    @PutMapping("/actualizar")
+    public Asamblea updateAsamblea(@RequestBody Asamblea asamblea) {
+        return asambleaService.updateAsamblea(asamblea);
+    }
+
     @GetMapping("/{id}")
     public Optional<Asamblea> findAsambleaById(@PathVariable Integer id) {
         return asambleaService.findAsambleaById(id);

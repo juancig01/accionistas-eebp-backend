@@ -47,6 +47,10 @@ public class AsambleaService {
         return asambleas;
     }
 
+    public Asamblea updateAsamblea(Asamblea asamblea) {
+        return asambleaRepository.save(asamblea);
+    }
+
     public Optional<Asamblea> findAsambleaById(Integer id) {
         return asambleaRepository.findById(id);
     }
