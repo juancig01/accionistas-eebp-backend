@@ -1,5 +1,6 @@
 package com.eebp.accionistas.backend.asamblea.controllers;
 
+import com.eebp.accionistas.backend.acciones.entities.Titulo;
 import com.eebp.accionistas.backend.asamblea.entities.Asamblea;
 import com.eebp.accionistas.backend.asamblea.services.AsambleaService;
 import com.eebp.accionistas.backend.transacciones.entities.Transaccion;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -25,10 +27,17 @@ public class AsambleaController {
     public Asamblea addAsamblea(@RequestBody Asamblea asamblea) {
         return asambleaService.addAsamblea(asamblea);
     }
+
     @GetMapping("/obtener-asambleas")
     public List<Asamblea> getAsambleas() {
         return asambleaService.getAsambleas();
     }
+
+    @GetMapping("/{id}")
+    public Optional<Asamblea> findAsambleaById(@PathVariable Integer id) {
+        return asambleaService.findAsambleaById(id);
+    }
+
     @GetMapping("/obtener-consecutivo-asamblea")
     public Map<String, Integer> obtenerUltimoConsecutivoAsamblea() {
         Integer ultimoConsecutivo = asambleaService.getUltimoConsecutivoAsamblea();

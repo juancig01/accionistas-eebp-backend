@@ -1,17 +1,18 @@
 package com.eebp.accionistas.backend.asamblea.services;
 
-import com.eebp.accionistas.backend.accionistas.entities.Accionista;
+import com.eebp.accionistas.backend.acciones.entities.Titulo;
 import com.eebp.accionistas.backend.accionistas.entities.Persona;
 import com.eebp.accionistas.backend.accionistas.services.AccionistaService;
 import com.eebp.accionistas.backend.accionistas.services.PersonaService;
 import com.eebp.accionistas.backend.asamblea.entities.Asamblea;
 import com.eebp.accionistas.backend.asamblea.repositories.AsambleaRepository;
+import com.eebp.accionistas.backend.seguridad.entities.Asset;
 import com.eebp.accionistas.backend.seguridad.entities.EmailDetails;
-import com.eebp.accionistas.backend.seguridad.exceptions.UserNotFoundException;
-import com.eebp.accionistas.backend.seguridad.services.EmailService;
 import com.eebp.accionistas.backend.seguridad.services.EmailServiceImpl;
+import com.eebp.accionistas.backend.seguridad.utils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,24 +40,44 @@ public class AsambleaService {
 
     public List<Asamblea> getAsambleas() {
         List<Asamblea> asambleas = asambleaRepository.findAll();
+        for (Asamblea asamblea : asambleas) {
+            asamblea.setFiles(getFilesAsamblea(asamblea.getConsecutivo()));
+        }
         Collections.reverse(asambleas);
         return asambleas;
+    }
+
+    public Optional<Asamblea> findAsambleaById(Integer id) {
+        return asambleaRepository.findById(id);
+    }
+
+    public Integer getConsecutivoAsamblea() {
+        List<Asamblea> asambleas = asambleaRepository.findAll();
+
+        if (!asambleas.isEmpty()) {
+            Asamblea ultimaAsamblea = asambleas.get(asambleas.size() - 1);
+            return ultimaAsamblea.getConsecutivo();
+        } else {
+            return null;
+        }
     }
 
     public Integer getUltimoConsecutivoAsamblea() {
         List<Asamblea> asambleas = asambleaRepository.findAll();
 
-        // Verificar si hay asambleas en la lista
         if (!asambleas.isEmpty()) {
-            // Obtener la última asamblea (la lista está ordenada por el ID ascendente por defecto)
             Asamblea ultimaAsamblea = asambleas.get(asambleas.size() - 1);
-
-            // Obtener el consecutivo de la última asamblea
             return ultimaAsamblea.getConsecutivo() + 1;
         } else {
-            // No hay asambleas creadas, devolver null o algún valor predeterminado
             return null;
         }
+    }
+
+    public List<Asset> getFilesAsamblea(@PathVariable Integer consecutivo) {
+        return FileUploadUtil.files(String.valueOf(consecutivo), "asamblea").stream().map(file -> {
+            file.setUrl("/assets/images/avatars/" + file.getFileName());
+            return file;
+        }).collect(Collectors.toList());
     }
 
     public Asamblea sendEmailAccionistas(Integer id) {

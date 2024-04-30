@@ -20,14 +20,10 @@ public class RegistroAsamblea {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idRegistroAsamblea;
-    private Integer idAsamblea;
-    private String vigenciaAsamblea;
+    private Integer idAsistente;
+    private Integer consecutivo;
+    private Boolean asistencia;
     private String idePer;
-    private Date fechaRegistro;
     private String huella;
-    private String carAcc;
-    private Integer totAcciones;
-    private String tipoRegistro;
 
 }

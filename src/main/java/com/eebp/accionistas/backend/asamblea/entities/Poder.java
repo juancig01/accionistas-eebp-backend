@@ -1,12 +1,14 @@
 package com.eebp.accionistas.backend.asamblea.entities;
 
+import com.eebp.accionistas.backend.seguridad.entities.Asset;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.util.List;
+
 
 @Data
 @Builder
@@ -18,12 +20,10 @@ public class Poder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idPoder;
-    private Integer idAsamblea;
-    private Integer vigenciaAsamblea;
+    private Integer consecutivoPoder;
+    private Integer consecutivo;
+    private String fechaAsamblea;
     private String idApoderado;
     private String idPoderdante;
-    private String estadoPoder;
-    private Date fecha;
-    private String indiceDigitalizacion;
+    private String estado;
 }
