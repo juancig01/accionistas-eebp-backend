@@ -65,6 +65,7 @@ public class SecurityConfiguration {
                                 "/api/utilidades/*",
                                 "/api/accionistas/borrar/*",
                                 "/api/asamblea/*",
+                                "/api/asamblea/registrar-asistente-asamblea",
                                 "/api/asamblea/actualizar-estado/*")
                         .permitAll().anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
