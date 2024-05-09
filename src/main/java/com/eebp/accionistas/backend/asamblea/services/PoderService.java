@@ -38,8 +38,8 @@ public class PoderService {
         return poderRepository.save(poder);
     }
 
-    public List<Asset> getFilesPoder(@PathVariable Integer consecutivo) {
-        return FileUploadUtil.files(String.valueOf(consecutivo), "poder").stream().map(file -> {
+    public List<Asset> getFilesPoder(@PathVariable Integer consecutivoPoder) {
+        return FileUploadUtil.files(String.valueOf(consecutivoPoder), "formatoRegistroPoder").stream().map(file -> {
             file.setUrl("/assets/images/avatars/" + file.getFileName());
             return file;
         }).collect(Collectors.toList());
