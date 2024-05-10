@@ -43,6 +43,11 @@ public class AsambleaController {
         return asambleaService.findAsambleaById(id);
     }
 
+    @GetMapping("/consecutivo")
+    public Integer getConsecutivoAsamblea() {
+        return asambleaService.getConsecutivoAsamblea();
+    }
+
     @GetMapping("/obtener-consecutivo-asamblea")
     public Map<String, Integer> obtenerUltimoConsecutivoAsamblea() {
         Integer ultimoConsecutivo = asambleaService.getUltimoConsecutivoAsamblea();
