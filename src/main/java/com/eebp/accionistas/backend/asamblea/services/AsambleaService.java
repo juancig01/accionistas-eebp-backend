@@ -119,7 +119,7 @@ public class AsambleaService {
                             "\n" +
                             //"\t\t\t<p style=\"text-align:left\">Se&ntilde;or(a) " + accionistasActivos.get().getNomPri() + " " + accionistasActivos.get().getNomSeg() + " " + accionistasActivos.get().getApePri() +  " " + accionistasActivos.get().getApeSeg()  + ",</p>\n" +
                             "\n" +
-                            "\t\t\t<p style=\"text-align:left\">Queremos informarle que se programó una asamblea, la cual se realizará el día" + " " + asamblea.get().getFechaAsamblea()  + " " + "a las " + " " + asamblea.get().getHoraAsamblea() +
+                            "\t\t\t<p style=\"text-align:left\">Queremos informarle que se programó una asamblea de tipo" + " " + asamblea.get().getTipoAsamblea() +"," + "la cual se realizará el día" + " " + asamblea.get().getFechaAsamblea()  + " " + "a las " + " " + asamblea.get().getHoraAsamblea() +
                             "\t\t\t</td>\n" +
                             "\t\t</tr>\n" +
                             "\t\t<tr>\n" +
