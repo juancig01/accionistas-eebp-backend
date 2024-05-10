@@ -1,5 +1,6 @@
 package com.eebp.accionistas.backend.plantillas.controllers;
 
+import com.eebp.accionistas.backend.plantillas.entities.EncuestTemasDTO;
 import com.eebp.accionistas.backend.plantillas.entities.Encuesta;
 import com.eebp.accionistas.backend.plantillas.entities.EncuestaDTO;
 import com.eebp.accionistas.backend.plantillas.services.EncuestaService;
@@ -21,5 +22,10 @@ public class EncuestaController {
     public ResponseEntity<Encuesta> crearEncuesta(@RequestBody EncuestaDTO encuestaDto) {
         Encuesta encuesta = encuestaService.crearEncuesta(encuestaDto);
         return ResponseEntity.ok(encuesta);
+    }
+
+    @GetMapping("/{idAsamblea}")
+    public List<EncuestTemasDTO> getEncuestasByAsamblea(@PathVariable Integer idAsamblea) {
+        return encuestaService.getEncuestasDTOByAsambleaId(idAsamblea);
     }
 }
