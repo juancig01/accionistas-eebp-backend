@@ -17,6 +17,11 @@ public class OpcionesRespuesta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idOpcRespuesta;
-    private Integer idPregunta;
+
+    //private Integer idPregunta;
     private String opcionRespuesta;
+
+    @ManyToOne
+    @JoinColumn(name = "id_pregunta")
+    private Preguntas preguntas;
 }
