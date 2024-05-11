@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class PreguntasService {
@@ -36,5 +39,30 @@ public class PreguntasService {
             opcionRespuesta.setPreguntas(pregunta);
             opcionesRespuestasRepository.save(opcionRespuesta);
         }
+    }
+
+
+    public Map<String, List<Map<String, Object>>> obtenerOpcionesPorIdPregunta(Integer idPregunta) {
+        List<Object[]> opciones = preguntasRepository.obtenerOpcionesPorIdPregunta(idPregunta);
+        Map<String, List<Map<String, Object>>> respuesta = new HashMap<>();
+
+        List<Map<String, Object>> opcionesList = new ArrayList<>();
+
+        for (Object[] opcion : opciones) {
+            Map<String, Object> opcionMap = new HashMap<>();
+            opcionMap.put("idOpcRespuesta", opcion[0]);
+            opcionMap.put("opcRespuesta", opcion[1]);
+            opcionesList.add(opcionMap);
+        }
+
+        respuesta.put("opcionRespuesta", opcionesList);
+
+        return respuesta;
+    }
+
+    private List<String> transformarAListaStrings(List<Object> opcionesObject) {
+        return opcionesObject.stream()
+                .map(Object::toString)
+                .collect(Collectors.toList());
     }
 }

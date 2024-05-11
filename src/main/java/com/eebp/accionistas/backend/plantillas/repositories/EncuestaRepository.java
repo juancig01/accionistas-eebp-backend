@@ -15,5 +15,13 @@ public interface EncuestaRepository extends JpaRepository<Encuesta, Integer> {
             "WHERE e.idAsamblea = :asambleaId " +
             "GROUP BY e.idEncuesta, e.nombreEncuesta, e.fechaCreacion, e.estadoEncuesta, e.tipoEncuesta")
     List<Object[]> findEncuestasAndTemasByAsambleaId(@Param("asambleaId") Integer asambleaId);
+
+    @Query("SELECT a.consecutivo, e.idEncuesta, e.nombreEncuesta, t.idTema, t.descTema, p.idPregunta, p.tipoPregunta, p.pregunta " +
+            "FROM Asamblea a " +
+            "INNER JOIN Encuesta e ON a.consecutivo = e.idAsamblea " +
+            "INNER JOIN e.temas t " +
+            "LEFT JOIN Preguntas p ON p.idTema = t.idTema AND p.idEncuesta = e.idEncuesta " +
+            "WHERE a.consecutivo = :consecutivoAsamblea AND p.idPregunta IS NOT NULL")
+    List<Object[]> obtenerPreguntasPorAsamblea(Integer consecutivoAsamblea);
 }
 
