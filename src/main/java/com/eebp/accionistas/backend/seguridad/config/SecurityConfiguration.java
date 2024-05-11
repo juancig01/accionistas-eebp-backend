@@ -68,7 +68,8 @@ public class SecurityConfiguration {
                                 "/api/asamblea/enviar-invitacion/*",
                                 "/api/asamblea/registrar-asistente-asamblea",
                                 "/api/asamblea/actualizar-estado/*",
-                                "/api/encuesta/*")
+                                "/api/encuesta/*",
+                                "/api/encuesta/resumen/*")
                         .permitAll().anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

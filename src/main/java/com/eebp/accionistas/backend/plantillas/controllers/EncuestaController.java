@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -25,7 +27,15 @@ public class EncuestaController {
     }
 
     @GetMapping("/{idAsamblea}")
-    public List<EncuestTemasDTO> getEncuestasByAsamblea(@PathVariable Integer idAsamblea) {
-        return encuestaService.getEncuestasDTOByAsambleaId(idAsamblea);
+    public ResponseEntity<?> getEncuestasByAsamblea(@PathVariable Integer idAsamblea) {
+        List<EncuestTemasDTO> encuestas = encuestaService.getEncuestasDTOByAsambleaId(idAsamblea);
+        if (encuestas == null || encuestas.isEmpty()) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("mensaje", "No se encontraron encuestas para la asamblea especificada");
+            errorResponse.put("codigo", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        } else {
+            return ResponseEntity.ok(encuestas);
+        }
     }
 }
