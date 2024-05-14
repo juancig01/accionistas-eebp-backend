@@ -68,6 +68,7 @@ public class SecurityConfiguration {
                                 "/api/asamblea/enviar-invitacion/*",
                                 "/api/asamblea/registrar-asistente-asamblea",
                                 "/api/asamblea/actualizar-estado/*",
+                                "/api/asamblea/poder/*",
                                 "/api/encuesta/*",
                                 "/api/encuesta/resumen/*",
                                 "/api/respuestas/*",

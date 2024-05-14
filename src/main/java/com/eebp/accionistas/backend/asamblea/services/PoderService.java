@@ -1,5 +1,6 @@
 package com.eebp.accionistas.backend.asamblea.services;
 
+import com.eebp.accionistas.backend.asamblea.entities.ApoderadosDTO;
 import com.eebp.accionistas.backend.asamblea.entities.Asamblea;
 import com.eebp.accionistas.backend.asamblea.entities.Poder;
 import com.eebp.accionistas.backend.asamblea.entities.PoderesDTO;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -125,6 +127,39 @@ public class PoderService {
             return poderRepository.save(poder);
         }
         return null;
+    }
+
+    public ApoderadosDTO obtenerPoderdantesPorApoderado(Integer idApoderadoParam) {
+        List<Object[]> resultados = poderRepository.obtenerPoderdantesPorApoderado(String.valueOf(idApoderadoParam));
+
+        ApoderadosDTO respuesta = new ApoderadosDTO();
+        List<ApoderadosDTO.PoderdanteDTO> poderdantes = new ArrayList<>();
+
+        // Crear el objeto ApoderadoDTO solo una vez
+        ApoderadosDTO.ApoderadoDTO apoderadoDTO = null;
+
+        for (Object[] fila : resultados) {
+            String idApoderado = (String) fila[0];
+            String idPoderdante = (String) fila[1];
+            String nombreApoderado = (String) fila[2];
+            String nombrePoderdante = (String) fila[3];
+
+            if (apoderadoDTO == null) {
+                apoderadoDTO = new ApoderadosDTO.ApoderadoDTO();
+                apoderadoDTO.setCodUsuario(idApoderado);
+                apoderadoDTO.setNombres(nombreApoderado);
+            }
+
+            ApoderadosDTO.PoderdanteDTO poderdanteDTO = new ApoderadosDTO.PoderdanteDTO();
+            poderdanteDTO.setCodUsuario(idPoderdante);
+            poderdanteDTO.setNombres(nombrePoderdante);
+            poderdantes.add(poderdanteDTO);
+        }
+
+        respuesta.setApoderado(Collections.singletonList(apoderadoDTO));
+        respuesta.setPoderDantes(poderdantes);
+
+        return respuesta;
     }
 
 }

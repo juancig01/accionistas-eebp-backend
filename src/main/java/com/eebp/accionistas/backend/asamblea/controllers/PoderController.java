@@ -1,9 +1,6 @@
 package com.eebp.accionistas.backend.asamblea.controllers;
 
-import com.eebp.accionistas.backend.asamblea.entities.Asamblea;
-import com.eebp.accionistas.backend.asamblea.entities.Poder;
-import com.eebp.accionistas.backend.asamblea.entities.PoderesDTO;
-import com.eebp.accionistas.backend.asamblea.entities.EstadoPoderDTO;
+import com.eebp.accionistas.backend.asamblea.entities.*;
 import com.eebp.accionistas.backend.asamblea.services.PoderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +24,11 @@ public class PoderController {
     @GetMapping("/obtener-registro-poderes")
     public List<PoderesDTO> obtenerPoderesConArchivos() {
         return poderService.obtenerPoderesConArchivos();
+    }
+
+    @GetMapping("/poder/{idApoderado}")
+    public ApoderadosDTO obtenerPoderdantesPorApoderado(@PathVariable Integer idApoderado) {
+        return poderService.obtenerPoderdantesPorApoderado(idApoderado);
     }
 
     @PutMapping("/actualizar-estado/{consecutivoPoder}")
