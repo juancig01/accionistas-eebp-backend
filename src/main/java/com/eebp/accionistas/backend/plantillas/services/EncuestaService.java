@@ -82,7 +82,8 @@ public class EncuestaService {
 
         for (Object[] fila : resultados) {
             Integer idTema = (Integer) fila[3];
-            String descTema = (String) fila[4];
+            //String descTema = (String) fila[4];
+            String descTema = convertirCamelCase((String) fila[4]);
             Integer idPregunta = (Integer) fila[5];
             String tipoPregunta = (String) fila[6];
             String pregunta = (String) fila[7];
@@ -117,13 +118,17 @@ public class EncuestaService {
     public Map<String, List<Map<String, Object>>> obtenerEncuestasYRespuestas(Integer idPersona) {
         Map<String, List<Map<String, Object>>> resultado = new HashMap<>();
 
-        List<Object[]> preguntasEncuestas = encuestaRepository.obtenerPreguntasEncuestas(Integer.valueOf(String.valueOf(idPersona)));
-        List<Object[]> opcionesRespuestas = encuestaRepository.obtenerOpcionesRespuestas(Integer.valueOf(String.valueOf(idPersona)));
+        List<Object[]> preguntasEncuestas = encuestaRepository.obtenerPreguntasEncuestas(idPersona);
+        List<Object[]> opcionesRespuestas = encuestaRepository.obtenerOpcionesRespuestas(idPersona);
 
         for (Object[] pregunta : preguntasEncuestas) {
-            String tema = (String) pregunta[3];
+            // Obtener el tema y convertir a formato camelCase
+            String tema = convertirCamelCase((String) pregunta[3]);
+
+            // Obtener o inicializar la lista de preguntas para el tema actual
             List<Map<String, Object>> preguntasTema = resultado.computeIfAbsent(tema, k -> new ArrayList<>());
 
+            // Construir el mapa de la pregunta actual
             Map<String, Object> preguntaMap = new HashMap<>();
             preguntaMap.put("id", pregunta[4]);
             preguntaMap.put("tipoRespuesta", pregunta[6]);
@@ -153,5 +158,22 @@ public class EncuestaService {
         }
 
         return resultado;
+    }
+
+    // Función para convertir a formato camelCase
+    private String convertirCamelCase(String input) {
+        StringBuilder camelCase = new StringBuilder();
+        boolean capitalizeNext = false;
+        for (char c : input.toCharArray()) {
+            if (Character.isWhitespace(c)) {
+                capitalizeNext = true;
+            } else if (capitalizeNext) {
+                camelCase.append(Character.toUpperCase(c));
+                capitalizeNext = false;
+            } else {
+                camelCase.append(Character.toLowerCase(c));
+            }
+        }
+        return camelCase.toString();
     }
 }
