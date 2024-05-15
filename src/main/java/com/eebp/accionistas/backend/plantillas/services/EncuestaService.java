@@ -113,4 +113,45 @@ public class EncuestaService {
         return preguntasService.obtenerOpcionesPorIdPregunta(idPregunta);
     }
 
+
+    public Map<String, List<Map<String, Object>>> obtenerEncuestasYRespuestas(Integer idPersona) {
+        Map<String, List<Map<String, Object>>> resultado = new HashMap<>();
+
+        List<Object[]> preguntasEncuestas = encuestaRepository.obtenerPreguntasEncuestas(Integer.valueOf(String.valueOf(idPersona)));
+        List<Object[]> opcionesRespuestas = encuestaRepository.obtenerOpcionesRespuestas(Integer.valueOf(String.valueOf(idPersona)));
+
+        for (Object[] pregunta : preguntasEncuestas) {
+            String tema = (String) pregunta[3];
+            List<Map<String, Object>> preguntasTema = resultado.computeIfAbsent(tema, k -> new ArrayList<>());
+
+            Map<String, Object> preguntaMap = new HashMap<>();
+            preguntaMap.put("id", pregunta[4]);
+            preguntaMap.put("tipoRespuesta", pregunta[6]);
+            preguntaMap.put("pregunta", pregunta[5]);
+            preguntaMap.put("opcionesRespuesta", new ArrayList<>());
+
+            // Buscar respuestas correspondientes a la pregunta actual
+            List<Map<String, Object>> opcionesPregunta = new ArrayList<>();
+            for (Object[] opcion : opcionesRespuestas) {
+                if (opcion[0].equals(pregunta[4])) {
+                    Map<String, Object> opcionMap = new HashMap<>();
+                    opcionMap.put("idOpcRespuesta", opcion[2]);
+                    opcionMap.put("opcRespuesta", opcion[3]);
+                    opcionesPregunta.add(opcionMap);
+                }
+            }
+            preguntaMap.put("opcionesRespuesta", opcionesPregunta);
+
+            // Verificar si hay respuesta del accionista y agregarla
+            if (pregunta[7] != null) {
+                preguntaMap.put("respuestaAccionista", pregunta[7]);
+            } else {
+                preguntaMap.put("respuestaAccionista", null);
+            }
+
+            preguntasTema.add(preguntaMap);
+        }
+
+        return resultado;
+    }
 }

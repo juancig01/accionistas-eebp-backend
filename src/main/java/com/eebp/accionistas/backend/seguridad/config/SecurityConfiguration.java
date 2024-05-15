@@ -70,6 +70,7 @@ public class SecurityConfiguration {
                                 "/api/asamblea/actualizar-estado/*",
                                 "/api/asamblea/poder/*",
                                 "/api/encuesta/*",
+                                "/api/encuesta/asignada/*",
                                 "/api/encuesta/resumen/*",
                                 "/api/respuestas/*",
                                 "/api/respuestas/encuesta/*")

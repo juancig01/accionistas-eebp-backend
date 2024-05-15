@@ -44,5 +44,9 @@ public class EncuestaController {
         return encuestaService.obtenerPreguntasPorAsambleaFormateadas(consecutivoAsamblea);
     }
 
-
+    @GetMapping("/asignada/{idPersona}")
+    public ResponseEntity<Map<String, List<Map<String, Object>>>> obtenerEncuestasYRespuestas(@PathVariable Integer idPersona) {
+        Map<String, List<Map<String, Object>>> resultado = encuestaService.obtenerEncuestasYRespuestas(idPersona);
+        return ResponseEntity.ok(resultado);
+    }
 }
