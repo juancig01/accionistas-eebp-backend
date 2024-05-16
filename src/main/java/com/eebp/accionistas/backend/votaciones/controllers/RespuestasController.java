@@ -21,7 +21,7 @@ public class RespuestasController {
     RespuestasService respuestasService;
 
     @PostMapping("/guardarRespuestas")
-    public ResponseEntity<String> guardarRespuestas(@RequestBody Map<String, Object> datos) {
+    public ResponseEntity<Map<String, String>> guardarRespuestas(@RequestBody Map<String, Object> datos) {
         try {
             @SuppressWarnings("unchecked")
             List<Map<String, String>> datosPoderdantes = (List<Map<String, String>>) datos.get("datosPoderdantes");
@@ -44,9 +44,13 @@ public class RespuestasController {
             }
 
             respuestasService.guardarRespuestas(respuestas, votantes);
-            return new ResponseEntity<>("Respuestas guardadas exitosamente", HttpStatus.OK);
+            Map<String, String> respuestaJson = new HashMap<>();
+            respuestaJson.put("message", "Respuestas guardadas exitosamente");
+            return ResponseEntity.ok(respuestaJson);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error al guardar las respuestas: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            Map<String, String> respuestaJson = new HashMap<>();
+            respuestaJson.put("message", "Error al guardar las respuestas: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuestaJson);
         }
     }
 
