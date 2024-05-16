@@ -64,10 +64,21 @@ public class RegistroAsambleaService {
         double quorumDouble = totalAccionistas > 0 ? (double) totalRegistros / totalAccionistas * 100 : 0;
         int quorum = (int) Math.round(quorumDouble);
 
+        // Obtener el consecutivo de la asamblea
+        Integer consecutivoAsamblea = asambleaService.getConsecutivoAsamblea();
+        Integer totalAccionesGeneral = registroAsambleaRepository.getTotalAcciones();
+
+        // Comprobar si el quorum alcanza el 50% + 1
+        boolean quorumSuperado = quorum >= 50 + 1;
+
         Map<String, Integer> totales = new HashMap<>();
         totales.put("totalRegistros", totalRegistros);
-        totales.put("totalAcciones", totalAcciones);
+        totales.put("totalAccionesAsamblea", totalAcciones);
         totales.put("quorum", quorum);
+        totales.put("consecutivoAsamblea", consecutivoAsamblea);
+        totales.put("totalAcciones", totalAccionesGeneral);
+        //valor de 1 si es true y 0 si es false.
+        totales.put("quorumSuperado", quorumSuperado ? 1 : 0);
 
         return totales;
     }

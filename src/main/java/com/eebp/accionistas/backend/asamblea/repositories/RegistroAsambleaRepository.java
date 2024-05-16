@@ -36,4 +36,12 @@ public interface RegistroAsambleaRepository extends JpaRepository<RegistroAsambl
             "p.correoPersona " +
             "ORDER BY ra.idAsistente")
     List<AsistentesAsambleaDTO> obtenerRegistroAsamblea();
+
+
+    @Query(value = "SELECT SUM(can_acc_tit) AS totalAccionesGeneral " +
+            "FROM accionista ac " +
+            "LEFT JOIN titulos_persona tp ON ac.COD_USUARIO = tp.ide_per " +
+            "LEFT JOIN titulos t ON tp.conse_titulo = t.conse_titulo " +
+            "WHERE ac.aprobado = 'S'", nativeQuery = true)
+    Integer getTotalAcciones();
 }
