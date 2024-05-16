@@ -3,10 +3,13 @@ package com.eebp.accionistas.backend.asamblea.controllers;
 import com.eebp.accionistas.backend.asamblea.entities.*;
 import com.eebp.accionistas.backend.asamblea.services.PoderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -27,8 +30,18 @@ public class PoderController {
     }
 
     @GetMapping("/poder/{idApoderado}")
-    public ApoderadosDTO obtenerPoderdantesPorApoderado(@PathVariable Integer idApoderado) {
-        return poderService.obtenerPoderdantesPorApoderado(idApoderado);
+    public ResponseEntity<?> obtenerPoderdantesPorApoderado(@PathVariable Integer idApoderado) {
+        ApoderadosDTO resultado = poderService.obtenerPoderdantesPorApoderado(idApoderado);
+
+        // Verificar si tanto el apoderado como los poderdantes están vacíos
+        if (resultado.getApoderado().isEmpty() || resultado.getPoderDantes().isEmpty()) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Error", "No se encontraron apoderados o poderdantes para el ID de apoderado proporcionado.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(errorResponse);
+        }
+
+        return ResponseEntity.ok(resultado);
     }
 
     @PutMapping("/actualizar-estado/{consecutivoPoder}")
