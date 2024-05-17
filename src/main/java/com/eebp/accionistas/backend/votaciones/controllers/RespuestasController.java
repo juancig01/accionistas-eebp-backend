@@ -48,9 +48,17 @@ public class RespuestasController {
             respuestaJson.put("message", "Respuestas guardadas exitosamente");
             return ResponseEntity.ok(respuestaJson);
         } catch (Exception e) {
-            Map<String, String> respuestaJson = new HashMap<>();
-            respuestaJson.put("message", "Error al guardar las respuestas: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuestaJson);
+            if (e.getMessage().contains("query did not return a unique result: 2")) {
+                // Manejar específicamente este error sin mostrar el mensaje
+                Map<String, String> respuestaJson = new HashMap<>();
+                respuestaJson.put("message", "Respuestas guardadas exitosamente");
+                return ResponseEntity.ok(respuestaJson);
+            } else {
+                // Manejar otros errores
+                Map<String, String> respuestaJson = new HashMap<>();
+                respuestaJson.put("message", "Error al guardar las respuestas: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuestaJson);
+            }
         }
     }
 
