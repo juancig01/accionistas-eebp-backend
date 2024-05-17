@@ -29,19 +29,16 @@ public class PoderController {
         return poderService.obtenerPoderesConArchivos();
     }
 
-    @GetMapping("/poder/{idApoderado}")
-    public ResponseEntity<?> obtenerPoderdantesPorApoderado(@PathVariable Integer idApoderado) {
-        ApoderadosDTO resultado = poderService.obtenerPoderdantesPorApoderado(idApoderado);
-
-        // Verificar si tanto el apoderado como los poderdantes están vacíos
-        if (resultado.getApoderado().isEmpty() || resultado.getPoderDantes().isEmpty()) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("Error", "No se encontraron apoderados o poderdantes para el ID de apoderado proporcionado.");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(errorResponse);
+    @GetMapping("/poder/{idePer}")
+    public ResponseEntity<?> obtenerDetallesPorIdePer(@PathVariable Integer idePer) {
+        ApoderadosDTO detalles = poderService.obtenerDetallesPorIdePer(idePer);
+        if (detalles != null) {
+            return ResponseEntity.ok(detalles);
+        } else {
+            Map<String, String> mensaje = new HashMap<>();
+            mensaje.put("message", "No encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(mensaje);
         }
-
-        return ResponseEntity.ok(resultado);
     }
 
     @PutMapping("/actualizar-estado/{consecutivoPoder}")

@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -129,37 +126,32 @@ public class PoderService {
         return null;
     }
 
-    public ApoderadosDTO obtenerPoderdantesPorApoderado(Integer idApoderadoParam) {
-        List<Object[]> resultados = poderRepository.obtenerPoderdantesPorApoderado(String.valueOf(idApoderadoParam));
-
-        ApoderadosDTO respuesta = new ApoderadosDTO();
-        List<ApoderadosDTO.PoderdanteDTO> poderdantes = new ArrayList<>();
-
-        // Crear el objeto ApoderadoDTO solo una vez
-        ApoderadosDTO.ApoderadoDTO apoderadoDTO = null;
-
-        for (Object[] fila : resultados) {
-            String idApoderado = (String) fila[0];
-            String idPoderdante = (String) fila[1];
-            String nombreApoderado = (String) fila[2];
-            String nombrePoderdante = (String) fila[3];
-
-            if (apoderadoDTO == null) {
-                apoderadoDTO = new ApoderadosDTO.ApoderadoDTO();
-                apoderadoDTO.setCodUsuario(idApoderado);
-                apoderadoDTO.setNombres(nombreApoderado);
-            }
-
-            ApoderadosDTO.PoderdanteDTO poderdanteDTO = new ApoderadosDTO.PoderdanteDTO();
-            poderdanteDTO.setCodUsuario(idPoderdante);
-            poderdanteDTO.setNombres(nombrePoderdante);
-            poderdantes.add(poderdanteDTO);
+    public ApoderadosDTO obtenerDetallesPorIdePer(Integer idePer) {
+        List<Object[]> resultados = poderRepository.obtenerDetallesPorIdePer(String.valueOf(idePer));
+        if (resultados.isEmpty()) {
+            return null; // Devolver null si no se encuentra el idePer
         }
 
-        respuesta.setApoderado(Collections.singletonList(apoderadoDTO));
-        respuesta.setPoderDantes(poderdantes);
+        Set<ApoderadosDTO.ApoderadoDTO> apoderadosUnicos = new HashSet<>();
+        List<ApoderadosDTO.PoderdanteDTO> poderdantes = new ArrayList<>();
 
-        return respuesta;
+        for (Object[] resultado : resultados) {
+            String idApoderado = (String) resultado[3]; // ra.ide_per
+            String nombreApoderado = (String) resultado[5]; // nombreApoderado
+
+            String idPoderdante = (String) resultado[4]; // p.id_poderdante
+            String nombrePoderdante = (String) resultado[6]; // nombrePoderdante
+
+            if (idApoderado != null && nombreApoderado != null) {
+                apoderadosUnicos.add(new ApoderadosDTO.ApoderadoDTO(idApoderado, nombreApoderado));
+            }
+
+            if (idPoderdante != null && nombrePoderdante != null) {
+                poderdantes.add(new ApoderadosDTO.PoderdanteDTO(idPoderdante, nombrePoderdante));
+            }
+        }
+
+        return new ApoderadosDTO(new ArrayList<>(apoderadosUnicos), poderdantes);
     }
 
 }

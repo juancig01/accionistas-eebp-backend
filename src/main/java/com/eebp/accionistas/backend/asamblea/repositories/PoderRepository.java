@@ -51,4 +51,17 @@ public interface PoderRepository extends JpaRepository<Poder, Integer> {
             "JOIN Persona poderdante ON poder.idPoderdante = poderdante.codUsuario " +
             "WHERE poder.idApoderado = :idApoderado")
     List<Object[]> obtenerPoderdantesPorApoderado(@Param("idApoderado") String idApoderado);
+
+
+    @Query("SELECT ra.idAsistente, ra.huella, ra.asistencia, ra.idePer, " +
+            "p.idPoderdante, " +
+            "CONCAT(apoderado.nomPri, ' ', apoderado.nomSeg, ' ', apoderado.apePri, ' ', apoderado.apeSeg) AS nombreApoderado, " +
+            "CONCAT(poderdante.nomPri, ' ', poderdante.nomSeg, ' ', poderdante.apePri, ' ', poderdante.apeSeg) AS nombrePoderdante " +
+            "FROM RegistroAsamblea ra " +
+            "LEFT JOIN Poder p ON ra.idePer = p.idApoderado " +
+            "LEFT JOIN Persona apoderado ON ra.idePer = apoderado.codUsuario " +
+            "LEFT JOIN Persona poderdante ON p.idPoderdante = poderdante.codUsuario " +
+            "WHERE ra.consecutivo = (SELECT MAX(r.consecutivo) FROM RegistroAsamblea r) " +
+            "AND ra.idePer = :idePer")
+    List<Object[]> obtenerDetallesPorIdePer(@Param("idePer") String idePer);
 }
