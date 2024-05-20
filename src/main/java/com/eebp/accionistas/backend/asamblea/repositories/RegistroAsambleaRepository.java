@@ -26,6 +26,8 @@ public interface RegistroAsambleaRepository extends JpaRepository<RegistroAsambl
             "TitulosPersona tp ON CAST(p.codUsuario AS Integer) = tp.idePer " +
             "JOIN " +
             "Titulo t ON tp.conseTitulo = t.conseTitulo " +
+            "WHERE " +
+            "ra.consecutivo = (SELECT MAX(ra2.consecutivo) FROM RegistroAsamblea ra2) " +
             "GROUP BY " +
             "ra.idAsistente, " +
             "ra.asistencia, " +
