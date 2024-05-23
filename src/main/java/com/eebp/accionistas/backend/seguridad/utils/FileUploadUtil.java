@@ -55,6 +55,25 @@ public class FileUploadUtil {
         return fileNames.stream().filter(file -> file.getFileName().contains(typeFile + "_" + codUsuario)).collect(Collectors.toList());
     }
 
+    public static List<Asset> files(String codUsuario) {
+        String directoryPath = "../frontend/src/assets/images/avatars";
+        File directory = new File(directoryPath);
+        List<Asset> fileNames = new ArrayList<>();
+        if (directory.exists() && directory.isDirectory()) {
+            File[] files = directory.listFiles((dir, name) -> name.startsWith(codUsuario) && name.endsWith(".jpg"));
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        fileNames.add(Asset.builder().fileName(file.getName()).build());
+                    }
+                }
+            }
+        } else {
+            System.err.println("The specified directory does not exist or is not a directory.");
+        }
+        return fileNames;
+    }
+
     public static boolean deleteFile(String fileName) {
         String directoryPath = "../frontend/src/assets/images/avatars";
         File directory = new File(directoryPath);

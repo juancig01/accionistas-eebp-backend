@@ -73,7 +73,8 @@ public class SecurityConfiguration {
                                 "/api/encuesta/asignada/*",
                                 "/api/encuesta/resumen/*",
                                 "/api/respuestas/*",
-                                "/api/respuestas/encuesta/*")
+                                "/api/respuestas/encuesta/*",
+                                "/api/plancha/*")
                         .permitAll().anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
