@@ -72,8 +72,8 @@ public class VotacionPlanchaService {
         // Mapear los resultados a instancias de VotoDTO
         List<VotoDTO> votosDTOList = resultados.stream()
                 .map(resultado -> new VotoDTO(
-                        (String) resultado[0], // DescComite
-                        ((String) resultado[1]) // Voto convertido a Integer
+                        toCamelCase((String) resultado[0]), // DescComite convertido a camelCase
+                        (String) resultado[1] // Voto
                 ))
                 .collect(Collectors.toList());
 
