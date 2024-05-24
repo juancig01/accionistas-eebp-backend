@@ -24,8 +24,8 @@ public class VotacionPlanchaController {
     }
 
     @GetMapping("/votos")
-    public ResponseEntity<List<Map<String, Object>>> obtenerVotosPorComiteYPlancha() {
-        List<Map<String, Object>> resultados = votacionPlanchaService.obtenerVotosPorComiteYPlancha();
-        return new ResponseEntity<>(resultados, HttpStatus.OK);
+    public ResponseEntity<Map<String, List<Map<String, Object>>>> obtenerVotosPorComiteYPlancha() {
+        Map<String, List<Map<String, Object>>> votos = votacionPlanchaService.obtenerVotosPorComiteYPlancha();
+        return ResponseEntity.ok(votos);
     }
 }
