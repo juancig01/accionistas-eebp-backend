@@ -67,17 +67,15 @@ public class VotacionPlanchaService {
 
     public List<VotoDTO> obtenerVotosPorComiteYPersona(Integer idPersona) {
         List<Object[]> resultados = votacionPlanchaRepository.obtenerVotosPorComiteYPersona(idPersona);
-        List<VotoDTO> votos = new ArrayList<>();
+        List<VotoDTO> votosDTO = new ArrayList<>();
 
         for (Object[] resultado : resultados) {
-            String descComite = (String) resultado[0];
-            Integer votoInteger = (Integer) resultado[1];
-            Boolean voto = votoInteger == 1;
-            VotoDTO votoDTO = new VotoDTO(descComite, voto);
-            votos.add(votoDTO);
+            VotoDTO votoDTO = new VotoDTO();
+            votoDTO.setDescComite((String) resultado[0]); // El primer elemento es desc_comite
+            votoDTO.setVoto((Integer) resultado[1]); // El segundo elemento es el voto
+            votosDTO.add(votoDTO);
         }
 
-        return votos;
+        return votosDTO;
     }
-
 }
