@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class VotacionPlanchaService {
@@ -67,15 +68,15 @@ public class VotacionPlanchaService {
 
     public List<VotoDTO> obtenerVotosPorComiteYPersona(Integer idPersona) {
         List<Object[]> resultados = votacionPlanchaRepository.obtenerVotosPorComiteYPersona(idPersona);
-        List<VotoDTO> votosDTO = new ArrayList<>();
 
-        for (Object[] resultado : resultados) {
-            VotoDTO votoDTO = new VotoDTO();
-            votoDTO.setDescComite((String) resultado[0]); // El primer elemento es desc_comite
-            votoDTO.setVoto((Integer) resultado[1]); // El segundo elemento es el voto
-            votosDTO.add(votoDTO);
-        }
+        // Mapear los resultados a instancias de VotoDTO
+        List<VotoDTO> votosDTOList = resultados.stream()
+                .map(resultado -> new VotoDTO(
+                        (String) resultado[0], // DescComite
+                        ((Number) resultado[1]).intValue() // Voto convertido a Integer
+                ))
+                .collect(Collectors.toList());
 
-        return votosDTO;
+        return votosDTOList;
     }
 }

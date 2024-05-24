@@ -31,8 +31,9 @@ public class VotacionPlanchaController {
     }
 
     @GetMapping("/{idPersona}")
-    public List<VotoDTO> obtenerVotosPorComiteYPersona(@PathVariable Integer idPersona) {
-        return votacionPlanchaService.obtenerVotosPorComiteYPersona(idPersona);
+    public ResponseEntity<List<VotoDTO>> obtenerVotosPorComiteYPersona(@PathVariable Integer idPersona) {
+        List<VotoDTO> votos = votacionPlanchaService.obtenerVotosPorComiteYPersona(idPersona);
+        return new ResponseEntity<>(votos, HttpStatus.OK);
     }
 
 }
