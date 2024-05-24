@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -31,9 +32,14 @@ public class VotacionPlanchaController {
     }
 
     @GetMapping("/{idPersona}")
-    public ResponseEntity<List<VotoDTO>> obtenerVotosPorComiteYPersona(@PathVariable Integer idPersona) {
+    public ResponseEntity<Map<String, String>> obtenerVotosPorComiteYPersona(@PathVariable Integer idPersona) {
         List<VotoDTO> votos = votacionPlanchaService.obtenerVotosPorComiteYPersona(idPersona);
-        return new ResponseEntity<>(votos, HttpStatus.OK);
+
+        // Convertir la lista de VotoDTO a un Map<String, Integer>
+        Map<String, String> votosMap = votos.stream()
+                .collect(Collectors.toMap(VotoDTO::getDescComite, VotoDTO::getVoto));
+
+        return new ResponseEntity<>(votosMap, HttpStatus.OK);
     }
 
 }

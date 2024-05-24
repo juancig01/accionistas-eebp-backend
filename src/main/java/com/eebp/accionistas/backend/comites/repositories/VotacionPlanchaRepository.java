@@ -28,7 +28,7 @@ public interface VotacionPlanchaRepository extends JpaRepository<VotacionPlancha
     @Query(value =
             "SELECT " +
                     "    c.desc_comite, " +
-                    "    CASE WHEN vpvotos.votos > 0 THEN TRUE ELSE FALSE END AS voto " +
+                    "    CASE WHEN vpvotos.votos IS NOT NULL THEN 'SI' ELSE 'NO' END AS voto  " +
                     "FROM " +
                     "    comites c " +
                     "LEFT JOIN ( " +

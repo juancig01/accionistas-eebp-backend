@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class VotoDTO {
 
     private String descComite;
-    private Integer voto;
+    private String voto;
     //String getDescComite();
     //int getVoto();
 }

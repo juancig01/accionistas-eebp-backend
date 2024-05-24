@@ -73,7 +73,7 @@ public class VotacionPlanchaService {
         List<VotoDTO> votosDTOList = resultados.stream()
                 .map(resultado -> new VotoDTO(
                         (String) resultado[0], // DescComite
-                        ((Number) resultado[1]).intValue() // Voto convertido a Integer
+                        ((String) resultado[1]) // Voto convertido a Integer
                 ))
                 .collect(Collectors.toList());
 
