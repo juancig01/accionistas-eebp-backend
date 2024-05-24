@@ -3,6 +3,7 @@ package com.eebp.accionistas.backend.comites.repositories;
 import com.eebp.accionistas.backend.comites.entities.VotacionPlancha;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -22,4 +23,28 @@ public interface VotacionPlanchaRepository extends JpaRepository<VotacionPlancha
             "GROUP BY c.desc_comite, vp.id_comite, vp.id_plancha, p_principal.COD_USUARIO, p_principal.nomPri, p_principal.nomSeg, p_principal.apePri, p_principal.apeSeg, " +
             "p_suplente.COD_USUARIO, p_suplente.nomPri, p_suplente.nomSeg, p_suplente.apePri, p_suplente.apeSeg", nativeQuery = true)
     List<Object[]> obtenerVotosPorComiteYPlancha();
+
+    @Query(value =
+            "SELECT " +
+                    "    c.desc_comite, " +
+                    "    CASE WHEN vpvotos.votos > 0 THEN TRUE ELSE FALSE END AS voto " +
+                    "FROM " +
+                    "    comites c " +
+                    "LEFT JOIN ( " +
+                    "    SELECT " +
+                    "        id_comite, " +
+                    "        COUNT(*) AS votos " +
+                    "    FROM " +
+                    "        votacion_planchas " +
+                    "    WHERE " +
+                    "        id_persona = :idPersona " +
+                    "    GROUP BY " +
+                    "        id_comite " +
+                    ") AS vpvotos ON c.id_comite = vpvotos.id_comite " +
+                    "WHERE " +
+                    "    c.id_comite IN (1, 5) " +
+                    "ORDER BY " +
+                    "    c.id_comite", nativeQuery = true)
+    List<Object[]> obtenerVotosPorComiteYPersona(@Param("idPersona") Integer idPersona);
+
 }

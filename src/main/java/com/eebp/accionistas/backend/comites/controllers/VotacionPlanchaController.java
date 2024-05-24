@@ -28,4 +28,9 @@ public class VotacionPlanchaController {
         Map<String, List<Map<String, Object>>> votos = votacionPlanchaService.obtenerVotosPorComiteYPlancha();
         return ResponseEntity.ok(votos);
     }
+
+    @GetMapping("/{idPersona}")
+    public Map<String, Boolean> obtenerVotosPorComiteYPersona(@PathVariable Integer idPersona) {
+        return votacionPlanchaService.obtenerVotosPorComiteYPersona(idPersona);
+    }
 }

@@ -48,4 +48,22 @@ public class VotacionPlanchaService {
         return resultadosFinales;
     }
 
+    public Map<String, Boolean> obtenerVotosPorComiteYPersona(Integer idPersona) {
+        Map<String, Boolean> resultadosFinales = new LinkedHashMap<>();
+
+        // Ejecutar la consulta SQL y obtener los resultados
+        List<Object[]> resultados = votacionPlanchaRepository.obtenerVotosPorComiteYPersona(idPersona);
+
+        // Procesar los resultados y formatearlos según el formato deseado
+        for (Object[] resultado : resultados) {
+            String descComite = (String) resultado[0];
+            Integer votoInteger = (Integer) resultado[1];
+            Boolean voto = votoInteger == 1; // Convertir 1 a true, 0 a false
+            resultadosFinales.put(descComite, voto);
+        }
+
+        // Devolver el resultado formateado
+        return resultadosFinales;
+    }
+
 }
