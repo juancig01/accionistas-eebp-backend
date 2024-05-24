@@ -33,4 +33,5 @@ public class VotacionPlanchaController {
     public Map<String, Boolean> obtenerVotosPorComiteYPersona(@PathVariable Integer idPersona) {
         return votacionPlanchaService.obtenerVotosPorComiteYPersona(idPersona);
     }
+
 }
