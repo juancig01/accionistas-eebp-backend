@@ -71,6 +71,7 @@ public class VotacionPlanchaService {
 
         for (Object[] resultado : resultados) {
             String descComite = (String) resultado[0];
+            System.out.println("-->" + resultado[1]);
             Integer votoInteger = (Integer) resultado[1];
             Boolean voto = votoInteger == 1;
             resultadosFinales.put(descComite, voto);
