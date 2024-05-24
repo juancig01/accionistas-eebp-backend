@@ -1,6 +1,7 @@
 package com.eebp.accionistas.backend.comites.controllers;
 
 import com.eebp.accionistas.backend.comites.entities.VotacionPlancha;
+import com.eebp.accionistas.backend.comites.entities.VotoDTO;
 import com.eebp.accionistas.backend.comites.services.VotacionPlanchaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class VotacionPlanchaController {
     }
 
     @GetMapping("/{idPersona}")
-    public Map<String, Boolean> obtenerVotosPorComiteYPersona(@PathVariable Integer idPersona) {
+    public List<VotoDTO> obtenerVotosPorComiteYPersona(@PathVariable Integer idPersona) {
         return votacionPlanchaService.obtenerVotosPorComiteYPersona(idPersona);
     }
 

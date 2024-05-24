@@ -1,6 +1,7 @@
 package com.eebp.accionistas.backend.comites.services;
 
 import com.eebp.accionistas.backend.comites.entities.VotacionPlancha;
+import com.eebp.accionistas.backend.comites.entities.VotoDTO;
 import com.eebp.accionistas.backend.comites.repositories.VotacionPlanchaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,21 +65,19 @@ public class VotacionPlanchaService {
         return input.substring(0, 1).toUpperCase() + input.substring(1);
     }
 
-    public Map<String, Boolean> obtenerVotosPorComiteYPersona(Integer idPersona) {
-        Map<String, Boolean> resultadosFinales = new LinkedHashMap<>();
-
+    public List<VotoDTO> obtenerVotosPorComiteYPersona(Integer idPersona) {
         List<Object[]> resultados = votacionPlanchaRepository.obtenerVotosPorComiteYPersona(idPersona);
+        List<VotoDTO> votos = new ArrayList<>();
 
         for (Object[] resultado : resultados) {
             String descComite = (String) resultado[0];
-            System.out.println("-->" + resultado[1]);
             Integer votoInteger = (Integer) resultado[1];
             Boolean voto = votoInteger == 1;
-            resultadosFinales.put(descComite, voto);
+            VotoDTO votoDTO = new VotoDTO(descComite, voto);
+            votos.add(votoDTO);
         }
 
-        return resultadosFinales;
+        return votos;
     }
-
 
 }

@@ -1,6 +1,7 @@
 package com.eebp.accionistas.backend.comites.repositories;
 
 import com.eebp.accionistas.backend.comites.entities.VotacionPlancha;
+import com.eebp.accionistas.backend.comites.entities.VotoDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -45,6 +46,6 @@ public interface VotacionPlanchaRepository extends JpaRepository<VotacionPlancha
                     "    c.id_comite IN (1, 5) " +
                     "ORDER BY " +
                     "    c.id_comite", nativeQuery = true)
-    List<Object[]> obtenerVotosPorComiteYPersona(@Param("idPersona") Integer idPersona);
+    List<Object[]> obtenerVotosPorComiteYPersona(Integer idPersona);
 
 }
