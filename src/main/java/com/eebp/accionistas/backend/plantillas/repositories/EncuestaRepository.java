@@ -36,14 +36,25 @@ public interface EncuestaRepository extends JpaRepository<Encuesta, Integer> {
             "WHERE p.COD_USUARIO = :codUsuario", nativeQuery = true)
     List<Object[]> obtenerRespuestasPorUsuario(@Param("codUsuario") Integer codUsuario);
 
-    @Query(value = "SELECT e.id_encuesta, e.nombre_encuesta, t.id_tema, t.desc_tema, p.id_pregunta, p.pregunta, p.tipo_pregunta, COALESCE(r.id_opc_respuesta, NULL) AS respuestaAccionista " +
+    @Query(value = "SELECT e.id_encuesta, " +
+            "e.nombre_encuesta, " +
+            "t.id_tema, " +
+            "t.desc_tema, " +
+            "p.id_pregunta, " +
+            "p.pregunta, " +
+            "p.tipo_pregunta, " +
+            "COALESCE(r.id_opc_respuesta, NULL) AS respuestaAccionista " +
             "FROM encuesta e " +
+            "JOIN asamblea a ON e.id_asamblea = a.consecutivo " +
             "JOIN encuesta_tema et ON e.id_encuesta = et.id_encuesta " +
             "JOIN temas t ON et.id_tema = t.id_tema " +
             "JOIN preguntas p ON e.id_encuesta = p.id_encuesta AND t.id_tema = p.id_tema " +
             "LEFT JOIN respuestas r ON p.id_pregunta = r.id_pregunta AND r.id_persona = :idPersona " +
-            "ORDER BY t.desc_tema, p.id_pregunta", nativeQuery = true)
+            "WHERE a.consecutivo = (SELECT MAX(a2.consecutivo) FROM asamblea a2) " +
+            "ORDER BY t.desc_tema, p.id_pregunta",
+            nativeQuery = true)
     List<Object[]> obtenerPreguntasEncuestas(@Param("idPersona") Integer idPersona);
+
 
     @Query(value = "SELECT p.id_pregunta, " +
             "p.tipo_pregunta AS tipoRespuesta, " +

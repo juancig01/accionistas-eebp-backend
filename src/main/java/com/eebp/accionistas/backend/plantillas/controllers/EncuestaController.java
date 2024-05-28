@@ -59,8 +59,29 @@ public class EncuestaController {
     }
 
     @GetMapping("/asignada/{idPersona}")
-    public ResponseEntity<Map<String, List<Map<String, Object>>>> obtenerEncuestasYRespuestas(@PathVariable Integer idPersona) {
+    public ResponseEntity<?> obtenerEncuestasYRespuestas(@PathVariable Integer idPersona) {
         Map<String, List<Map<String, Object>>> resultado = encuestaService.obtenerEncuestasYRespuestas(idPersona);
-        return ResponseEntity.ok(resultado);
+
+        boolean todasRespuestasNulas = true;
+        for (List<Map<String, Object>> preguntasTema : resultado.values()) {
+            for (Map<String, Object> pregunta : preguntasTema) {
+                if (pregunta.get("respuestaAccionista") != null) {
+                    todasRespuestasNulas = false;
+                    break;
+                }
+            }
+            if (!todasRespuestasNulas) {
+                break;
+            }
+        }
+
+        if (todasRespuestasNulas) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("message", "No hay respuestas del accionista");
+            errorResponse.put("status", 400);
+            return ResponseEntity.badRequest().body(errorResponse);
+        } else {
+            return ResponseEntity.ok(resultado);
+        }
     }
 }
