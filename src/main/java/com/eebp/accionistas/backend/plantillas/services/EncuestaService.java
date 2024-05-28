@@ -1,5 +1,6 @@
 package com.eebp.accionistas.backend.plantillas.services;
 
+import com.eebp.accionistas.backend.asamblea.entities.Asamblea;
 import com.eebp.accionistas.backend.asamblea.services.AsambleaService;
 import com.eebp.accionistas.backend.plantillas.entities.EncuestTemasDTO;
 import com.eebp.accionistas.backend.plantillas.entities.Encuesta;
@@ -52,6 +53,17 @@ public class EncuestaService {
         return encuestaRepository.save(encuesta);
     }
 
+    public Integer getConsecutivoEncuesta() {
+        List<Encuesta> encuestas = encuestaRepository.findAll();
+        System.out.println(encuestas);
+        if (!encuestas.isEmpty()) {
+            Encuesta ultimaEncuesta = encuestas.get(encuestas.size() - 1);
+            return ultimaEncuesta.getIdEncuesta();
+        } else {
+            return null;
+        }
+    }
+
     public List<EncuestTemasDTO> getEncuestasDTOByAsambleaId(Integer asambleaId) {
         List<Object[]> encuestasAndTemas = encuestaRepository.findEncuestasAndTemasByAsambleaId(asambleaId);
 
@@ -71,12 +83,14 @@ public class EncuestaService {
             return encuestaDTO;
         }).collect(Collectors.toList());
     }
-
+/*
     public Map<String, List<Map<String, Object>>> obtenerPreguntasPorAsambleaFormateadas(Integer consecutivoAsamblea) {
         List<Object[]> resultados = encuestaRepository.obtenerPreguntasPorAsamblea(consecutivoAsamblea);
         return procesarPreguntasPorAsamblea(resultados);
     }
+*/
 
+    /*
     public Map<String, List<Map<String, Object>>> procesarPreguntasPorAsamblea(List<Object[]> resultados) {
         Map<String, List<Map<String, Object>>> preguntasPorTema = new LinkedHashMap<>();
 
@@ -108,13 +122,15 @@ public class EncuestaService {
 
         return preguntasPorTema;
     }
+*/
 
+    /*
     // Método para obtener las opciones de respuesta por ID de pregunta
     private Map<String, List<Map<String, Object>>> obtenerOpcionesRespuestaPorIdPregunta(Integer idPregunta) {
         return preguntasService.obtenerOpcionesPorIdPregunta(idPregunta);
     }
 
-
+*/
     public Map<String, List<Map<String, Object>>> obtenerEncuestasYRespuestas(Integer idPersona) {
         Map<String, List<Map<String, Object>>> resultado = new HashMap<>();
 

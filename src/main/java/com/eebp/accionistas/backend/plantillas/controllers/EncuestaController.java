@@ -26,6 +26,14 @@ public class EncuestaController {
         return ResponseEntity.ok(encuesta);
     }
 
+    @GetMapping("/consecutivo")
+    public Map<String, Integer> getConsecutivoEncuesta() {
+        Integer ultimoConsecutivo = encuestaService.getConsecutivoEncuesta();
+        Map<String, Integer> response = new HashMap<>();
+        response.put("ultimoConsecutivo", ultimoConsecutivo);
+        return response;
+    }
+
     @GetMapping("/{idAsamblea}")
     public ResponseEntity<?> getEncuestasByAsamblea(@PathVariable Integer idAsamblea) {
         List<EncuestTemasDTO> encuestas = encuestaService.getEncuestasDTOByAsambleaId(idAsamblea);
