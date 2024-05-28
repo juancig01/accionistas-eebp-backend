@@ -38,10 +38,16 @@ public class EncuestaController {
             return ResponseEntity.ok(encuestas);
         }
     }
-
+/*
     @GetMapping("/resumen/{consecutivoAsamblea}")
     public Map<String, List<Map<String, Object>>> obtenerPreguntasPorAsamblea(@PathVariable Integer consecutivoAsamblea) {
         return encuestaService.obtenerPreguntasPorAsambleaFormateadas(consecutivoAsamblea);
+    }
+*/
+
+    @GetMapping("/resumen/{consecutivoAsamblea}")
+    public Map<String, List<Map<String, Object>>> obtenerPreguntasPorAsambleas(@PathVariable Integer consecutivoAsamblea) {
+        return encuestaService.obtenerEncuestasYRespuestasAsamblea(consecutivoAsamblea);
     }
 
     @GetMapping("/asignada/{idPersona}")

@@ -176,4 +176,55 @@ public class EncuestaService {
         }
         return camelCase.toString();
     }
+
+    public Map<String, List<Map<String, Object>>> obtenerEncuestasYRespuestasAsamblea(Integer consecutivoAsamblea) {
+        Map<String, List<Map<String, Object>>> resultado = new LinkedHashMap<>();
+        Set<Integer> preguntasProcesadas = new HashSet<>();
+
+        // Obtener preguntas y encuestas por asamblea
+        List<Object[]> preguntasEncuestas = encuestaRepository.obtenerPreguntasEncuestasAsamblea(consecutivoAsamblea);
+
+        // Obtener opciones de respuesta por asamblea
+        List<Object[]> opcionesRespuestas = encuestaRepository.obtenerOpcionesRespuestasAsamblea(consecutivoAsamblea);
+
+        // Procesar preguntas y encuestas
+        for (Object[] pregunta : preguntasEncuestas) {
+            String tema = convertirCamelCase((String) pregunta[4]); // Nombre del tema
+            Integer idPregunta = (Integer) pregunta[5];
+
+            // Verificar si ya hemos procesado esta pregunta
+            if (preguntasProcesadas.contains(idPregunta)) {
+                continue; // Omitir preguntas duplicadas
+            }
+
+            List<Map<String, Object>> preguntasTema = resultado.computeIfAbsent(tema, k -> new ArrayList<>());
+
+            Map<String, Object> preguntaMap = new LinkedHashMap<>(); // LinkedHashMap conserva el orden de inserción
+            preguntaMap.put("id", idPregunta); // Id de la pregunta
+            preguntaMap.put("tipoRespuesta", pregunta[7]); // Tipo de respuesta
+            preguntaMap.put("pregunta", pregunta[6]); // Texto de la pregunta
+            preguntaMap.put("opcionesRespuesta", new ArrayList<>());
+
+            // Agregar opciones de respuesta para esta pregunta
+            for (Object[] opcion : opcionesRespuestas) {
+                if (opcion[2].equals(idPregunta)) {
+                    Map<String, Object> opcionMap = new LinkedHashMap<>();
+                    opcionMap.put("idOpcRespuesta", opcion[0]); // Id de la opción de respuesta
+                    opcionMap.put("opcRespuesta", opcion[1]); // Texto de la opción de respuesta
+                    ((List<Map<String, Object>>) preguntaMap.get("opcionesRespuesta")).add(opcionMap);
+                }
+            }
+
+            // Agregar la respuesta del accionista si existe
+            preguntaMap.put("respuestaAccionista", pregunta.length > 8 ? pregunta[8] : null);
+
+            preguntasTema.add(preguntaMap);
+            preguntasProcesadas.add(idPregunta); // Marcar la pregunta como procesada
+        }
+
+        return resultado;
+    }
+
+
+
 }

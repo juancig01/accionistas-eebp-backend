@@ -69,11 +69,11 @@ public class VotacionPlanchaService {
     public List<VotoDTO> obtenerVotosPorComiteYPersona(Integer idPersona) {
         List<Object[]> resultados = votacionPlanchaRepository.obtenerVotosPorComiteYPersona(idPersona);
 
-        // Mapear los resultados a instancias de VotoDTO
+        // Mapeo de resultados a instancias de VotoDTO
         List<VotoDTO> votosDTOList = resultados.stream()
                 .map(resultado -> new VotoDTO(
-                        toCamelCase((String) resultado[0]), // DescComite convertido a camelCase
-                        (String) resultado[1] // Voto
+                        toCamelCase((String) resultado[0]),
+                        (String) resultado[1]
                 ))
                 .collect(Collectors.toList());
 

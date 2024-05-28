@@ -56,5 +56,26 @@ public interface EncuestaRepository extends JpaRepository<Encuesta, Integer> {
             "ORDER BY p.id_pregunta, o.id_opc_respuesta", nativeQuery = true)
     List<Object[]> obtenerOpcionesRespuestas(@Param("idPersona") Integer idPersona);
 
+    @Query(value = "SELECT a.consecutivo AS idAsamblea, e.id_encuesta, e.nombre_encuesta, t.id_tema, t.desc_tema, p.id_pregunta, p.pregunta, p.tipo_pregunta " +
+            "FROM asamblea a " +
+            "JOIN encuesta e ON a.consecutivo = e.id_asamblea " +
+            "JOIN encuesta_tema et ON e.id_encuesta = et.id_encuesta " +
+            "JOIN temas t ON et.id_tema = t.id_tema " +
+            "JOIN preguntas p ON e.id_encuesta = p.id_encuesta AND p.id_tema = t.id_tema " +
+            "LEFT JOIN respuestas r ON p.id_pregunta = r.id_pregunta " +
+            "WHERE a.consecutivo = :consecutivoAsamblea " +
+            "ORDER BY t.desc_tema, p.id_pregunta", nativeQuery = true)
+    List<Object[]> obtenerPreguntasEncuestasAsamblea(@Param("consecutivoAsamblea") Integer consecutivoAsamblea);
+
+    @Query(value = "SELECT o.id_opc_respuesta, o.opcion_respuesta AS opcRespuesta, p.id_pregunta, p.tipo_pregunta AS tipoRespuesta " +
+            "FROM opciones_respuesta o " +
+            "JOIN preguntas p ON o.id_pregunta = p.id_pregunta " +
+            "JOIN encuesta e ON p.id_encuesta = e.id_encuesta " +
+            "JOIN asamblea a ON e.id_asamblea = a.consecutivo " +
+            "WHERE a.consecutivo = :consecutivoAsamblea " +
+            "ORDER BY p.id_pregunta, o.id_opc_respuesta", nativeQuery = true)
+    List<Object[]> obtenerOpcionesRespuestasAsamblea(@Param("consecutivoAsamblea") Integer consecutivoAsamblea);
+
+
 }
 
