@@ -78,6 +78,11 @@ public class AccionistaController {
         return accionistaService.getAccionistas();
     }
 
+    @GetMapping("/apoderados")
+    public List<AccionistaRepresentanteResponse> getAccionistasTipoTres() throws UserNotFoundException {
+        return accionistaService.getAccionistasTipoTres();
+    }
+
     @GetMapping("/{codUsuario}")
     public Accionista getAccionista(@PathVariable String codUsuario) {
         return accionistaService.getAccionista(codUsuario).get();

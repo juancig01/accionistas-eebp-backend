@@ -362,6 +362,42 @@ public class AccionistaService {
                         .nomAccionista(pAccionista.getNomPri() + " " + pAccionista.getNomSeg() + " " + pAccionista.getApePri() + " " + pAccionista.getApeSeg())
                         .nomRepresentante(pRepresentante.getNomPri() + " " + pRepresentante.getNomSeg() + " " + pRepresentante.getApePri() + " " + pRepresentante.getApeSeg())
                         .codAccionista(accionista.getCodUsuario())
+                        .tipoAccionista(accionista.getTipoAccionista())
+                        .codRepresentante(pRepresentante.getCodUsuario())
+                        .esAccionista("S")
+                        .tipoDocAccionista(pAccionista.getTipDocumento())
+                        .tipoDocRepresentante(pRepresentante.getTipDocumento())
+                        .build());
+            }
+        }
+        return lista;
+    }
+
+    public List<AccionistaRepresentanteResponse> getAccionistasTipoTres() throws UserNotFoundException {
+        List<AccionistaRepresentanteResponse> lista = new ArrayList<>();
+        List<Accionista> accionistas = accionistaRepository.findAll();
+        for (Accionista accionista : accionistas) {
+            Persona pRepresentante = Persona.builder().build();
+            if (accionista.getCodRepresentante() == null) {
+                pRepresentante = personaService.getPersona(accionista.getCodUsuario()).get();
+            } else {
+                pRepresentante = personaService.getPersona(accionista.getCodRepresentante()).get();
+            }
+            Persona pAccionista = personaService.getPersona(accionista.getCodUsuario()).get();
+            if (pAccionista.getNomPri() == null) {
+                pAccionista.setNomPri(pAccionista.getRazonSocial());
+                pAccionista.setNomSeg("");
+                pAccionista.setApePri("");
+                pAccionista.setApeSeg("");
+            }
+
+            // Agregar esta condición
+            if ("S".equals(accionista.getAprobado()) && accionista.getTipoAccionista() == 3) {
+                lista.add(AccionistaRepresentanteResponse.builder()
+                        .nomAccionista(pAccionista.getNomPri() + " " + pAccionista.getNomSeg() + " " + pAccionista.getApePri() + " " + pAccionista.getApeSeg())
+                        .nomRepresentante(pRepresentante.getNomPri() + " " + pRepresentante.getNomSeg() + " " + pRepresentante.getApePri() + " " + pRepresentante.getApeSeg())
+                        .codAccionista(accionista.getCodUsuario())
+                        .tipoAccionista(accionista.getTipoAccionista())
                         .codRepresentante(pRepresentante.getCodUsuario())
                         .esAccionista("S")
                         .tipoDocAccionista(pAccionista.getTipDocumento())
