@@ -134,24 +134,29 @@ public class PoderService {
 
         Set<ApoderadosDTO.ApoderadoDTO> apoderadosUnicos = new HashSet<>();
         List<ApoderadosDTO.PoderdanteDTO> poderdantes = new ArrayList<>();
+        boolean existeValidacionSI = false;
 
         for (Object[] resultado : resultados) {
-            String idApoderado = (String) resultado[3]; // ra.ide_per
-            String nombreApoderado = (String) resultado[5]; // nombreApoderado
-
-            String idPoderdante = (String) resultado[4]; // p.id_poderdante
+            String idApoderado = (String) resultado[3]; // ra.ide_Per
+            String nombreApoderado = (String) resultado[4]; // nombreApoderado
+            String idPoderdante = (String) resultado[5]; // p.id_Poderdante
             String nombrePoderdante = (String) resultado[6]; // nombrePoderdante
+            String validacion = (String) resultado[7]; // validacion
 
             if (idApoderado != null && nombreApoderado != null) {
                 apoderadosUnicos.add(new ApoderadosDTO.ApoderadoDTO(idApoderado, nombreApoderado));
             }
 
             if (idPoderdante != null && nombrePoderdante != null) {
-                poderdantes.add(new ApoderadosDTO.PoderdanteDTO(idPoderdante, nombrePoderdante));
+                poderdantes.add(new ApoderadosDTO.PoderdanteDTO(idPoderdante, nombrePoderdante, validacion));
+                if (validacion.equalsIgnoreCase("SI")) {
+                    existeValidacionSI = true;
+                }
             }
         }
 
-        return new ApoderadosDTO(new ArrayList<>(apoderadosUnicos), poderdantes);
+        String validacionBloque = existeValidacionSI ? "SI" : "NO";
+        return new ApoderadosDTO(new ArrayList<>(apoderadosUnicos), poderdantes, validacionBloque);
     }
 
 }

@@ -1,5 +1,10 @@
 package com.eebp.accionistas.backend.votaciones.services;
 
+import com.eebp.accionistas.backend.accionistas.entities.Accionista;
+import com.eebp.accionistas.backend.accionistas.services.AccionistaService;
+import com.eebp.accionistas.backend.plantillas.entities.Preguntas;
+import com.eebp.accionistas.backend.plantillas.services.PreguntasService;
+import com.eebp.accionistas.backend.votaciones.entities.AccionistaNoPermitidoException;
 import com.eebp.accionistas.backend.votaciones.entities.Respuestas;
 import com.eebp.accionistas.backend.votaciones.repositories.RespuestasRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,33 +18,59 @@ public class RespuestasService {
     @Autowired
     RespuestasRepository respuestasRepository;
 
+    @Autowired
+    AccionistaService accionistaService;
+
+    @Autowired
+    PreguntasService preguntasService;
+
     public void guardarRespuestas(Map<String, List<Map<String, Object>>> datosRespuestas, List<String> votantes) {
         for (Map.Entry<String, List<Map<String, Object>>> entry : datosRespuestas.entrySet()) {
             for (Map<String, Object> pregunta : entry.getValue()) {
                 Integer idPregunta = (Integer) pregunta.get("id");
                 Integer idOpcRespuesta = (Integer) pregunta.get("respuestaAccionista");
 
+                Optional<Preguntas> preguntaEntity = preguntasService.getPregunta(idPregunta);
+
                 // Verificar si la respuesta ya fue registrada para esta pregunta
                 boolean respuestaRegistrada = respuestaRegistrada(idPregunta, votantes);
 
-                if (!respuestaRegistrada) {
-                    // Si la respuesta no fue registrada, se crean nuevos registros
-                    for (String votante : votantes) {
-                        Respuestas respuesta = new Respuestas();
-                        respuesta.setIdPregunta(idPregunta);
-                        respuesta.setIdPersona(votante);
-                        respuesta.setIdOpcRespuesta(idOpcRespuesta);
+                for (String votante : votantes) {
+                    // Obtener el accionista correspondiente al votante
+                    Optional<Accionista> accionistaOptional = accionistaService.getAccionista(votante);
 
-                        respuestasRepository.save(respuesta);
-                    }
-                } else {
-                    // Si la respuesta ya fue registrada, se actualizan los registros existentes
-                    for (String votante : votantes) {
-                        Respuestas respuestaExistente = respuestasRepository.findByIdPreguntaAndIdPersona(idPregunta, votante);
-                        if (respuestaExistente != null) {
-                            respuestaExistente.setIdOpcRespuesta(idOpcRespuesta);
-                            respuestasRepository.save(respuestaExistente);
+                    if (accionistaOptional.isPresent()) {
+                        Accionista accionista = accionistaOptional.get();
+                        int tipoAccionista = accionista.getTipoAccionista();
+
+                        if (preguntaEntity.get().getIdTema() == 4) {
+
+                            // Verificar si el tipoAccionista es 1 o 2
+                            if (tipoAccionista == 1 || tipoAccionista == 2) {
+                                // Generar un error o registrar un mensaje de advertenci
+                                System.out.println("El accionista de tipo " + tipoAccionista + " no puede registrar su voto.");
+                                continue; // Saltar al siguiente votante
+                            }
                         }
+
+                        if (!respuestaRegistrada) {
+                            // Si la respuesta no fue registrada, se crea un nuevo registro
+                            Respuestas respuesta = new Respuestas();
+                            respuesta.setIdPregunta(idPregunta);
+                            respuesta.setIdPersona(votante);
+                            respuesta.setIdOpcRespuesta(idOpcRespuesta);
+                            respuestasRepository.save(respuesta);
+                        } else {
+                            // Si la respuesta ya fue registrada, se actualiza el registro existente
+                            Respuestas respuestaExistente = respuestasRepository.findByIdPreguntaAndIdPersona(idPregunta, votante);
+                            if (respuestaExistente != null) {
+                                respuestaExistente.setIdOpcRespuesta(idOpcRespuesta);
+                                respuestasRepository.save(respuestaExistente);
+                            }
+                        }
+                    } else {
+                        // Manejar el caso en el que el accionista no exista
+                        System.out.println("No se encontró el accionista con el código de usuario: " + votante);
                     }
                 }
             }
@@ -60,7 +91,7 @@ public class RespuestasService {
             String pregunta = (String) fila[1];
             Integer idOpcion = (Integer) fila[2];
             String opcion = (String) fila[3];
-            Long numVotos = (Long) fila[4];
+            Number numVotos = (Number) fila[4];
 
             Map<String, Object> preguntaMap = preguntasMap.computeIfAbsent(idPregunta, k -> new LinkedHashMap<>());
             preguntaMap.put("idPregunta", idPregunta);
@@ -70,7 +101,7 @@ public class RespuestasService {
             Map<String, Object> opcionMap = new LinkedHashMap<>();
             opcionMap.put("idOpcion", idOpcion);
             opcionMap.put("opcion", opcion);
-            opcionMap.put("numVotos", numVotos.intValue());
+            opcionMap.put("numVotos", numVotos.longValue());
             opciones.add(opcionMap);
         }
 

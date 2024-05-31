@@ -13,6 +13,7 @@ public class ApoderadosDTO {
 
     private List<ApoderadoDTO> apoderado;
     private List<PoderdanteDTO> poderDantes;
+    String validacionBloque;
 
     // Getters y setters
     @Data
@@ -30,6 +31,7 @@ public class ApoderadosDTO {
     public static class PoderdanteDTO {
         private String codUsuario;
         private String nombres;
+        private String validacion;
 
         // Getters y setters
     }

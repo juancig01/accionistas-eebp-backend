@@ -1,6 +1,5 @@
 package com.eebp.accionistas.backend.plantillas.controllers;
 
-import com.eebp.accionistas.backend.plantillas.entities.OpcionesRespuesta;
 import com.eebp.accionistas.backend.plantillas.entities.PreguntaDTO;
 import com.eebp.accionistas.backend.plantillas.entities.Preguntas;
 import com.eebp.accionistas.backend.plantillas.services.PreguntasService;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -20,6 +20,11 @@ public class PreguntasController {
 
     @Autowired
     PreguntasService preguntasService;
+
+    @GetMapping("/pregunta/{id}")
+    public Optional<Preguntas> getPregunta(@PathVariable Integer id) {
+        return preguntasService.getPregunta(id);
+    }
 
     @PostMapping("/guardarPregunta")
     public ResponseEntity<Map<String, Object>> guardarPregunta(@RequestBody PreguntaDTO request) {

@@ -72,6 +72,7 @@ public class SecurityConfiguration {
                                 "/api/encuesta/*",
                                 "/api/encuesta/asignada/*",
                                 "/api/encuesta/resumen/*",
+                                "/api/encuesta/pregunta/*",
                                 "/api/respuestas/*",
                                 "/api/respuestas/encuesta/*",
                                 "/api/plancha/*",

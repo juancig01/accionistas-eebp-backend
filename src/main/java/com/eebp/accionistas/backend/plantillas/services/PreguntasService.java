@@ -1,5 +1,6 @@
 package com.eebp.accionistas.backend.plantillas.services;
 
+import com.eebp.accionistas.backend.accionistas.entities.Accionista;
 import com.eebp.accionistas.backend.plantillas.entities.OpcionesRespuesta;
 import com.eebp.accionistas.backend.plantillas.entities.PreguntaDTO;
 import com.eebp.accionistas.backend.plantillas.entities.Preguntas;
@@ -8,10 +9,7 @@ import com.eebp.accionistas.backend.plantillas.repositories.PreguntasRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +37,10 @@ public class PreguntasService {
             opcionRespuesta.setPreguntas(pregunta);
             opcionesRespuestasRepository.save(opcionRespuesta);
         }
+    }
+
+    public Optional<Preguntas> getPregunta(Integer id) {
+        return preguntasRepository.findById(id);
     }
 
 
