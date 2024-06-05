@@ -2,6 +2,7 @@ package com.eebp.accionistas.backend.acciones.controllers;
 
 import com.eebp.accionistas.backend.acciones.entities.Titulo;
 import com.eebp.accionistas.backend.acciones.services.TituloService;
+import com.eebp.accionistas.backend.seguridad.entities.Asset;
 import com.eebp.accionistas.backend.transacciones.entities.Transaccion;
 import com.eebp.accionistas.backend.transacciones.entities.TransaccionDatos;
 import com.eebp.accionistas.backend.transacciones.entities.TransaccionTitulo;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -27,6 +29,11 @@ public class TitulosController {
     @GetMapping("/{id}")
     public Optional<Titulo> findTituloById(@PathVariable Integer id) {
         return tituloService.findTituloById(id);
+    }
+
+    @GetMapping("/reportes")
+    public Map<String, List<Asset>> getFilesTitulos() {
+        return tituloService.getFilesTitulos();
     }
 
     @PostMapping

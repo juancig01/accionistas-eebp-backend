@@ -230,6 +230,59 @@ public class TransaccionService {
             emailService.sendSimpleMail(emailDetails);
 
         }
+        if (transaccion.getIntencionCompra().equals(false)){
+            List<Persona> personas = personaService.getPersonas();
+
+            List<Persona> accionistasActivos = personas.stream()
+                    .filter(a -> a.getEsAccionista().equals("S"))
+                    .collect(Collectors.toList());
+
+            String[] correosAccionistas = accionistasActivos.stream()
+                    .map(Persona::getCorreoPersona)
+                    .toArray(String[]::new);
+
+            System.out.println("Correos electrónicos de los accionistas: " + Arrays.toString(correosAccionistas));
+
+            EmailDetails emailDetails = EmailDetails.builder()
+                    .recipient(String.join(", ", correosAccionistas))
+                    .subject("VENTA DE ACCIONES")
+                    .msgBody("<table border=\"0\" cellspacing=\"0\" style=\"border-collapse:collapse; height:147px; width:600px\">\n" +
+                            "\t<tbody>\n" +
+                            "\t\t<tr>\n" +
+                            "\t\t\t<td style=\"height:91px; text-align:center; width:23.5796%\"><img src=\"https://eebpsa.com.co/wp-content/uploads/2020/08/lOGO-2.1.png\" /></td>\n" +
+                            "\t\t\t<td style=\"height:91px; width:67.4766%\">\n" +
+                            "\t\t\t<h3 style=\"text-align:center\"><strong>BIENVENIDO AL SISTEMA DE ACCIONISTAS </strong></h3>\n" +
+                            "\n" +
+                            "\t\t\t<h3 style=\"text-align:center\"><strong>Empresa de Energ&iacute;a del Bajo Putumayo S.A. E.S.P.</strong></h3>\n" +
+                            "\t\t\t</td>\n" +
+                            "\t\t</tr>\n" +
+                            "\t\t<tr>\n" +
+                            "\t\t\t<td colspan=\"2\" style=\"height:10px; text-align:center; width:91.0562%\">\n" +
+                            "\t\t\t<p>&nbsp;</p>\n" +
+                            "\n" +
+                            //"\t\t\t<p style=\"text-align:left\">Se&ntilde;or(a) " + accionistasActivos.get().getNomPri() + " " + accionistasActivos.get().getNomSeg() + " " + accionistasActivos.get().getApePri() +  " " + accionistasActivos.get().getApeSeg()  + ",</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">Queremos informarle que se están ofertando acciones"  +
+                            "\t\t\t</td>\n" +
+                            "\t\t</tr>\n" +
+                            "\t\t<tr>\n" +
+                            "\t\t\t<td colspan=\"2\" style=\"text-align:center; width:91.0562%\">\n" +
+                            "\t\t\t<p style=\"text-align:left\">&nbsp;</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\"><u>En caso de alguna duda, favor contactarse con servicio al cliente.</u></p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">&nbsp;</p>\n" +
+                            "\n" +
+                            "\t\t\t<p style=\"text-align:left\">Acceso al sistema: <a href=\"http://localhost:4200\">http://localhost:4200</a></p>\n" +
+                            "\t\t\t</td>\n" +
+                            "\t\t</tr>\n" +
+                            "\t</tbody>\n" +
+                            "</table>\n" +
+                            "\n" +
+                            "<p><strong>&nbsp;</strong></p>")
+                    .build();
+            emailService.sendSimpleMailArray(emailDetails, correosAccionistas);
+        }
 
         return transaccionRepository.save(transaccion);
     }

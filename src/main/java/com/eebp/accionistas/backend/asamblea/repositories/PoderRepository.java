@@ -33,6 +33,10 @@ public interface PoderRepository extends JpaRepository<Poder, Integer> {
             "Poder pow ON p.codUsuario = pow.idApoderado " +
             "JOIN " +
             "Persona pd ON pow.idPoderdante = pd.codUsuario " +
+            "JOIN " +
+            "Asamblea asmb ON pow.consecutivo = asmb.consecutivo " +  // Cambiado para unirse por consecutivo
+            "WHERE " +
+            "asmb.consecutivo = (SELECT MAX(a.consecutivo) FROM Asamblea a) " +  // Subconsulta para obtener la última asamblea
             "GROUP BY " +
             "pow.consecutivoPoder, " +
             "pd.codUsuario, " +

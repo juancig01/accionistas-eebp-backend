@@ -3,6 +3,7 @@ package com.eebp.accionistas.backend.asamblea.controllers;
 import com.eebp.accionistas.backend.acciones.entities.Titulo;
 import com.eebp.accionistas.backend.asamblea.entities.Asamblea;
 import com.eebp.accionistas.backend.asamblea.services.AsambleaService;
+import com.eebp.accionistas.backend.seguridad.entities.Asset;
 import com.eebp.accionistas.backend.transacciones.entities.Transaccion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,12 @@ public class AsambleaController {
     @GetMapping("/obtener-asambleas")
     public List<Asamblea> getAsambleas() {
         return asambleaService.getAsambleas();
+    }
+
+    @GetMapping("/reportes/{id}")
+    public ResponseEntity<Map<String, List<Asset>>> getReportesAsamblea(@PathVariable Integer id) {
+        Map<String, List<Asset>> reportes = asambleaService.getReportesAsamblea(id);
+        return ResponseEntity.ok(reportes);
     }
 
     @PutMapping("/actualizar")

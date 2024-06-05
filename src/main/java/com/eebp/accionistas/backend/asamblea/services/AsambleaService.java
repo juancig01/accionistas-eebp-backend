@@ -1,6 +1,5 @@
 package com.eebp.accionistas.backend.asamblea.services;
 
-import com.eebp.accionistas.backend.acciones.entities.Titulo;
 import com.eebp.accionistas.backend.accionistas.entities.Persona;
 import com.eebp.accionistas.backend.accionistas.services.AccionistaService;
 import com.eebp.accionistas.backend.accionistas.services.PersonaService;
@@ -14,10 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +32,17 @@ public class AsambleaService {
     private EmailServiceImpl emailService;
 
     public Asamblea addAsamblea(Asamblea asamblea) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate fechaAsamblea = LocalDate.parse(asamblea.getFechaAsamblea(), formatter);
+        String currentYear = String.valueOf(fechaAsamblea.getYear());
+
+        if ("ORDINARIA".equals(asamblea.getTipoAsamblea())) {
+            Optional<Asamblea> existingAsamblea = asambleaRepository.findByTipoAsambleaAndYear("ORDINARIA", currentYear);
+            if (existingAsamblea.isPresent()) {
+                throw new IllegalArgumentException("Ya existe una asamblea de tipo ORDINARIA en el año " + currentYear);
+            }
+        }
         asamblea.setEstado("ACTIVA");
         return asambleaRepository.save(asamblea);
     }
@@ -82,6 +91,40 @@ public class AsambleaService {
             file.setUrl("/assets/images/avatars/" + file.getFileName());
             return file;
         }).collect(Collectors.toList());
+    }
+
+    public Map<String, List<Asset>> getReportesAsamblea(@PathVariable Integer consecutivo) {
+        List<Asset> files = FileUploadUtil.files(String.valueOf(consecutivo), "asamblea").stream().map(file -> {
+            file.setUrl("/assets/images/avatars/" + file.getFileName());
+            return file;
+        }).collect(Collectors.toList());
+
+        Map<String, List<Asset>> result = new LinkedHashMap<>();
+        result.put("actaCierrePostulaciones", new LinkedList<>());
+        result.put("actaReforma", new LinkedList<>());
+        result.put("actaRevisoriaFiscal", new LinkedList<>());
+        result.put("actaPoderes", new LinkedList<>());
+        result.put("actaEscrutinio", new LinkedList<>());
+        result.put("otroAnexo", new LinkedList<>());
+
+        for (Asset file : files) {
+            String fileName = file.getFileName();
+            if (fileName.contains("actaCierrePostulaciones")) {
+                result.get("actaCierrePostulaciones").add(file);
+            } else if (fileName.contains("actaReforma")) {
+                result.get("actaReforma").add(file);
+            } else if (fileName.contains("actaRevisoriaFiscal")) {
+                result.get("actaRevisoriaFiscal").add(file);
+            } else if (fileName.contains("actaPoderes")) {
+                result.get("actaPoderes").add(file);
+            } else if (fileName.contains("actaEscrutinio")) {
+                result.get("actaEscrutinio").add(file);
+            } else {
+                result.get("otroAnexo").add(file);
+            }
+        }
+
+        return result;
     }
 
     public Asamblea sendEmailAccionistas(Integer id) {

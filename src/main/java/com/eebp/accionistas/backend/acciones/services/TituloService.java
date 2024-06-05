@@ -8,8 +8,10 @@ import com.eebp.accionistas.backend.acciones.repositories.TituloPersonaRepositor
 import com.eebp.accionistas.backend.acciones.repositories.TituloRepository;
 import com.eebp.accionistas.backend.accionistas.entities.Persona;
 import com.eebp.accionistas.backend.accionistas.repositories.PersonaRepository;
+import com.eebp.accionistas.backend.seguridad.entities.Asset;
 import com.eebp.accionistas.backend.seguridad.entities.EmailDetails;
 import com.eebp.accionistas.backend.seguridad.services.EmailServiceImpl;
+import com.eebp.accionistas.backend.seguridad.utils.FileUploadUtil;
 import com.eebp.accionistas.backend.transacciones.entities.*;
 import com.eebp.accionistas.backend.transacciones.repositories.TransaccionEstadoRepository;
 import com.eebp.accionistas.backend.transacciones.repositories.TransaccionRepository;
@@ -23,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -33,6 +36,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -65,6 +69,43 @@ public class TituloService {
 
     public Titulo updateTitulo(Titulo titulo) {
         return tituloRepository.save(titulo);
+    }
+
+    public Map<String, List<Asset>> getFilesTitulos() {
+        Integer consecutivo = 0;
+        List<Asset> files = FileUploadUtil.files(String.valueOf(consecutivo), "formatoTitulo").stream()
+                .map(file -> {
+                    file.setUrl("/assets/images/avatars/" + file.getFileName());
+                    return file;
+                })
+                .collect(Collectors.toList());
+
+        Map<String, List<Asset>> result = new LinkedHashMap<>();
+        result.put("formatoDeEndosoIndividual", new ArrayList<>());
+        result.put("formatoDeCompraVentaNatural", new ArrayList<>());
+        result.put("formatoDeCompraVentaMenores", new ArrayList<>());
+        result.put("formatoDeCompraVentaJuridicas", new ArrayList<>());
+        result.put("formatoDeDonacionDeAcciones", new ArrayList<>());
+        result.put("formatoDeSucesionDeAcciones", new ArrayList<>());
+
+        for (Asset file : files) {
+            String fileName = file.getFileName();
+            if (fileName.contains("formatoDeEndosoIndividual")) {
+                result.get("formatoDeEndosoIndividual").add(file);
+            } else if (fileName.contains("formatoCompraVentaNatural")) {
+                result.get("formatoDeCompraVentaNatural").add(file);
+            } else if (fileName.contains("formatoCompraVentaMenores")) {
+                result.get("formatoDeCompraVentaMenores").add(file);
+            } else if (fileName.contains("formatoCompraVentaJuridicas")) {
+                result.get("formatoDeCompraVentaJuridicas").add(file);
+            } else if (fileName.contains("formatoDonacionDeAcciones")) {
+                result.get("formatoDeDonacionDeAcciones").add(file);
+            } else if (fileName.contains("formatoDeSucesionDeAcciones")) {
+                result.get("formatoDeSucesionDeAcciones").add(file);
+            }
+        }
+
+        return result;
     }
 
    /* public void comprarAcciones(List<TransaccionDatos> transaccionesCompra) {
