@@ -1,6 +1,9 @@
 package com.eebp.accionistas.backend.asamblea.services;
 
+import com.eebp.accionistas.backend.acciones.entities.Titulo;
+import com.eebp.accionistas.backend.acciones.entities.TitulosPersona;
 import com.eebp.accionistas.backend.accionistas.entities.Persona;
+import com.eebp.accionistas.backend.accionistas.repositories.PersonaRepository;
 import com.eebp.accionistas.backend.accionistas.services.AccionistaService;
 import com.eebp.accionistas.backend.accionistas.services.PersonaService;
 import com.eebp.accionistas.backend.asamblea.entities.Asamblea;
@@ -9,10 +12,18 @@ import com.eebp.accionistas.backend.seguridad.entities.Asset;
 import com.eebp.accionistas.backend.seguridad.entities.EmailDetails;
 import com.eebp.accionistas.backend.seguridad.services.EmailServiceImpl;
 import com.eebp.accionistas.backend.seguridad.utils.FileUploadUtil;
+import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
+import org.jsoup.Jsoup;
+import org.jsoup.helper.W3CDom;
+import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -23,6 +34,8 @@ public class AsambleaService {
 
     @Autowired
     AsambleaRepository asambleaRepository;
+    @Autowired
+    PersonaRepository personaRepository;
     @Autowired
     AccionistaService accionistaService;
     @Autowired
@@ -191,5 +204,66 @@ public class AsambleaService {
 
 
         return null;
+    }
+
+    public Map<String, List<Asset>> getFormatosActas() {
+        Integer consecutivo = 0;
+        List<Asset> files = FileUploadUtil.files(String.valueOf(consecutivo), "formatoActa").stream()
+                .map(file -> {
+                    file.setUrl("/assets/images/avatars/" + file.getFileName());
+                    return file;
+                })
+                .collect(Collectors.toList());
+        Map<String, List<Asset>> result = new LinkedHashMap<>();
+        result.put("actaCierrePostulacionesJuntaDirectiva", new ArrayList<>());
+        result.put("actaCierreReformaEstatutos", new ArrayList<>());
+        result.put("actaCierreRevisorFiscal", new ArrayList<>());
+        result.put("actaPoderes", new ArrayList<>());
+        result.put("actaEscutinio", new ArrayList<>());
+
+        for (Asset file : files) {
+            String fileName = file.getFileName();
+            if (fileName.contains("actaCierrePostulacionesJuntaDirectiva")) {
+                result.get("actaCierrePostulacionesJuntaDirectiva").add(file);
+            } else if (fileName.contains("actaCierreReformaEstatutos")) {
+                result.get("actaCierreReformaEstatutos").add(file);
+            } else if (fileName.contains("actaCierreRevisorFiscal")) {
+                result.get("actaCierreRevisorFiscal").add(file);
+            } else if (fileName.contains("actaPoderes")) {
+                result.get("actaPoderes").add(file);
+            } else if (fileName.contains("actaEscutinio")) {
+                result.get("actaEscutinio").add(file);
+            }
+        }
+
+        return result;
+    }
+
+    public byte[] getCertificado(Integer codUsuario) throws IOException {
+        // Buscar el título del cual sobraron las acciones
+
+        Optional<Persona> datosPersona = personaRepository.findById(String.valueOf(codUsuario));
+
+        File inputHTML = new File("src/main/resources/certificadoAccionesDeAnio.html");
+        Document document = Jsoup.parse(inputHTML, "UTF-8");
+
+        //document.selectFirst("#codUsuario").text(datosPersona.getCodUsuario());
+        document.selectFirst("#nomAcc").text(
+                datosPersona.get().getNomPri().toUpperCase() + " " +
+                        datosPersona.get().getNomSeg().toUpperCase() + " " +
+                        datosPersona.get().getApePri().toUpperCase() + " " +
+                        datosPersona.get().getApeSeg().toUpperCase());
+        document.selectFirst("#codUsuario").text(datosPersona.get().getCodUsuario());
+
+
+
+        document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        PdfRendererBuilder builder = new PdfRendererBuilder();
+        builder.useDefaultPageSize(Float.valueOf(210), Float.valueOf(297), BaseRendererBuilder.PageSizeUnits.MM);
+        builder.toStream(os);
+        builder.withW3cDocument(new W3CDom().fromJsoup(document), "/");
+        builder.run();
+        return os.toByteArray();
     }
 }

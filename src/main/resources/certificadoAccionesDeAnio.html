@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compra Venta</title>
+    <script>
+        function mostrarFecha() {
+            const fechaActual = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const fechaFormateada = fechaActual.toLocaleDateString('es-ES', options);
+            document.getElementById('fecha').innerHTML = `<span class="mayusculas">${fechaFormateada}</span>`;
+
+        }
+    </script>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        .mayusculas {
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .titulo {
+            font-family: "Arial";
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .subtitulos {
+            font-family: "Arial";
+            font-size: 16px;
+            text-align: justify;
+            line-height: 0.5px;
+        }
+
+        .vendedor {
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .parrafo {
+            font-family: "Arial";
+            font-size: 18px;
+            text-align: justify;
+        }
+
+        .inicio {
+            margin-top: 50px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 90px;
+        }
+
+        .firmaIzquierda {
+            font-family: "Arial";
+            flex-grow: 1;
+            font-size: 14px;
+            line-height: 3px;
+        }
+
+        .firmaDerecha {
+            font-family: "Arial";
+            font-size: 14px;
+            line-height: 3px;
+        }
+
+        .imgfirma {
+
+            width: 230px;
+            height: 70px;
+        }
+
+        .titulo-cargo {
+            margin-top: 120px;
+        }
+
+        .cargo {
+            margin-top: -16px;
+        }
+
+        .transcrito {
+            margin-top: 80px;
+            font-size: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- titulo -->
+    <p class="titulo">
+
+        <strong>EL SUSCRITO JEFE FINANCIERO DE LA EMPRESA DE ENERGÍA DEL BAJO PUTUMAYO S.A. E.S.P.</strong>
+    </p>
+
+    <!-- informacion cabecera -->
+    <div>
+        <br>
+        <br>
+        <br>
+        <p class="subtitulos vendedor">
+            <strong>HACE CONSTAR QUE:</strong> <span id="nomAcc"></span>
+            <br>
+            <br>
+            <br>
+            <br>
+        </p>
+
+    </div>
+
+    <!-- cuerpo formato -->
+    <div>
+        <p class="parrafo inicio">
+
+
+            Que revisados los archivos y libros de accionistas de la EEBP S.A E.S.P., el
+            accionista <strong> <span id="nomAccionista"> </span> </strong>identificado
+            con cédula de ciudadanía <strong>No. <span id="codUsuario"> </span> </strong> expedida en
+            <span id="munExpedicion"> </span>, a <span id="fecExpedicion"> </span> tiene
+            registrado un total de <span id="numAcciones"></span> acciones con un valor nominal de $ <span
+                id="valorNominal"></span>.
+            <br>
+            <br>
+
+            Teniendo en cuenta los dividendos decretados en la <span id="consecutivo"></span>° Asamblea General de
+            Accionistas del <span id="fechaAsamblea"></span>, correspondiente al ejercicio contable del año
+            dos mil Veintidós <span>(2024)</span>según los Estatutos y el reglamento de la EEBP S.A
+            E.S.P., la distribución de utilidades es del Cien por ciento (100%) en efectivo con
+            una participación por acción de $ <span id="participacionPorAccion">4.180,46</span> la utilidad a pagar es de $ <span
+                id="utilidad">1.701.447.</span>
+            <br>
+            <br>
+            De acuerdo al Art. 7 Capitulo ll de la Reforma de Estatutos de la EEBP S.A E.S.P.,
+            cabe mencionar que los dividendos antes mencionados son ingresos no
+            constitutivos de renta ni ganancia ocasional de conformidad con lo previsto en el
+            Artículo 49 del Estatuto Tributario.
+            <br>
+            <br>
+            En constancia se firma en la ciudad de <span id="ciudad">Puerto Asís</span>, Putumayo a los <span id="fechaActual"> días
+                del
+                mes de mayo de 2024</span>.
+        </p>
+
+    </div>
+    <div>
+        <p class="titulo titulo-cargo">
+            <span id="firmaFinanciero"><strong>YIMER ANDRES DELGADO JURADO</strong></span>
+
+        </p>
+        <p class="titulo cargo">
+            <span id="jefe">Jefe Financiero</span>
+        </p>
+    </div>
+
+    <div>
+        <p class="transcrito">Transcribió: <span id="transcribio">Angie Zuñiga</span></p>
+    </div>
+
+</body>
+
+</html>

@@ -40,6 +40,11 @@ public class AsambleaController {
         return ResponseEntity.ok(reportes);
     }
 
+    @GetMapping("/formatos")
+    public Map<String, List<Asset>> getFormatosActas() {
+        return asambleaService.getFormatosActas();
+    }
+
     @PutMapping("/actualizar")
     public Asamblea updateAsamblea(@RequestBody Asamblea asamblea) {
         return asambleaService.updateAsamblea(asamblea);
