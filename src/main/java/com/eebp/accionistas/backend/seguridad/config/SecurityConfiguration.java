@@ -66,6 +66,7 @@ public class SecurityConfiguration {
                                 "/api/accionistas/borrar/*",
                                 "/api/asamblea/*",
                                 "/api/asamblea/reportes/*",
+                                "/api/asamblea/certificado/*",
                                 "/api/asamblea/enviar-invitacion/*",
                                 "/api/asamblea/registrar-asistente-asamblea",
                                 "/api/asamblea/actualizar-estado/*",
