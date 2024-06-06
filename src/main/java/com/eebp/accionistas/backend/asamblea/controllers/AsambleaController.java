@@ -7,9 +7,11 @@ import com.eebp.accionistas.backend.seguridad.entities.Asset;
 import com.eebp.accionistas.backend.transacciones.entities.Transaccion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,6 +89,11 @@ public class AsambleaController {
             response.put("error", "Error al enviar los correos electrónicos: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+    }
+
+    @GetMapping(value = "/certificado/{codUsuario}", produces = MediaType.APPLICATION_PDF_VALUE)
+    public @ResponseBody byte[] getFormatoAcciones(@PathVariable Integer codUsuario) throws IOException {
+        return asambleaService.getCertificado(codUsuario);
     }
 
 }

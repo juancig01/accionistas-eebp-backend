@@ -8,6 +8,7 @@ import com.eebp.accionistas.backend.accionistas.services.AccionistaService;
 import com.eebp.accionistas.backend.accionistas.services.PersonaService;
 import com.eebp.accionistas.backend.asamblea.entities.Asamblea;
 import com.eebp.accionistas.backend.asamblea.repositories.AsambleaRepository;
+import com.eebp.accionistas.backend.geo.MunicipioRepository;
 import com.eebp.accionistas.backend.seguridad.entities.Asset;
 import com.eebp.accionistas.backend.seguridad.entities.EmailDetails;
 import com.eebp.accionistas.backend.seguridad.services.EmailServiceImpl;
@@ -40,6 +41,8 @@ public class AsambleaService {
     AccionistaService accionistaService;
     @Autowired
     PersonaService personaService;
+    @Autowired
+    MunicipioRepository municipioRepository;
 
     @Autowired
     private EmailServiceImpl emailService;
@@ -244,17 +247,22 @@ public class AsambleaService {
 
         Optional<Persona> datosPersona = personaRepository.findById(String.valueOf(codUsuario));
 
-        File inputHTML = new File("src/main/resources/certificadoAccionesDeAnio.html");
+        File inputHTML = new File("src/main/resources/certificadoAccionesDeAnio.html"); //quitar la ruta cunado subna a server va sin backend/
         Document document = Jsoup.parse(inputHTML, "UTF-8");
 
         //document.selectFirst("#codUsuario").text(datosPersona.getCodUsuario());
-        document.selectFirst("#nomAcc").text(
+        document.selectFirst("#nomAccionista").text(
                 datosPersona.get().getNomPri().toUpperCase() + " " +
                         datosPersona.get().getNomSeg().toUpperCase() + " " +
                         datosPersona.get().getApePri().toUpperCase() + " " +
                         datosPersona.get().getApeSeg().toUpperCase());
         document.selectFirst("#codUsuario").text(datosPersona.get().getCodUsuario());
 
+        if(datosPersona.get().getMunicipioExp() != null) {
+            document.selectFirst("#munExpedicion").text(municipioRepository.findById(Integer.parseInt(datosPersona.get().getMunicipioExp())).get().getNombreMunicipio().toUpperCase());
+        }
+
+        document.selectFirst("#numAcciones").text(municipioRepository.findById(Integer.parseInt(datosPersona.get().getMunicipioExp())).get().getNombreMunicipio().toUpperCase());
 
 
         document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
