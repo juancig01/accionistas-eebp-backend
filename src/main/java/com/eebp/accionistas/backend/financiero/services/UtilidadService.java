@@ -1,7 +1,10 @@
 package com.eebp.accionistas.backend.financiero.services;
 
+import com.eebp.accionistas.backend.accionistas.entities.Persona;
 import com.eebp.accionistas.backend.accionistas.repositories.AccionistaRepository;
 import com.eebp.accionistas.backend.accionistas.services.AccionistaService;
+import com.eebp.accionistas.backend.accionistas.services.PersonaService;
+import com.eebp.accionistas.backend.asamblea.services.AsambleaService;
 import com.eebp.accionistas.backend.financiero.entities.AccionistasUtilidadDTO;
 import com.eebp.accionistas.backend.financiero.entities.Utilidad;
 import com.eebp.accionistas.backend.financiero.repositories.UtilidadRepository;
@@ -19,8 +22,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Service
 public class UtilidadService {
@@ -34,10 +38,40 @@ public class UtilidadService {
     @Autowired
     AccionistaService accionistaService;
 
-    public Utilidad addUtilidad(Utilidad utilidad) {
+    @Autowired
+    AsambleaService asambleaService;
+
+    @Autowired
+    PersonaService personaService;
+
+    public Utilidad addUtilidad(Map<String, Object> utilidadData) {
+        Utilidad utilidad = new Utilidad();
+
+        utilidad.setNumAccMercado((Integer) utilidadData.get("numAccMercado"));
+        utilidad.setNumAccUtilidades((Integer) utilidadData.get("numAccUtilidades"));
+        utilidad.setParticipacionAccion((Integer) utilidadData.get("participacionAccion"));
+        utilidad.setPagoUtilidad((Integer) utilidadData.get("pagoUtilidad"));
+
+        Map<String, Integer> numPagos = (Map<String, Integer>) utilidadData.get("numPagos");
+        utilidad.setPago1(numPagos.get("pago1"));
+        utilidad.setPago2(numPagos.get("pago2"));
+        utilidad.setPago3(numPagos.get("pago3"));
+
+        utilidad.setValNomAccion((Integer) utilidadData.get("valNomAccion"));
+        utilidad.setValIntrinseco((Integer) utilidadData.get("valIntrinseco"));
+        utilidad.setDivParticipacion((Integer) utilidadData.get("divParticipacion"));
+
+        utilidad.setFecUtilidad(new java.sql.Date(System.currentTimeMillis()));
+
+        Integer consecutivoAsamblea = asambleaService.getConsecutivoAsamblea();
+        utilidad.setConsecutivoAsamblea(consecutivoAsamblea);
 
         utilidadRepository.save(utilidad);
         return utilidad;
+    }
+
+    public List<Utilidad> getUtilidades(){
+        return utilidadRepository.findAll();
     }
 
     public Optional<Utilidad> findUtildadById(Integer id) {
@@ -45,10 +79,9 @@ public class UtilidadService {
         return utilidadRepository.findById(id);
     }
 
-    public ByteArrayInputStream excelPagoUtilidad() throws UserNotFoundException, IOException {
-
-
-        String [] columns = {"ITEM", "FOLIO", "DOCUMENTO", "NOMBRES Y APELLIDO ACCIONISTAS", "Total Acciones a la Fecha", "Utilidad 100%", "Primer Pago 50%", "Segundo Pago 50%", "Observaciones"};
+    public ByteArrayInputStream excelPagoUtilidad(int anio) throws UserNotFoundException, IOException {
+        String[] columns = {"ITEM", "FOLIO", "DOCUMENTO", "NOMBRES Y APELLIDO ACCIONISTAS", "Total Acciones a la Fecha", "Utilidad 100%", "Primer Pago 50%", "Observaciones"};
+        List<String> columnList = new ArrayList<>(Arrays.asList(columns));
 
         Workbook workbook = new HSSFWorkbook();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -57,25 +90,38 @@ public class UtilidadService {
         CellStyle columnCellStyle = columnas(workbook);
         addHeader(sheet, workbook);
 
-
         Row row = sheet.createRow(5);
 
-        for (int i = 0; i<columns.length; i ++) {
+        List<Utilidad> utilidades = utilidadRepository.findByAnio(anio);
+
+        if (!utilidades.isEmpty()) {
+            Utilidad utilidad = utilidades.get(0);
+
+            if (utilidad.getPago2() != null) {
+                columnList.add(columnList.size() - 1, "Segundo Pago 50%");
+            }
+
+            if (utilidad.getPago3() != null) {
+                columnList.add(columnList.size() - 1, "Tercer Pago");
+            }
+        }
+
+        for (int i = 0; i < columnList.size(); i++) {
             Cell cell = row.createCell(i);
-            cell.setCellValue(columns[i]);
+            cell.setCellValue(columnList.get(i));
             cell.setCellStyle(columnCellStyle);
         }
 
-        List<Utilidad> utilidades = utilidadRepository.findAll();
         List<AccionistasUtilidadDTO> lista = utilidadRepository.accionistasUtilidad();
         int initRow = 6;
         int item = 1;
         double totalAcciones = 0.0;
         double totalUtilidad = 0.0;
         double totalPrimerPago = 0.0;
+        double totalSegundoPago = 0.0;
+        double totalTercerPago = 0.0;
 
         for (AccionistasUtilidadDTO listas : lista) {
-
             if ("S".equals(listas.getEsAccionista())) {
                 row = sheet.createRow(initRow);
                 row.createCell(0).setCellValue(item);
@@ -83,24 +129,42 @@ public class UtilidadService {
                 row.createCell(2).setCellValue(listas.getCodAccionista());
                 row.createCell(3).setCellValue(listas.getNomAccionista());
 
-
                 int totalCantidadAcciones = listas.getTotalCantidadAcciones();
 
+                Optional<Utilidad> utilidadOptional = utilidades.stream()
+                        .findFirst();
 
-                Integer idUtilidad = 3;
-                Optional<Utilidad> utilidadOptional = utilidadRepository.findById(idUtilidad);
-                int participacionPorAccion = utilidadOptional.get().getParticipacionAccion();
-                int utilidad = totalCantidadAcciones * participacionPorAccion;
-                row.createCell(4).setCellValue(totalCantidadAcciones);
-                row.createCell(5).setCellValue(utilidad);
+                if (utilidadOptional.isPresent()) {
+                    Utilidad utilidad = utilidadOptional.get();
+                    int participacionPorAccion = utilidad.getParticipacionAccion();
+                    int utilidadCalculada = totalCantidadAcciones * participacionPorAccion;
+                    row.createCell(4).setCellValue(totalCantidadAcciones);
+                    row.createCell(5).setCellValue(utilidadCalculada);
 
-                int pagoUtilidad = utilidadOptional.get().getPagoUtilidad();
-                double primerPago = (utilidad*(pagoUtilidad/100.0));
-                row.createCell(6).setCellValue(primerPago);
+                    int pagoUtilidad = utilidad.getPagoUtilidad();
+                    double primerPago = (utilidadCalculada * (utilidad.getPago1() / 100.0));
+                    row.createCell(6).setCellValue(primerPago);
 
-                totalAcciones += totalCantidadAcciones;
-                totalUtilidad += utilidad;
-                totalPrimerPago += primerPago;
+                    int columnIndex = 7;
+
+                    if (utilidad.getPago2() != null) {
+                        double segundoPago = (utilidadCalculada * (utilidad.getPago2() / 100.0));
+                        row.createCell(columnIndex).setCellValue(segundoPago);
+                        totalSegundoPago += segundoPago;
+                        columnIndex++;
+                    }
+
+                    if (utilidad.getPago3() != null) {
+                        double tercerPago = (utilidadCalculada * (utilidad.getPago3() / 100.0));
+                        row.createCell(columnIndex).setCellValue(tercerPago);
+                        totalTercerPago += tercerPago;
+                    }
+
+                    totalAcciones += totalCantidadAcciones;
+                    totalUtilidad += utilidadCalculada;
+                    totalPrimerPago += primerPago;
+                }
+
                 initRow++;
                 item++;
             }
@@ -112,6 +176,97 @@ public class UtilidadService {
         totalRow.createCell(4).setCellValue(totalAcciones);
         totalRow.createCell(5).setCellValue(totalUtilidad);
         totalRow.createCell(6).setCellValue(totalPrimerPago);
+
+        int columnIndex = 7;
+
+        if (!utilidades.isEmpty()) {
+            Utilidad utilidad = utilidades.get(0);
+
+            if (utilidad.getPago2() != null) {
+                totalRow.createCell(columnIndex).setCellValue(totalSegundoPago);
+                columnIndex++;
+            }
+
+            if (utilidad.getPago3() != null) {
+                totalRow.createCell(columnIndex).setCellValue(totalTercerPago);
+            }
+        }
+
+        workbook.write(stream);
+        workbook.close();
+        return new ByteArrayInputStream(stream.toByteArray());
+    }
+
+    public ByteArrayInputStream generarFormato1010(int anio) throws IOException, UserNotFoundException {
+        String[] columns = {
+                "Tipo de documento",
+                "Número identificación socio o accionista",
+                "Primer apellido socio o accionista",
+                "Segundo apellido socio o accionista",
+                "Primer nombre del socio o accionista",
+                "Otros nombres socio o accionista",
+                "Razón social",
+                "Dirección",
+                "Código dpto.",
+                "Código mcp",
+                "País de residencia o domicilio",
+                "Valor patrimonial acciones o aportes al 31-12",
+                "Porcentaje de participación",
+                "Porcentaje de participación (posición decimal)"
+        };
+
+        Workbook workbook = new HSSFWorkbook();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+        Sheet sheet = workbook.createSheet("Formato 1010");
+        CellStyle columnCellStyle = columnas(workbook);
+
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < columns.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(columnCellStyle);
+        }
+
+        List<Utilidad> utilidades = utilidadRepository.findByAnio(anio);
+        List<AccionistasUtilidadDTO> accionistas = utilidadRepository.accionistasUtilidad();
+        int rowNum = 1;
+
+        if (!utilidades.isEmpty()) {
+            Utilidad utilidad = utilidades.get(0);
+
+            for (AccionistasUtilidadDTO accionista : accionistas) {
+                if ("S".equals(accionista.getEsAccionista())) {
+                    Optional<Persona> personaOptional = personaService.getPersona(accionista.getCodAccionista());
+
+                    if (personaOptional.isPresent()) {
+                        Persona persona = personaOptional.get();
+
+                        Row row = sheet.createRow(rowNum++);
+
+                        row.createCell(0).setCellValue("13");
+                        row.createCell(1).setCellValue(persona.getCodUsuario());
+                        row.createCell(2).setCellValue(persona.getApePri());
+                        row.createCell(3).setCellValue(persona.getApeSeg());
+                        row.createCell(4).setCellValue(persona.getNomPri());
+                        row.createCell(5).setCellValue(persona.getNomSeg());
+                        row.createCell(6).setCellValue(persona.getRazonSocial());
+                        row.createCell(7).setCellValue(persona.getDirDomicilio());
+                        row.createCell(8).setCellValue(persona.getDepartamentoDomicilio());
+                        row.createCell(9).setCellValue(persona.getMunicipioDomicilio());
+                        row.createCell(10).setCellValue(persona.getPaisDomicilio());
+
+                        double valorPatrimonial = (double) accionista.getTotalCantidadAcciones() * utilidad.getValNomAccion();
+
+                        row.createCell(11).setCellValue(valorPatrimonial); // Valor patrimonial acciones o aportes al 31-12
+
+                        Integer porcentajeParticipacion = (accionista.getTotalCantidadAcciones() * 100) / utilidad.getNumAccMercado();
+                        row.createCell(12).setCellValue(porcentajeParticipacion);
+                        row.createCell(13).setCellValue(porcentajeParticipacion / 100);
+                    }
+                }
+            }
+        }
 
         workbook.write(stream);
         workbook.close();
@@ -208,5 +363,39 @@ public class UtilidadService {
         style.setBorderLeft(BorderStyle.THIN);
         style.setBorderRight(BorderStyle.THIN);
         return style;
+    }
+
+
+    public ByteArrayInputStream generateMultipleFilesInZip(int anio) throws UserNotFoundException, IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
+
+        // Generate the Excel files
+        ByteArrayInputStream excelPagoUtilidadStream = excelPagoUtilidad(anio);
+        ByteArrayInputStream formato1010Stream = generarFormato1010(anio);
+
+        // Add the first Excel file to the ZIP
+        addToZip(zipOutputStream, excelPagoUtilidadStream, "Pago_Utilidad_" + anio + ".xls");
+
+        // Add the second Excel file to the ZIP
+        addToZip(zipOutputStream, formato1010Stream, "Formato_1010_" + anio + ".xls");
+
+        // Close the ZIP stream
+        zipOutputStream.close();
+        return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+    }
+
+    private void addToZip(ZipOutputStream zipOutputStream, ByteArrayInputStream inputStream, String filename) throws IOException {
+        ZipEntry zipEntry = new ZipEntry(filename);
+        zipOutputStream.putNextEntry(zipEntry);
+
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) > 0) {
+            zipOutputStream.write(buffer, 0, length);
+        }
+
+        zipOutputStream.closeEntry();
+        inputStream.close();
     }
 }

@@ -262,7 +262,7 @@ public class AsambleaService {
             document.selectFirst("#munExpedicion").text(municipioRepository.findById(Integer.parseInt(datosPersona.get().getMunicipioExp())).get().getNombreMunicipio().toUpperCase());
         }
 
-        document.selectFirst("#numAcciones").text(municipioRepository.findById(Integer.parseInt(datosPersona.get().getMunicipioExp())).get().getNombreMunicipio().toUpperCase());
+        document.selectFirst("#numAcciones").text(String.valueOf(Integer.valueOf(String.valueOf(asambleaRepository.totalAccionesPorPersona(Integer.valueOf(String.valueOf((datosPersona.get().getCodUsuario()))))))));
 
 
         document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);

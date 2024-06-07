@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -27,7 +28,12 @@ public class Utilidad {
     private Integer valNomAccion;
     private Integer valIntrinseco;
     private Integer divParticipacion;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fecUtilidad;
     private Integer pagoUtilidad;
+    private Integer pago1;
+    private Integer pago2;
+    private Integer pago3;
+    private Integer consecutivoAsamblea;
 
 }

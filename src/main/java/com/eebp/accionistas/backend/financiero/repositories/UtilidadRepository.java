@@ -4,11 +4,15 @@ import com.eebp.accionistas.backend.financiero.entities.AccionistasUtilidadDTO;
 import com.eebp.accionistas.backend.financiero.entities.Utilidad;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.io.Serializable;
 import java.util.List;
 
 public interface UtilidadRepository extends JpaRepository<Utilidad, Serializable> {
+
+    @Query("SELECT u FROM Utilidad u WHERE YEAR(u.fecUtilidad) = :anio")
+    List<Utilidad> findByAnio(@Param("anio") int anio);
 
     @Query(value = "SELECT " +
             "p.codUsuario AS codAccionista, " +
