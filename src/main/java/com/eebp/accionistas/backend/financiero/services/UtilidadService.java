@@ -142,20 +142,20 @@ public class UtilidadService {
                     row.createCell(5).setCellValue(utilidadCalculada);
 
                     int pagoUtilidad = utilidad.getPagoUtilidad();
-                    double primerPago = (utilidadCalculada * (utilidad.getPago1() / 100.0));
+                    int primerPago = (int) (utilidadCalculada * (utilidad.getPago1() / 100.0));
                     row.createCell(6).setCellValue(primerPago);
 
                     int columnIndex = 7;
 
                     if (utilidad.getPago2() != null) {
-                        double segundoPago = (utilidadCalculada * (utilidad.getPago2() / 100.0));
+                        int segundoPago = (int) (utilidadCalculada * (utilidad.getPago2() / 100.0));
                         row.createCell(columnIndex).setCellValue(segundoPago);
                         totalSegundoPago += segundoPago;
                         columnIndex++;
                     }
 
                     if (utilidad.getPago3() != null) {
-                        double tercerPago = (utilidadCalculada * (utilidad.getPago3() / 100.0));
+                        int tercerPago = (int) (utilidadCalculada * (utilidad.getPago3() / 100.0));
                         row.createCell(columnIndex).setCellValue(tercerPago);
                         totalTercerPago += tercerPago;
                     }
@@ -254,7 +254,7 @@ public class UtilidadService {
                         row.createCell(7).setCellValue(persona.getDirDomicilio());
                         row.createCell(8).setCellValue(persona.getDepartamentoDomicilio());
                         row.createCell(9).setCellValue(persona.getMunicipioDomicilio());
-                        row.createCell(10).setCellValue(persona.getPaisDomicilio());
+                        row.createCell(10).setCellValue("169");
 
                         double valorPatrimonial = (double) accionista.getTotalCantidadAcciones() * utilidad.getValNomAccion();
 
@@ -263,6 +263,125 @@ public class UtilidadService {
                         Integer porcentajeParticipacion = (accionista.getTotalCantidadAcciones() * 100) / utilidad.getNumAccMercado();
                         row.createCell(12).setCellValue(porcentajeParticipacion);
                         row.createCell(13).setCellValue(porcentajeParticipacion / 100);
+                    }
+                }
+            }
+        }
+
+        workbook.write(stream);
+        workbook.close();
+        return new ByteArrayInputStream(stream.toByteArray());
+    }
+
+    public ByteArrayInputStream generarFormato1001(int anio) throws IOException, UserNotFoundException {
+        String[] columns = {
+                "Concepto",
+                "Tipo Documento",
+                "Número de Identificación del Informado",
+                "Primer apellido del informado",
+                "Segundo apellido del informado",
+                "Primer nombre del informado",
+                "Otros nombres del informado",
+                "Razon social informado",
+                "Dirección",
+                "Codigo Dpto",
+                "Codigo Mcp",
+                "Pais de residencia o domicilio",
+                "Pago o abono en cuenta deducible",
+                "Pago o abono en cuenta no deducible",
+                "IVA mayor del costo o gasto deducible",
+                "IVA mayor del costo o gasto no deducible",
+                "Retencion en la fuente practicada en renta",
+                "Retencion en la fuente asumida en renta",
+                "Retencion en la fuente practicada IVA regimen comun",
+                "Retencion en la fuente practicada IVA no domiciliados",
+                "Pago o abono en cuenta deducible",
+                "Pago o abono en cuenta no deducible",
+                "IVA mayor del costo o gasto deducible",
+                "IVA mayor del costo o gasto no deducible",
+                "Retencion en la fuente practicada en renta",
+                "Retencion en la fuente asumida en renta",
+                "Retencion en la fuente practicada IVA regimen comun",
+                "Retencion en la fuente practicada IVA no domiciliados",
+                "Pago o abono en cuenta deducible",
+                "Pago o abono en cuenta no deducible",
+                "IVA mayor del costo o gasto deducible",
+                "IVA mayor del costo o gasto no deducible",
+                "Retencion en la fuente practicada en renta",
+                "Retencion en la fuente asumida en renta",
+                "Retencion en la fuente practicada IVA regimen comun",
+                "Retencion en la fuente practicada IVA no domiciliados"
+        };
+
+        Workbook workbook = new HSSFWorkbook();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+        Sheet sheet = workbook.createSheet("Formato Conceptos");
+        CellStyle columnCellStyle = columnas(workbook);
+
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < columns.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(columnCellStyle);
+        }
+
+        List<Utilidad> utilidades = utilidadRepository.findByAnio(anio);
+        List<AccionistasUtilidadDTO> accionistas = utilidadRepository.accionistasUtilidad();
+        int rowNum = 1;
+
+        if (!utilidades.isEmpty()) {
+            Utilidad utilidad = utilidades.get(0);
+
+            for (AccionistasUtilidadDTO accionista : accionistas) {
+                if ("S".equals(accionista.getEsAccionista())) {
+                    Optional<Persona> personaOptional = personaService.getPersona(accionista.getCodAccionista());
+
+                    if (personaOptional.isPresent()) {
+                        Persona persona = personaOptional.get();
+
+                        Row row = sheet.createRow(rowNum++);
+
+                        row.createCell(0).setCellValue("5071"); // Concepto
+                        row.createCell(1).setCellValue("13");
+                        row.createCell(2).setCellValue(persona.getCodUsuario());
+                        row.createCell(3).setCellValue(persona.getApePri());
+                        row.createCell(4).setCellValue(persona.getApeSeg());
+                        row.createCell(5).setCellValue(persona.getNomPri());
+                        row.createCell(6).setCellValue(persona.getNomSeg());
+                        row.createCell(7).setCellValue(persona.getRazonSocial());
+                        row.createCell(8).setCellValue(persona.getDirDomicilio());
+                        row.createCell(9).setCellValue(persona.getDepartamentoDomicilio());
+                        row.createCell(10).setCellValue(persona.getMunicipioDomicilio());
+                        row.createCell(11).setCellValue("169");
+                        row.createCell(12).setCellValue("-");
+                        row.createCell(13).setCellValue("-");
+                        row.createCell(14).setCellValue("-");
+                        row.createCell(15).setCellValue("-");
+                        row.createCell(16).setCellValue("-");
+                        row.createCell(17).setCellValue("-");
+                        row.createCell(18).setCellValue("-");
+                        row.createCell(19).setCellValue("-");
+                        row.createCell(20).setCellValue("-");
+                        row.createCell(21).setCellValue("-");
+                        row.createCell(22).setCellValue("-");
+                        row.createCell(23).setCellValue("-");
+                        row.createCell(24).setCellValue("-");
+                        row.createCell(25).setCellValue("-");
+                        row.createCell(26).setCellValue("-");
+                        row.createCell(27).setCellValue("-");
+                        row.createCell(28).setCellValue("-");
+                        row.createCell(29).setCellValue("-");
+                        row.createCell(30).setCellValue("-");
+                        row.createCell(31).setCellValue("-");
+                        row.createCell(32).setCellValue("-");
+                        row.createCell(33).setCellValue("-");
+                        row.createCell(34).setCellValue("-");
+                        row.createCell(35).setCellValue("-");
+
+
+                        // Aquí puedes agregar la lógica para calcular los valores de los campos restantes
+                        // y asignarlos a las celdas correspondientes de la fila
                     }
                 }
             }
@@ -373,12 +492,16 @@ public class UtilidadService {
         // Generate the Excel files
         ByteArrayInputStream excelPagoUtilidadStream = excelPagoUtilidad(anio);
         ByteArrayInputStream formato1010Stream = generarFormato1010(anio);
+        ByteArrayInputStream formato1001Stream = generarFormato1001(anio);
 
         // Add the first Excel file to the ZIP
         addToZip(zipOutputStream, excelPagoUtilidadStream, "Pago_Utilidad_" + anio + ".xls");
 
         // Add the second Excel file to the ZIP
         addToZip(zipOutputStream, formato1010Stream, "Formato_1010_" + anio + ".xls");
+
+        // Add the second Excel file to the ZIP
+        addToZip(zipOutputStream, formato1001Stream, "Formato_1001_" + anio + ".xls");
 
         // Close the ZIP stream
         zipOutputStream.close();
