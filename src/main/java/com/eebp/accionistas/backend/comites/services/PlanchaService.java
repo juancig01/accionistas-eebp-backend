@@ -26,19 +26,28 @@ public class PlanchaService {
         Integer consecutivoAsamblea = asambleaService.getConsecutivoAsamblea();
         plancha.setIdAsamblea(consecutivoAsamblea);
 
-        Optional<Plancha> existingPlanchaPrincipal = planchaRepository.findByIdAsambleaAndIdPrincipal(consecutivoAsamblea, plancha.getIdPrincipal());
+        String idPrincipal = plancha.getIdPrincipal();
+        String idSuplente = plancha.getIdSuplente();
+
+        System.out.println("Consecutivo Asamblea: " + consecutivoAsamblea);
+        System.out.println("Id Principal: " + idPrincipal);
+        System.out.println("Id Suplente: " + idSuplente);
+
+        Optional<Plancha> existingPlanchaPrincipal = planchaRepository.findByIdAsambleaAndIdPrincipal(consecutivoAsamblea, idPrincipal);
         if (existingPlanchaPrincipal.isPresent()) {
             throw new IllegalArgumentException("La persona principal ya está registrada en una plancha para esta asamblea.");
         }
 
-        Optional<Plancha> existingPlanchaSuplente = planchaRepository.findByIdAsambleaAndIdSuplente(consecutivoAsamblea, plancha.getIdSuplente());
-        if (existingPlanchaSuplente.isPresent()) {
-            throw new IllegalArgumentException("La persona suplente ya está registrada en una plancha para esta asamblea.");
+        if (idSuplente != null) {
+            Optional<Plancha> existingPlanchaSuplente = planchaRepository.findByIdAsambleaAndIdSuplente(consecutivoAsamblea, idSuplente);
+            if (existingPlanchaSuplente.isPresent()) {
+                throw new IllegalArgumentException("La persona suplente ya está registrada en una plancha para esta asamblea.");
+            }
         }
 
         return planchaRepository.save(plancha);
-
     }
+
 
     public List<Asset> getFilesUser(@PathVariable Integer codUsuario) {
         return FileUploadUtil.files(String.valueOf(codUsuario)).stream().map(file -> {
