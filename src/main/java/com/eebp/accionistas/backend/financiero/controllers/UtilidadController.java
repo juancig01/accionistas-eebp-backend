@@ -26,6 +26,11 @@ public class UtilidadController {
         return utilidadService.addUtilidad(utilidadData);
     }
 
+    @GetMapping("/ultimaUtilidad")
+    public Utilidad getUltimaUtilidad() {
+        return utilidadService.getUltimaUtilidad();
+    }
+
     @GetMapping("/obtener-utilidades")
     public List<Utilidad> getAsambleas() {
         return utilidadService.getUtilidades();

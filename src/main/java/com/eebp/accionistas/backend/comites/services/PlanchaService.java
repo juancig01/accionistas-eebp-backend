@@ -26,6 +26,16 @@ public class PlanchaService {
         Integer consecutivoAsamblea = asambleaService.getConsecutivoAsamblea();
         plancha.setIdAsamblea(consecutivoAsamblea);
 
+        Optional<Plancha> existingPlanchaPrincipal = planchaRepository.findByIdAsambleaAndIdPrincipal(consecutivoAsamblea, plancha.getIdPrincipal());
+        if (existingPlanchaPrincipal.isPresent()) {
+            throw new IllegalArgumentException("La persona principal ya está registrada en una plancha para esta asamblea.");
+        }
+
+        Optional<Plancha> existingPlanchaSuplente = planchaRepository.findByIdAsambleaAndIdSuplente(consecutivoAsamblea, plancha.getIdSuplente());
+        if (existingPlanchaSuplente.isPresent()) {
+            throw new IllegalArgumentException("La persona suplente ya está registrada en una plancha para esta asamblea.");
+        }
+
         return planchaRepository.save(plancha);
 
     }

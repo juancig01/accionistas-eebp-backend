@@ -6,15 +6,18 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RegistroAsambleaRepository extends JpaRepository<RegistroAsamblea, Integer> {
+
+    Optional<RegistroAsamblea> findByConsecutivoAndIdePer(Integer consecutivo, String idePer);
 
     @Query("SELECT " +
             "ra.idAsistente AS idAsistente, " +
             "ra.asistencia AS asistencia, " +
             "ra.idePer AS codUsuario, " +
-            "CONCAT(p.nomPri, ' ', p.nomSeg) AS nombres, " +
-            "CONCAT(p.apePri, ' ', p.apeSeg) AS apellidos, " +
+            "COALESCE(CONCAT(p.nomPri, ' ', p.nomSeg), p.razonSocial) AS nombres, " +
+            "COALESCE(CONCAT(p.apePri, ' ', p.apeSeg), p.razonSocial) AS apellidos, " +
             "SUM(t.canAccTit) AS acciones, " +
             "p.celPersona AS celPersona, " +
             "p.correoPersona AS correoPersona " +
@@ -27,7 +30,7 @@ public interface RegistroAsambleaRepository extends JpaRepository<RegistroAsambl
             "JOIN " +
             "Titulo t ON tp.conseTitulo = t.conseTitulo " +
             "WHERE " +
-            "ra.consecutivo = (SELECT MAX(ra2.consecutivo) FROM RegistroAsamblea ra2) " +
+            "ra.consecutivo = (SELECT MAX(a1.consecutivo) FROM Asamblea a1) " +
             "GROUP BY " +
             "ra.idAsistente, " +
             "ra.asistencia, " +

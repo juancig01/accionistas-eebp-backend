@@ -14,6 +14,8 @@ public interface UtilidadRepository extends JpaRepository<Utilidad, Serializable
     @Query("SELECT u FROM Utilidad u WHERE YEAR(u.fecUtilidad) = :anio")
     List<Utilidad> findByAnio(@Param("anio") int anio);
 
+    Utilidad findFirstByOrderByIdeUtilidadDesc();
+
     @Query(value = "SELECT " +
             "p.codUsuario AS codAccionista, " +
             "CONCAT(p.nomPri, ' ', p.nomSeg, ' ', p.apePri, ' ', p.apeSeg) AS nomAccionista, " +

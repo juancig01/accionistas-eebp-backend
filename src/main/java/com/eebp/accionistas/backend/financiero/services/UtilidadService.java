@@ -4,6 +4,7 @@ import com.eebp.accionistas.backend.accionistas.entities.Persona;
 import com.eebp.accionistas.backend.accionistas.repositories.AccionistaRepository;
 import com.eebp.accionistas.backend.accionistas.services.AccionistaService;
 import com.eebp.accionistas.backend.accionistas.services.PersonaService;
+import com.eebp.accionistas.backend.asamblea.entities.Asamblea;
 import com.eebp.accionistas.backend.asamblea.services.AsambleaService;
 import com.eebp.accionistas.backend.financiero.entities.AccionistasUtilidadDTO;
 import com.eebp.accionistas.backend.financiero.entities.Utilidad;
@@ -77,6 +78,10 @@ public class UtilidadService {
     public Optional<Utilidad> findUtildadById(Integer id) {
         //Optional<Utilidad> utilidad = utilidadRepository.findById(id);
         return utilidadRepository.findById(id);
+    }
+
+    public Utilidad getUltimaUtilidad() {
+        return utilidadRepository.findFirstByOrderByIdeUtilidadDesc();
     }
 
     public ByteArrayInputStream excelPagoUtilidad(int anio) throws UserNotFoundException, IOException {

@@ -8,6 +8,7 @@ import com.eebp.accionistas.backend.accionistas.services.AccionistaService;
 import com.eebp.accionistas.backend.accionistas.services.PersonaService;
 import com.eebp.accionistas.backend.asamblea.entities.Asamblea;
 import com.eebp.accionistas.backend.asamblea.repositories.AsambleaRepository;
+import com.eebp.accionistas.backend.financiero.services.UtilidadService;
 import com.eebp.accionistas.backend.geo.MunicipioRepository;
 import com.eebp.accionistas.backend.seguridad.entities.Asset;
 import com.eebp.accionistas.backend.seguridad.entities.EmailDetails;
@@ -43,6 +44,9 @@ public class AsambleaService {
     PersonaService personaService;
     @Autowired
     MunicipioRepository municipioRepository;
+
+   /* @Autowired
+    UtilidadService utilidadService;*/
 
     @Autowired
     private EmailServiceImpl emailService;
@@ -264,6 +268,7 @@ public class AsambleaService {
 
         document.selectFirst("#numAcciones").text(String.valueOf(Integer.valueOf(String.valueOf(asambleaRepository.totalAccionesPorPersona(Integer.valueOf(String.valueOf((datosPersona.get().getCodUsuario()))))))));
 
+        //document.selectFirst("#valorNominal").text(String.valueOf(utilidadService.getUltimaUtilidad().getValNomAccion()));
 
         document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
         ByteArrayOutputStream os = new ByteArrayOutputStream();

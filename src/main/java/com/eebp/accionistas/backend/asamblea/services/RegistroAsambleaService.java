@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -33,8 +34,16 @@ public class RegistroAsambleaService {
 
     public RegistroAsamblea addRegistroAsamblea(RegistroAsamblea registroAsamblea) {
 
-        registroAsamblea.setAsistencia(false);
         Integer consecutivoAsamblea = asambleaService.getConsecutivoAsamblea();
+        String idePer = registroAsamblea.getIdePer();
+
+        Optional<RegistroAsamblea> existingRegistro = registroAsambleaRepository.findByConsecutivoAndIdePer(consecutivoAsamblea, idePer);
+
+        if (existingRegistro.isPresent()) {
+            throw new IllegalArgumentException("El registro de asamblea ya existe para este miembro con el consecutivo dado.");
+        }
+
+        registroAsamblea.setAsistencia(true);
         registroAsamblea.setConsecutivo(consecutivoAsamblea);
 
         return registroAsambleaRepository.save(registroAsamblea);

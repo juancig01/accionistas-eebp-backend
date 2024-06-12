@@ -5,8 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PlanchaRepository extends JpaRepository<Plancha, Integer> {
+
+    Optional<Plancha> findByIdAsambleaAndIdPrincipal(Integer idAsamblea, String idPrincipal);
+    Optional<Plancha> findByIdAsambleaAndIdSuplente(Integer idAsamblea, String idSuplente);
 
     @Query(value = "SELECT pl.id_principal AS codUsuario, " +
             "CONCAT(pe.nomPri, ' ', pe.nomSeg, ' ', pe.apePri, ' ', pe.apeSeg) AS nombresPrincipal, " +
