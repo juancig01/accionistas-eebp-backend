@@ -59,7 +59,7 @@ public class RegistroAsambleaService {
 
     public Map<String, Integer> obtenerTotales(List<AsistentesAsambleaDTO> registros) throws UserNotFoundException {
         List<AsistentesAsambleaDTO> registrosConAsistenciaFalse = registros.stream()
-                .filter(registro -> !registro.getAsistencia())
+                .filter(registro -> registro.getAsistencia())
                 .collect(Collectors.toList());
 
         int totalRegistros = registrosConAsistenciaFalse.size();
