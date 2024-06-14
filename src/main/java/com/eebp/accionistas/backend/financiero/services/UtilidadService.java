@@ -4,7 +4,6 @@ import com.eebp.accionistas.backend.accionistas.entities.Persona;
 import com.eebp.accionistas.backend.accionistas.repositories.AccionistaRepository;
 import com.eebp.accionistas.backend.accionistas.services.AccionistaService;
 import com.eebp.accionistas.backend.accionistas.services.PersonaService;
-import com.eebp.accionistas.backend.asamblea.entities.Asamblea;
 import com.eebp.accionistas.backend.asamblea.services.AsambleaService;
 import com.eebp.accionistas.backend.financiero.entities.AccionistasUtilidadDTO;
 import com.eebp.accionistas.backend.financiero.entities.Utilidad;
@@ -21,8 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -78,6 +76,14 @@ public class UtilidadService {
     public Optional<Utilidad> findUtildadById(Integer id) {
         //Optional<Utilidad> utilidad = utilidadRepository.findById(id);
         return utilidadRepository.findById(id);
+    }
+
+    public void realizarCorte(LocalDate fechaCorte) {
+        utilidadRepository.insertarEnCortes(fechaCorte);
+    }
+
+    public List<Date> getDistinctCorteDates() {
+        return utilidadRepository.findDistinctCorteDates();
     }
 
     public Utilidad getUltimaUtilidad() {
