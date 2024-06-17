@@ -22,12 +22,12 @@ public class Utilidad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer ideUtilidad;
-    private Integer numAccMercado;
-    private Integer numAccUtilidades;
-    private Integer participacionAccion;
-    private Integer valNomAccion;
-    private Integer valIntrinseco;
-    private Integer divParticipacion;
+    private String numAccMercado;
+    private String numAccUtilidades;
+    private String participacionAccion;
+    private String valNomAccion;
+    private String valIntrinseco;
+    private String divParticipacion;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fecUtilidad;
     private Integer pagoUtilidad;

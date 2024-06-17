@@ -67,15 +67,14 @@ public class RegistroAsambleaService {
         for (AsistentesAsambleaDTO registro : registrosConAsistenciaFalse) {
             totalAcciones += registro.getAcciones();
         }
+        Integer consecutivoAsamblea = asambleaService.getConsecutivoAsamblea();
+        Integer totalAccionesGeneral = registroAsambleaRepository.getTotalAcciones();
 
         List<AccionistaRepresentanteResponse> listaAccionistas = accionistaService.getAccionistas();
         int totalAccionistas = listaAccionistas.size();
-        double quorumDouble = totalAccionistas > 0 ? (double) totalRegistros / totalAccionistas * 100 : 0;
+        double quorumDouble = totalAccionesGeneral > 0 ?
+                (double) totalAcciones / totalAccionesGeneral * 100 : 0;
         int quorum = (int) Math.round(quorumDouble);
-
-        // Obtener el consecutivo de la asamblea
-        Integer consecutivoAsamblea = asambleaService.getConsecutivoAsamblea();
-        Integer totalAccionesGeneral = registroAsambleaRepository.getTotalAcciones();
 
         // Comprobar si el quorum alcanza el 50% + 1
         boolean quorumSuperado = quorum >= 50 + 1;
