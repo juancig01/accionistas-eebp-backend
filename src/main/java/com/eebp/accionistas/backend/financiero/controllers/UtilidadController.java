@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,7 +33,13 @@ public class UtilidadController {
     @PostMapping("/realizar-corte")
     public ResponseEntity<?> realizarCorte(@RequestBody FechaCorteRequest request) {
         utilidadService.realizarCorte(request.getFechaCorte());
-        return ResponseEntity.ok("Corte realizado con éxito");
+
+        // Construir el mapa para la respuesta JSON
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("message", "Corte realizado con éxito");
+
+        // Devolver la respuesta con ResponseEntity
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/fechas-corte")

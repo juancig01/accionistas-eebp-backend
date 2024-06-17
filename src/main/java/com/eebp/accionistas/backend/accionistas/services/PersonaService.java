@@ -118,7 +118,7 @@ public class PersonaService {
         }
         //System.out.println(System.getProperty("user.dir"));
 
-        File inputHTML = new File("src/main/resources/registro.html");
+        File inputHTML = new File("backend/src/main/resources/registro.html");
         Document document = Jsoup.parse(inputHTML, "UTF-8");
 
         if (datosPersona.getNomPri() != null && !datosPersona.getNomPri().equalsIgnoreCase("")) {
@@ -131,7 +131,7 @@ public class PersonaService {
             document.selectFirst("#nombre").text(datosPersona.getRazonSocial().toUpperCase());
         }
         document.selectFirst("#" + datosPersona.getTipDocumento()).text("X");
-        document.selectFirst("#codUsuario").text(datosPersona.getCodUsuario());
+       /* document.selectFirst("#codUsuario").text(datosPersona.getCodUsuario());
         if(datosPersona.getMunicipioExp() != null) {
             document.selectFirst("#municipioExp").text(municipioRepository.findById(Integer.parseInt(datosPersona.getMunicipioExp())).get().getNombreMunicipio().toUpperCase());
             //document.selectFirst("#departamento").text(municipioRepository.findById(Integer.parseInt(datosPersona.getMunicipioExp())).get().getDepartamento().getNombreDepartamento().toUpperCase());
@@ -224,7 +224,7 @@ public class PersonaService {
         } catch (Exception e) {
 
         }
-
+*/
         document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         PdfRendererBuilder builder = new PdfRendererBuilder();
