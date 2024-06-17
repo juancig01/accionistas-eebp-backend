@@ -118,7 +118,7 @@ public class PersonaService {
         }
         //System.out.println(System.getProperty("user.dir"));
 
-        File inputHTML = new File("backend/src/main/resources/registro.html");
+        File inputHTML = new File("src/main/resources/registro.html");
         Document document = Jsoup.parse(inputHTML, "UTF-8");
 
         if (datosPersona.getNomPri() != null && !datosPersona.getNomPri().equalsIgnoreCase("")) {
@@ -131,7 +131,7 @@ public class PersonaService {
             document.selectFirst("#nombre").text(datosPersona.getRazonSocial().toUpperCase());
         }
         document.selectFirst("#" + datosPersona.getTipDocumento()).text("X");
-       /* document.selectFirst("#codUsuario").text(datosPersona.getCodUsuario());
+       document.selectFirst("#codUsuario").text(datosPersona.getCodUsuario());
         if(datosPersona.getMunicipioExp() != null) {
             document.selectFirst("#municipioExp").text(municipioRepository.findById(Integer.parseInt(datosPersona.getMunicipioExp())).get().getNombreMunicipio().toUpperCase());
             //document.selectFirst("#departamento").text(municipioRepository.findById(Integer.parseInt(datosPersona.getMunicipioExp())).get().getDepartamento().getNombreDepartamento().toUpperCase());
@@ -169,7 +169,7 @@ public class PersonaService {
             document.selectFirst("#paisLaboral").text(datosPersona.getPaisLaboral());
             document.selectFirst("#telLaboral").text(datosPersona.getTelfLaboral());
         }
-
+/*
         if(datosPersona.getDirCorrespondencia() != null) {
             if (datosPersona.getDirCorrespondencia().equalsIgnoreCase("laboral")) {
                 document.selectFirst("#dirCorrespondenciaLaboral").text("X");
@@ -182,7 +182,7 @@ public class PersonaService {
                 //document.selectFirst("#cualDirCorrespondencia").text(datosPersona.getOtraDirLaboral().toUpperCase());
             }
         }
-
+*/
         if (datosPersona.getTipDocumento().equalsIgnoreCase("TI")) {
             if (datosPersona.getOpcPotestad().equalsIgnoreCase("S")) {
                 document.selectFirst("#opcPotestadSi").text("X");
@@ -224,7 +224,7 @@ public class PersonaService {
         } catch (Exception e) {
 
         }
-*/
+
         document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         PdfRendererBuilder builder = new PdfRendererBuilder();
@@ -271,37 +271,42 @@ public class PersonaService {
 
         document.selectFirst("#numPersonas").text(datosPersona.getNumPersonas().toString());
 
-        if (datosPersona.getAutorizaCorreo()) {
+        if (datosPersona.getAutorizaCorreo() != null) {
             document.selectFirst("#autorizaCorreoSi").text("x");
         } else {
             document.selectFirst("#autorizaCorreoNo").text("x");
         }
 
-        if (datosPersona.getAutorizaMensaje()) {
+        if (datosPersona.getAutorizaMensaje() != null) {
             document.selectFirst("#autorizaMensajeSi").text("x");
         } else {
             document.selectFirst("#autorizaMensajeNo").text("x");
         }
 
-        if (datosPersona.getAutorizaFisico()) {
+        if (datosPersona.getAutorizaFisico() != null) {
             document.selectFirst("#autorizaFisicoSi").text("x");
         } else {
             document.selectFirst("#autorizaFisicoNo").text("x");
         }
 
-        if (datosPersona.getAutorizaLlamada()) {
+        if (datosPersona.getAutorizaLlamada() != null) {
             document.selectFirst("#autorizaLlamadaSi").text("x");
         } else {
             document.selectFirst("#autorizaLlamadaNo").text("x");
         }
 
-        if (datosPersona.getAutorizaTodas()) {
+        if (datosPersona.getAutorizaTodas() != null) {
             document.selectFirst("#autorizaTodasSi").text("x");
         } else {
             document.selectFirst("#autorizaTodasNo").text("x");
         }
-        document.selectFirst("#firma").html("<img width=\"150\" src=\"data:image/png;base64, " + "<img width=\"150\" src=\"data:image/png;base64, " + Base64.getEncoder().encodeToString(representante.getFirma()) + "\">");
-        document.selectFirst("#identificacion").text(representante.getCodUsuario());
+        if (representante != null && representante.getFirma() != null) {
+            document.selectFirst("#firma").html("<img width=\"150\" src=\"data:image/png;base64, " + Base64.getEncoder().encodeToString(representante.getFirma()) + "\">");
+            document.selectFirst("#identificacion").text(representante.getCodUsuario());
+        } else {
+            document.selectFirst("#firma").html("<img width=\"150\" src=\"data:image/png;base64, " + Base64.getEncoder().encodeToString(datosPersona.getFirma()) + "\">");
+            document.selectFirst("#identificacion").text(datosPersona.getCodUsuario());
+        }
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         Date date = new Date();
         document.selectFirst("#fecha").text("Fecha                                 " + formatter.format(date));
@@ -324,7 +329,7 @@ public class PersonaService {
             representante = personaRepository.findById(datosAccionista.getCodRepresentante()).get();
         }
 
-        File inputHTML = new File("src/main/resources/pdfDeclaracion.html");
+        File inputHTML = new File("backend/src/main/resources/pdfDeclaracion.html");
         Document document = Jsoup.parse(inputHTML, "UTF-8");
 
         if (datosPersona.getNomPri() != null && !datosPersona.getNomPri().equalsIgnoreCase("")) {
