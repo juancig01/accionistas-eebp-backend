@@ -329,7 +329,7 @@ public class PersonaService {
             representante = personaRepository.findById(datosAccionista.getCodRepresentante()).get();
         }
 
-        File inputHTML = new File("backend/src/main/resources/pdfDeclaracion.html");
+        File inputHTML = new File("src/main/resources/pdfDeclaracion.html");
         Document document = Jsoup.parse(inputHTML, "UTF-8");
 
         if (datosPersona.getNomPri() != null && !datosPersona.getNomPri().equalsIgnoreCase("")) {
