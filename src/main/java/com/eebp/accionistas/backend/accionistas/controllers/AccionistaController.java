@@ -78,6 +78,11 @@ public class AccionistaController {
         return accionistaService.getAccionistas();
     }
 
+    @GetMapping("aprobados-rechazados")
+    public List<AccionistaRepresentanteResponse> getAccionistasAprobadosRechazados() throws UserNotFoundException {
+        return accionistaService.getAccionistasAprobadosRechazados();
+    }
+
     @GetMapping("/apoderados")
     public List<AccionistaRepresentanteResponse> getAccionistasTipoTres() throws UserNotFoundException {
         return accionistaService.getAccionistasTipoTres();
