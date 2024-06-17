@@ -49,11 +49,18 @@ public class PersonaService {
 
     public List<Persona> getPersonas() {
         return personaRepository.findAll().stream().map(persona -> {
-            if(accionistaRepository.findById(persona.getCodUsuario()).isPresent()) {
+            if (accionistaRepository.findById(persona.getCodUsuario()).isPresent()) {
                 persona.setEsAccionista(accionistaRepository.findById(persona.getCodUsuario()).get().getAprobado());
             } else {
                 persona.setEsAccionista("N");
             }
+
+            // Manejar campos nulos
+            persona.setApePri(persona.getApePri() == null ? "" : persona.getApePri());
+            persona.setApeSeg(persona.getApeSeg() == null ? "" : persona.getApeSeg());
+            persona.setNomPri(persona.getNomPri() == null ? "" : persona.getNomPri());
+            persona.setNomSeg(persona.getNomSeg() == null ? "" : persona.getNomSeg());
+
             return persona;
         }).collect(Collectors.toList());
     }
