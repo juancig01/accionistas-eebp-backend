@@ -125,7 +125,7 @@ public class PersonaService {
         }
         //System.out.println(System.getProperty("user.dir"));
 
-        File inputHTML = new File("backend/src/main/resources/registro.html");
+        File inputHTML = new File("src/main/resources/registro.html");
         Document document = Jsoup.parse(inputHTML, "UTF-8");
 
         String nomPri = datosPersona.getNomPri() != null ? datosPersona.getNomPri().toUpperCase() : "";
