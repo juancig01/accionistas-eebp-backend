@@ -219,7 +219,7 @@ public class PersonaService {
                                 apeSegRepresentante
                 );
             } else {
-                document.selectFirst("#nomRepresentante").text("");
+                document.selectFirst("#nomRepresentante").text(datosPersona.getRazonSocial());
             }
             document.selectFirst("#tipoDocRepresentante" + representante.getTipDocumento()).text("X");
             document.selectFirst("#codRepresentante").text(representante.getCodUsuario());
