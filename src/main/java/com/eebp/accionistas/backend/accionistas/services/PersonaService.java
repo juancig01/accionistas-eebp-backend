@@ -146,10 +146,16 @@ public class PersonaService {
         }
         document.selectFirst("#" + datosPersona.getTipDocumento()).text("X");
        document.selectFirst("#codUsuario").text(datosPersona.getCodUsuario());
-        if(datosPersona.getMunicipioExp() != null) {
+        if (datosPersona.getMunicipioExp() != null) {
             document.selectFirst("#municipioExp").text(municipioRepository.findById(Integer.parseInt(datosPersona.getMunicipioExp())).get().getNombreMunicipio().toUpperCase());
             //document.selectFirst("#departamento").text(municipioRepository.findById(Integer.parseInt(datosPersona.getMunicipioExp())).get().getDepartamento().getNombreDepartamento().toUpperCase());
-            document.selectFirst("#fecNacimiento").text(datosPersona.getFecNacimiento().split("T")[0]);
+
+            if (datosPersona.getFecNacimiento() != null) {
+                document.selectFirst("#fecNacimiento").text(datosPersona.getFecNacimiento().split("T")[0]);
+            } else {
+                document.selectFirst("#fecNacimiento").text("");
+            }
+
             document.selectFirst("#lugNacimiento").text(municipioRepository.findById(Integer.parseInt(datosPersona.getLugNacimiento())).get().getNombreMunicipio().toUpperCase());
 
             if (datosPersona.getGenPersona().equalsIgnoreCase("M")) {
@@ -225,7 +231,12 @@ public class PersonaService {
             document.selectFirst("#codRepresentante").text(representante.getCodUsuario());
             document.selectFirst("#municipioExpRepresentante").text(municipioRepository.findById(Integer.parseInt(representante.getMunicipioDomicilio())).get().getNombreMunicipio().toUpperCase());
             //document.selectFirst("#depRepresentante").text(municipioRepository.findById(Integer.parseInt(representante.getDepartamentoDomicilio())).get().getDepartamento().getNombreDepartamento().toUpperCase());
-            document.selectFirst("#fecNacimientoRepresentante").text(representante.getFecNacimiento().split("T")[0]);
+            //document.selectFirst("#fecNacimientoRepresentante").text(representante.getFecNacimiento().split("T")[0]);
+            if (representante.getFecNacimiento() != null) {
+                document.selectFirst("#fecNacimientoRepresentante").text(representante.getFecNacimiento().split("T")[0]);
+            } else {
+                document.selectFirst("#fecNacimientoRepresentante").text("");
+            }
             document.selectFirst("#lugNacimientoRepresentante").text(municipioRepository.findById(Integer.parseInt(representante.getLugNacimiento())).get().getNombreMunicipio().toUpperCase());
 
             if (representante.getGenPersona().equalsIgnoreCase("M")) {
