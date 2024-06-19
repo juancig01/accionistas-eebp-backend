@@ -156,7 +156,12 @@ public class PersonaService {
                 document.selectFirst("#fecNacimiento").text("");
             }
 
-            document.selectFirst("#lugNacimiento").text(municipioRepository.findById(Integer.parseInt(datosPersona.getLugNacimiento())).get().getNombreMunicipio().toUpperCase());
+            if (datosPersona.getLugNacimiento() != null && !datosPersona.getLugNacimiento().isEmpty()) {
+                int lugNacimientoId = Integer.parseInt(datosPersona.getLugNacimiento());
+                document.selectFirst("#lugNacimiento").text(municipioRepository.findById(lugNacimientoId).get().getNombreMunicipio().toUpperCase());
+            } else {
+                document.selectFirst("#lugNacimiento").text("");
+            }
 
             if (datosPersona.getGenPersona().equalsIgnoreCase("M")) {
                 document.selectFirst("#genPersonaM").text("X");
@@ -237,8 +242,13 @@ public class PersonaService {
             } else {
                 document.selectFirst("#fecNacimientoRepresentante").text("");
             }
-            document.selectFirst("#lugNacimientoRepresentante").text(municipioRepository.findById(Integer.parseInt(representante.getLugNacimiento())).get().getNombreMunicipio().toUpperCase());
-
+            //document.selectFirst("#lugNacimientoRepresentante").text(municipioRepository.findById(Integer.parseInt(representante.getLugNacimiento())).get().getNombreMunicipio().toUpperCase());
+            if (representante.getLugNacimiento() != null && !representante.getLugNacimiento().isEmpty()) {
+                int lugNacimientoIdRepresentante = Integer.parseInt(representante.getLugNacimiento());
+                document.selectFirst("#lugNacimientoRepresentante").text(municipioRepository.findById(lugNacimientoIdRepresentante).get().getNombreMunicipio().toUpperCase());
+            } else {
+                document.selectFirst("#lugNacimientoRepresentante").text("");
+            }
             if (representante.getGenPersona().equalsIgnoreCase("M")) {
                 document.selectFirst("#genRepresentanteM").text("X");
             } else {
