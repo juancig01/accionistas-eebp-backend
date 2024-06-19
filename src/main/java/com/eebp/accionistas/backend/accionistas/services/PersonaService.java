@@ -444,7 +444,13 @@ public class PersonaService {
         document.selectFirst("#mes").text(meses.get(fecha.getMonth().getValue()));
         document.selectFirst("#anio").text(String.valueOf(fecha.getYear()));
 
-        document.selectFirst("#firma").html("<img width=\"150\" src=\"data:image/png;base64, " + "<img width=\"150\" src=\"data:image/png;base64, " + Base64.getEncoder().encodeToString(representante.getFirma()) + "\">");
+        //document.selectFirst("#firma").html("<img width=\"150\" src=\"data:image/png;base64, " + "<img width=\"150\" src=\"data:image/png;base64, " + Base64.getEncoder().encodeToString(representante.getFirma()) + "\">");
+        if (representante != null) {
+            document.selectFirst("#firma").html("<img width=\"150\" src=\"data:image/png;base64, " + "<img width=\"150\" src=\"data:image/png;base64, " + Base64.getEncoder().encodeToString(representante.getFirma()) + "\">");
+        } else {
+            // Manejarlo de alguna otra forma, por ejemplo, dejar el campo vacío
+            document.selectFirst("#firma").text("");
+        }
         try {
             byte[] bytes = datosPersona.getHuella();
             ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
