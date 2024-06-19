@@ -163,10 +163,10 @@ public class PersonaService {
                 document.selectFirst("#lugNacimiento").text("");
             }
 
-            if (datosPersona.getGenPersona().equalsIgnoreCase("M")) {
+            if (datosPersona.getGenPersona() != null && datosPersona.getGenPersona().equalsIgnoreCase("M")) {
                 document.selectFirst("#genPersonaM").text("X");
             } else {
-                document.selectFirst("#genPersonaM").text("X");
+                document.selectFirst("#genPersonaF").text("X");
             }
         }
 
@@ -249,7 +249,7 @@ public class PersonaService {
             } else {
                 document.selectFirst("#lugNacimientoRepresentante").text("");
             }
-            if (representante.getGenPersona().equalsIgnoreCase("M")) {
+            if (representante.getGenPersona() != null && representante.getGenPersona().equalsIgnoreCase("M")) {
                 document.selectFirst("#genRepresentanteM").text("X");
             } else {
                 document.selectFirst("#genRepresentanteF").text("X");
