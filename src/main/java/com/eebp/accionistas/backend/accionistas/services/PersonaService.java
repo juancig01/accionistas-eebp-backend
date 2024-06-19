@@ -117,11 +117,19 @@ public class PersonaService {
     }
 
     public byte[] getPDFDatosPersonales(String codUsuario) throws IOException {
-        Persona datosPersona = personaRepository.findById(codUsuario).get();
-        Accionista datosAccionista = accionistaRepository.findById(codUsuario).get();
+        Persona datosPersona = personaRepository.findById(codUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con código: " + codUsuario));
+
+        Optional<Accionista> accionistaOptional = accionistaRepository.findById(codUsuario);
+        Accionista datosAccionista = null;
         Persona representante = null;
-        if (datosAccionista != null && datosAccionista.getCodRepresentante() != null) {
-            representante = personaRepository.findById(datosAccionista.getCodRepresentante()).get();
+
+        if (accionistaOptional.isPresent()) {
+            datosAccionista = accionistaOptional.get();
+            if (datosAccionista.getCodRepresentante() != null) {
+                representante = personaRepository.findById(datosAccionista.getCodRepresentante())
+                        .orElseThrow(() -> new RuntimeException("Representante no encontrado con código: " ));
+            }
         }
         //System.out.println(System.getProperty("user.dir"));
 
