@@ -131,17 +131,18 @@ public class PersonaService {
         String nomPri = datosPersona.getNomPri() != null ? datosPersona.getNomPri().toUpperCase() : "";
         String nomSeg = datosPersona.getNomSeg() != null ? datosPersona.getNomSeg().toUpperCase() : "";
         String apePri = datosPersona.getApePri() != null ? datosPersona.getApePri().toUpperCase() : "";
-        String apeSeg = datosPersona != null && datosPersona.getApeSeg() != null ? datosPersona.getApeSeg().toUpperCase() : "";
+        String apeSeg = datosPersona.getApeSeg() != null ? datosPersona.getApeSeg().toUpperCase() : "";
+
 
         if (datosPersona.getNomPri() != null && !datosPersona.getNomPri().equalsIgnoreCase("")) {
             document.selectFirst("#nombre").text(
                     nomPri + " " +
                     nomSeg + " " +
                     apePri + " " +
-                    apeSeg
+                    apeSeg + " "
                     );
         } else {
-            document.selectFirst("#nombre").text(datosPersona.getRazonSocial().toUpperCase());
+            document.selectFirst("#nombre").text(datosPersona.getRazonSocial());
         }
         document.selectFirst("#" + datosPersona.getTipDocumento()).text("X");
        document.selectFirst("#codUsuario").text(datosPersona.getCodUsuario());
@@ -205,7 +206,21 @@ public class PersonaService {
             } else {
                 document.selectFirst("#opcPotestadNo").text("X");
             }
-            document.selectFirst("#nomRepresentante").text(representante.getNomPri().toUpperCase() + " " + representante.getNomSeg().toUpperCase() + " " + representante.getApePri().toUpperCase() + " " + representante.getApeSeg().toUpperCase());
+            if (representante != null) {
+                String nomPriRepresentante = representante.getNomPri() != null ? representante.getNomPri().toUpperCase() : "";
+                String nomSegRepresentante = representante.getNomSeg() != null ? representante.getNomSeg().toUpperCase() : "";
+                String apePriRepresentante = representante.getApePri() != null ? representante.getApePri().toUpperCase() : "";
+                String apeSegRepresentante = representante.getApeSeg() != null ? representante.getApeSeg().toUpperCase() : "";
+
+                document.selectFirst("#nomRepresentante").text(
+                        nomPriRepresentante + " " +
+                                nomSegRepresentante + " " +
+                                apePriRepresentante + " " +
+                                apeSegRepresentante
+                );
+            } else {
+                document.selectFirst("#nomRepresentante").text("");
+            }
             document.selectFirst("#tipoDocRepresentante" + representante.getTipDocumento()).text("X");
             document.selectFirst("#codRepresentante").text(representante.getCodUsuario());
             document.selectFirst("#municipioExpRepresentante").text(municipioRepository.findById(Integer.parseInt(representante.getMunicipioDomicilio())).get().getNombreMunicipio().toUpperCase());
