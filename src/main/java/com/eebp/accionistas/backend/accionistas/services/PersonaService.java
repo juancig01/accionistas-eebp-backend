@@ -464,7 +464,12 @@ public class PersonaService {
         } catch (Exception e) {
 
         }
-        document.selectFirst("#cc").text(representante.getCodUsuario());
+        if (representante != null) {
+            document.selectFirst("#cc").text(representante.getCodUsuario());
+        } else {
+            // Manejarlo de alguna otra forma, por ejemplo, dejar el campo vacío
+            document.selectFirst("#cc").text("");
+        }
 
         document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
