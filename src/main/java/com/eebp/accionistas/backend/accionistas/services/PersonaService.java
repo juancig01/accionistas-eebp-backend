@@ -200,8 +200,6 @@ public class PersonaService {
                 document.selectFirst("#munLaboral").text(municipioRepository.findById(Integer.parseInt(datosPersona.getMunicipioLaboral())).get().getNombreMunicipio().toUpperCase());
                 document.selectFirst("#depLaboral").text(municipioRepository.findById(Integer.parseInt(datosPersona.getMunicipioLaboral())).get().getDepartamento().getNombreDepartamento().toUpperCase());
             }
-            document.selectFirst("empresaLaboral").text(datosPersona.getNomEmpresa());
-            document.selectFirst("barrioLaboral").text(datosPersona.getBarrioLaboral());
             document.selectFirst("#paisLaboral").text(datosPersona.getPaisLaboral());
             document.selectFirst("#telLaboral").text(datosPersona.getTelfLaboral());
             document.selectFirst("#correoLaboral").text(datosPersona.getCorreoPersona());
