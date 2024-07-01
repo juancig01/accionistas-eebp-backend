@@ -414,7 +414,7 @@ public class TituloService {
         tipoTransaccion.setCodTipTran(2);
 
         TransaccionEstado transaccionEstado = new TransaccionEstado();
-        transaccionEstado.setIdeEstado(4);
+        transaccionEstado.setIdeEstado(6);
 
         TransaccionTitulo transaccionTitulo = new TransaccionTitulo();
         transaccionTitulo.setConseTitulo(tituloCompradas.getConseTitulo());
