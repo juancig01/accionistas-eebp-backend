@@ -81,6 +81,38 @@ public class TransaccionService {
         return transaccionesTramite;
     }
 
+    public List<Transaccion> getTransaccionesAprobadoPorControlInterno() {
+        List<Transaccion> transacciones = transaccionRepository.findAll();
+        List<Transaccion> transaccionesAprobadoPorControlInterno = new ArrayList<>();
+
+        for (Transaccion transaccion : transacciones) {
+            TransaccionEstado estadoTransaccion = transaccion.getEstadoTransaccion();
+            if (estadoTransaccion != null && estadoTransaccion.getDescEstado().equals("AprobadoControl")) {
+                List<TransaccionTitulo> transaccionTitulos = transaccionTituloRepository.findTransaccionesPorConseTrans(transaccion.getConseTrans());
+                transaccion.setTransaccionTitulo(transaccionTitulos);
+                transaccionesAprobadoPorControlInterno.add(transaccion);
+            }
+            transaccion.setFiles(getFilesTransaccion(String.valueOf(transaccion.getConseTrans())));
+        }
+        return transaccionesAprobadoPorControlInterno;
+    }
+
+    public List<Transaccion> getTransaccionesAprobadoPorJuridica() {
+        List<Transaccion> transacciones = transaccionRepository.findAll();
+        List<Transaccion> transaccionesAprobadoPorJuridica = new ArrayList<>();
+
+        for (Transaccion transaccion : transacciones) {
+            TransaccionEstado estadoTransaccion = transaccion.getEstadoTransaccion();
+            if (estadoTransaccion != null && estadoTransaccion.getDescEstado().equals("AprobadoJuridica")) {
+                List<TransaccionTitulo> transaccionTitulos = transaccionTituloRepository.findTransaccionesPorConseTrans(transaccion.getConseTrans());
+                transaccion.setTransaccionTitulo(transaccionTitulos);
+                transaccionesAprobadoPorJuridica.add(transaccion);
+            }
+            transaccion.setFiles(getFilesTransaccion(String.valueOf(transaccion.getConseTrans())));
+        }
+        return transaccionesAprobadoPorJuridica;
+    }
+
     public List<Transaccion> getTransaccionesAprobado() {
         List<Transaccion> transacciones = transaccionRepository.findAll();
         List<Transaccion> transaccionesAprobado = new ArrayList<>();
@@ -127,7 +159,7 @@ public class TransaccionService {
         TransaccionEstado estadoTransaccion = estadoTransaccionOptional.get();
         transaccion.setEstadoTransaccion(estadoTransaccion);
 
-        if (estadoTransaccion.getIdeEstado() == 3) {
+        if (estadoTransaccion.getIdeEstado() == 5) {
             List<TransaccionTitulo> transaccionTitulos = transaccion.getTransaccionTitulo();
             for (TransaccionTitulo transaccionTitulo : transaccionTitulos) {
                 int numAcciones = transaccionTitulo.getNumAcciones();
@@ -182,7 +214,7 @@ public class TransaccionService {
                     .build();
 
             emailService.sendSimpleMail(emailDetails);
-        } else if (estadoTransaccion.getIdeEstado() == 2) {
+        } else if (estadoTransaccion.getIdeEstado() == 4) {   //la aprobacion ya paso por los tres entes responsables
 
             String idePer = transaccion.getIdePer();
 
@@ -230,7 +262,7 @@ public class TransaccionService {
             emailService.sendSimpleMail(emailDetails);
 
         }
-        if (transaccion.getIntencionCompra().equals(false)){
+        if (transaccion.getIntencionCompra().equals(false) && transaccion.getEstadoTransaccion().equals(4)){
             List<Persona> personas = personaService.getPersonas();
 
             List<Persona> accionistasActivos = personas.stream()

@@ -35,6 +35,16 @@ public class TransaccionController {
         return transaccionService.getTransaccionesTramite();
     }
 
+    @GetMapping("/aprobado-controlInterno")
+    public List<Transaccion> getTransaccionAprobadoPorControlInterno() {
+        return transaccionService.getTransaccionesAprobadoPorControlInterno();
+    }
+
+    @GetMapping("/aprobado-juridica")
+    public List<Transaccion> getTransaccionAprobadoPorJuridica() {
+        return transaccionService.getTransaccionesAprobadoPorJuridica();
+    }
+
     @GetMapping("/aprobado")
     public List<Transaccion> getTransaccionAprobado() {
         return transaccionService.getTransaccionesAprobado();
