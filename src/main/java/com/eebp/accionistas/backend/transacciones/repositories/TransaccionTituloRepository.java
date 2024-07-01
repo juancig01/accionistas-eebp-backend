@@ -13,4 +13,12 @@ public interface TransaccionTituloRepository extends JpaRepository<TransaccionTi
 
     @Query("SELECT new com.eebp.accionistas.backend.transacciones.entities.TransaccionTitulo(tt.conseTrans, tt.conseTitulo, tt.numAcciones, et.descEstado) FROM TransaccionTitulo tt JOIN Titulo t ON tt.conseTitulo = t.conseTitulo JOIN EstadoTitulo et ON t.estadoTitulo.ideEstadoTitulo = et.ideEstadoTitulo WHERE tt.conseTrans = :conseTrans")
     List<TransaccionTitulo> findTransaccionesPorConseTrans(@Param("conseTrans") Integer conseTrans);
+
+    @Query("SELECT new com.eebp.accionistas.backend.transacciones.entities.TransaccionTitulo(tt.conseTrans, tt.conseTitulo, tt.numAcciones, et.descEstado) " +
+            "FROM TransaccionTitulo tt " +
+            "JOIN Titulo t ON tt.conseTitulo = t.conseTitulo " +
+            "JOIN EstadoTitulo et ON t.estadoTitulo.ideEstadoTitulo = et.ideEstadoTitulo " +
+            "WHERE tt.conseTrans = :conseTrans " +
+            "AND et.ideEstadoTitulo != 3")
+    List<TransaccionTitulo> findTransaccionesPorConseTransExcluyendoEstado3(@Param("conseTrans") Integer conseTrans);
 }

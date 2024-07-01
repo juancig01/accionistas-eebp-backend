@@ -120,7 +120,7 @@ public class TransaccionService {
         for (Transaccion transaccion : transacciones) {
             TransaccionEstado estadoTransaccion = transaccion.getEstadoTransaccion();
             if (estadoTransaccion != null && estadoTransaccion.getDescEstado().equals("Aprobado")) {
-                List<TransaccionTitulo> transaccionTitulos = transaccionTituloRepository.findTransaccionesPorConseTrans(transaccion.getConseTrans());
+                List<TransaccionTitulo> transaccionTitulos = transaccionTituloRepository.findTransaccionesPorConseTransExcluyendoEstado3(transaccion.getConseTrans());
                 transaccion.setTransaccionTitulo(transaccionTitulos);
                 transaccionesAprobado.add(transaccion);
             }
