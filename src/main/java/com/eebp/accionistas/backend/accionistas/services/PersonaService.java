@@ -1,5 +1,6 @@
 package com.eebp.accionistas.backend.accionistas.services;
 
+import com.eebp.accionistas.backend.acciones.entities.Titulo;
 import com.eebp.accionistas.backend.accionistas.entities.Accionista;
 import com.eebp.accionistas.backend.accionistas.entities.LogRegistroAccionistas;
 import com.eebp.accionistas.backend.accionistas.entities.Persona;
@@ -85,16 +86,22 @@ public class PersonaService {
     public Optional<Persona> getPersona(String codUsuario) throws UserNotFoundException {
         Optional<Persona> response = personaRepository.findById(codUsuario);
         if (response.isPresent()) {
-            if(accionistaRepository.findById(codUsuario).isPresent()) {
+            if (accionistaRepository.findById(codUsuario).isPresent()) {
                 response.get().setEsAccionista("S");
             } else {
                 response.get().setEsAccionista("N");
             }
-            return response;
+            Persona persona = response.get();
+            List<Titulo> filteredTitulos = persona.getTitulos().stream()
+                    .filter(titulo -> titulo.getCanAccTit() > 0)
+                    .collect(Collectors.toList());
+            persona.setTitulos(filteredTitulos);
+            return Optional.of(persona);
         } else {
             throw new UserNotFoundException();
         }
     }
+
 
     public Persona addDeclaracionPersona(Persona persona) {
         Persona per = personaRepository.findById(persona.getCodUsuario()).get();
