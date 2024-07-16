@@ -14,6 +14,7 @@ import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.W3CDom;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -200,6 +201,24 @@ public class PersonaService {
         document.selectFirst("#telfDomicilio").text(datosPersona.getTelfDomicilio());
         document.selectFirst("#correoPersonaDomicilio").text(datosPersona.getCorreoPersona());
         //document.selectFirst("#indDomicilio").text(datosPersona.getIndTelDomicilio());
+
+        Element empresaLaboralElement = document.selectFirst("#empresaLaboral");
+        if (empresaLaboralElement != null) {
+            if (datosPersona.getNomEmpresa() != null) {
+                empresaLaboralElement.text(datosPersona.getNomEmpresa());
+            } else {
+                empresaLaboralElement.text("");
+            }
+        }
+
+        Element barrioLaboralElement = document.selectFirst("#barrioLaboral");
+        if (barrioLaboralElement != null) {
+            if (datosPersona.getBarrioLaboral() != null) {
+               barrioLaboralElement.text(datosPersona.getBarrioLaboral());
+            } else {
+                barrioLaboralElement.text("");
+            }
+        }
         if (!datosPersona.getTipDocumento().equalsIgnoreCase("TI")) {
 
             document.selectFirst("#dirLaboral").text(datosPersona.getDirLaboral());

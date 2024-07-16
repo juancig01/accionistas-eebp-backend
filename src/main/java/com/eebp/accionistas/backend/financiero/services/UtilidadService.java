@@ -109,7 +109,7 @@ public class UtilidadService {
 
         Row row = sheet.createRow(5);
 
-        List<Utilidad> utilidades = utilidadRepository.findByAnio(anio);
+        List<Utilidad> utilidades = utilidadRepository.findByAnio(anio+1);
 
         if (!utilidades.isEmpty()) {
             Utilidad utilidad = utilidades.get(0);
