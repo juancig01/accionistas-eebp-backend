@@ -1,5 +1,6 @@
 package com.eebp.accionistas.backend.acciones.controllers;
 
+import com.eebp.accionistas.backend.acciones.entities.AccionesInfoDTO;
 import com.eebp.accionistas.backend.acciones.entities.Titulo;
 import com.eebp.accionistas.backend.acciones.services.TituloService;
 import com.eebp.accionistas.backend.seguridad.entities.Asset;
@@ -25,6 +26,11 @@ public class TitulosController {
 
     @Autowired
     TituloService tituloService;
+
+    @GetMapping("/resultado-acciones")
+    public AccionesInfoDTO getAccionesInfo() {
+        return tituloService.getAccionesInfo();
+    }
 
     @GetMapping("/{id}")
     public Optional<Titulo> findTituloById(@PathVariable Integer id) {

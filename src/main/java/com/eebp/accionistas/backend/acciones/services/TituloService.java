@@ -1,9 +1,6 @@
 package com.eebp.accionistas.backend.acciones.services;
 
-import com.eebp.accionistas.backend.acciones.entities.EstadoTitulo;
-import com.eebp.accionistas.backend.acciones.entities.Titulo;
-import com.eebp.accionistas.backend.acciones.entities.TitulosPersona;
-import com.eebp.accionistas.backend.acciones.entities.TomadorTitulo;
+import com.eebp.accionistas.backend.acciones.entities.*;
 import com.eebp.accionistas.backend.acciones.repositories.TituloPersonaRepository;
 import com.eebp.accionistas.backend.acciones.repositories.TituloRepository;
 import com.eebp.accionistas.backend.accionistas.entities.Persona;
@@ -219,6 +216,16 @@ public class TituloService {
     }
 */
 
+    public AccionesInfoDTO getAccionesInfo() {
+        List<Object[]> resultados = tituloRepository.obtenerAccionesInfo();
+        if (!resultados.isEmpty()) {
+            Object[] resultado = resultados.get(0);
+            int numeroDeAccionesEnElMercado = ((Number) resultado[0]).intValue();
+            int numeroDeAccionesConDerechoAUtilidades = ((Number) resultado[1]).intValue();
+            return new AccionesInfoDTO(numeroDeAccionesEnElMercado, numeroDeAccionesConDerechoAUtilidades);
+        }
+        return new AccionesInfoDTO(0, 0);
+    }
 
     public Transaccion comprarAcciones(TransaccionDatos transaccionCompra) {
         LocalDateTime fechaHoraActual = LocalDateTime.now();

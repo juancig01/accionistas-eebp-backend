@@ -56,6 +56,7 @@ public class SecurityConfiguration {
                                 "/api/actividadEconomica",
                                 "/api/accionista/aprobar/archivos/eliminar/*",
                                 "/api/titulos/*",
+                                "/api/titulos/resultado-acciones",
                                 "/api/parametros",
                                 "/api/parametros/*",
                                 "/api/transaccion",
