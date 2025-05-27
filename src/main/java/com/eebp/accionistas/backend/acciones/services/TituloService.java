@@ -255,7 +255,7 @@ public class TituloService {
 
                     // Anular el título utilizado
                     EstadoTitulo estadoTituloAnulado = new EstadoTitulo();
-                    estadoTituloAnulado.setIdeEstadoTitulo(3); // Anula el título
+                    estadoTituloAnulado.setIdeEstadoTitulo(1); // *Anula el título* lo vamos a dejar activo ajuste mayo
                     tituloDB.setEstadoTitulo(estadoTituloAnulado);
                     tituloRepository.save(tituloDB);
 
