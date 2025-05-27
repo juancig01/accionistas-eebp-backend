@@ -257,7 +257,7 @@ public class TituloService {
                     //EstadoTitulo estadoTituloAnulado = new EstadoTitulo();
                    //estadoTituloAnulado.setIdeEstadoTitulo(1); // *Anula el título* lo vamos a dejar activo ajuste mayo
                     //tituloDB.setEstadoTitulo(estadoTituloAnulado);
-                    //tituloRepository.save(tituloDB);
+                    // tituloRepository.save(tituloDB);
 
                     // Asignar las acciones compradas al título correspondiente
                     if (tituloCompradas == null) {
