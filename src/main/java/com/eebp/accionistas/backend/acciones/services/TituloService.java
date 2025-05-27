@@ -254,9 +254,9 @@ public class TituloService {
                     accionesCompradas += accionesATomar;
 
                     // Anular el título utilizado
-                    EstadoTitulo estadoTituloAnulado = new EstadoTitulo();
-                    estadoTituloAnulado.setIdeEstadoTitulo(1); // *Anula el título* lo vamos a dejar activo ajuste mayo
-                    tituloDB.setEstadoTitulo(estadoTituloAnulado);
+                    //EstadoTitulo estadoTituloAnulado = new EstadoTitulo();
+                   //estadoTituloAnulado.setIdeEstadoTitulo(1); // *Anula el título* lo vamos a dejar activo ajuste mayo
+                    //tituloDB.setEstadoTitulo(estadoTituloAnulado);
                     tituloRepository.save(tituloDB);
 
                     // Asignar las acciones compradas al título correspondiente
