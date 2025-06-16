@@ -255,9 +255,9 @@ public class TituloService {
                     // Cambiar el estado del título original según las acciones restantes
                     EstadoTitulo estadoTituloOriginal = new EstadoTitulo();
                     if (accionesRestantes > 0) {
-                        estadoTituloOriginal.setIdeEstadoTitulo(1); // Estado activo si quedan acciones
+                        estadoTituloOriginal.setIdeEstadoTitulo(2); // Estado activo si quedan acciones
                     } else {
-                        estadoTituloOriginal.setIdeEstadoTitulo(3); // Estado inactivo/agotado si no quedan acciones
+                        estadoTituloOriginal.setIdeEstadoTitulo(1); // Estado inactivo/agotado si no quedan acciones
                     }
                     tituloOriginal.setEstadoTitulo(estadoTituloOriginal);
                     tituloRepository.save(tituloOriginal);
