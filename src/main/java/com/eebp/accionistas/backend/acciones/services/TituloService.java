@@ -233,11 +233,6 @@ public class TituloService {
         int cantAccionesAComprar = transaccionCompra.getCantAcciones();
         int accionesCompradas = 0;
         Titulo tituloCompradas = null;
-        Titulo tituloDisponibles = null;
-
-        Optional<Persona> personaCorrespondienteOptional = null;
-        List<Persona> personasAsociadas = null;
-        List<Persona> personasA = new ArrayList<>();
 
         for (TransaccionTitulo titulo : transaccionCompra.getTitulos()) {
             if (accionesCompradas == cantAccionesAComprar) {
@@ -246,122 +241,57 @@ public class TituloService {
 
             Optional<Titulo> tituloOptional = tituloRepository.findById(titulo.getConseTitulo());
             if (tituloOptional.isPresent()) {
-                Titulo tituloDB = tituloOptional.get();
+                Titulo tituloOriginal = tituloOptional.get();
                 int accionesDisponibles = titulo.getNumAcciones();
 
                 if (accionesDisponibles > 0) {
                     int accionesATomar = Math.min(accionesDisponibles, cantAccionesAComprar - accionesCompradas);
                     accionesCompradas += accionesATomar;
 
-                    // Anular el título utilizado
-                    //EstadoTitulo estadoTituloAnulado = new EstadoTitulo();
-                   //estadoTituloAnulado.setIdeEstadoTitulo(1); // *Anula el título* lo vamos a dejar activo ajuste mayo
-                    //tituloDB.setEstadoTitulo(estadoTituloAnulado);
-                    // tituloRepository.save(tituloDB);
+                    // MODIFICAR EL TÍTULO ORIGINAL: restar las acciones compradas
+                    int accionesRestantes = tituloOriginal.getCanAccTit() - accionesATomar;
+                    tituloOriginal.setCanAccTit(accionesRestantes);
 
-                    // Asignar las acciones compradas al título correspondiente
+                    // Cambiar el estado del título original según las acciones restantes
+                    EstadoTitulo estadoTituloOriginal = new EstadoTitulo();
+                    if (accionesRestantes > 0) {
+                        estadoTituloOriginal.setIdeEstadoTitulo(1); // Estado activo si quedan acciones
+                    } else {
+                        estadoTituloOriginal.setIdeEstadoTitulo(3); // Estado inactivo/agotado si no quedan acciones
+                    }
+                    tituloOriginal.setEstadoTitulo(estadoTituloOriginal);
+                    tituloRepository.save(tituloOriginal);
+
+                    // CREAR NUEVO TÍTULO con las acciones compradas
                     if (tituloCompradas == null) {
                         tituloCompradas = new Titulo();
                         tituloCompradas.setCanAccTit(accionesATomar);
-                        tituloCompradas.setValAccTit(tituloDB.getValAccTit());
-                        tituloCompradas.setClaAccTit(tituloDB.getClaAccTit());
-                        tituloCompradas.setTipAccTit(tituloDB.getTipAccTit());
+                        tituloCompradas.setValAccTit(tituloOriginal.getValAccTit());
+                        tituloCompradas.setClaAccTit(tituloOriginal.getClaAccTit());
+                        tituloCompradas.setTipAccTit(tituloOriginal.getTipAccTit());
                         tituloCompradas.setFecCreTit(LocalDate.from(fechaHoraActual));
-                        tituloCompradas.setFecFinTit(tituloDB.getFecFinTit());
-                        tituloCompradas.setObsAccTit("NINGUNA");
+                        tituloCompradas.setFecFinTit(tituloOriginal.getFecFinTit());
+                        tituloCompradas.setObsAccTit("ACCIONES COMPRADAS - TÍTULO ORIGEN: " + tituloOriginal.getConseTitulo());
 
                         EstadoTitulo estadoTituloCompradas = new EstadoTitulo();
-                        estadoTituloCompradas.setIdeEstadoTitulo(1); // Título con estado activo
+                        estadoTituloCompradas.setIdeEstadoTitulo(1); // Título comprado activo
                         tituloCompradas.setEstadoTitulo(estadoTituloCompradas);
                     } else {
+                        // Si ya existe un título de compra, sumar las acciones
                         tituloCompradas.setCanAccTit(tituloCompradas.getCanAccTit() + accionesATomar);
-                    }
-
-                    // Asignar las acciones disponibles al título correspondiente
-                    if (accionesDisponibles - accionesATomar > 0) {
-
-                        // Buscar el título del cual sobraron las acciones
-                        Optional<TitulosPersona> tituloSobranteOptional = Optional.ofNullable(tituloPersonaRepository.findByConseTitulo(titulo.getConseTitulo()));
-
-                        TitulosPersona titulosPersona = tituloSobranteOptional.get();
-
-                        // Obtener todas las personas asociadas a ese título
-                        personasA = personaRepository.findByTitulos(tituloDB);
-
-                        if (tituloDisponibles == null) {
-                            tituloDisponibles = new Titulo();
-                            tituloDisponibles.setCanAccTit(accionesDisponibles - accionesATomar);
-                            tituloDisponibles.setValAccTit(tituloDB.getValAccTit());
-                            tituloDisponibles.setClaAccTit(tituloDB.getClaAccTit());
-                            tituloDisponibles.setTipAccTit(tituloDB.getTipAccTit());
-                            tituloDisponibles.setFecCreTit(LocalDate.from(fechaHoraActual));
-                            tituloDisponibles.setFecFinTit(tituloDB.getFecFinTit());
-                            tituloDisponibles.setObsAccTit(tituloDB.getObsAccTit());
-
-                            EstadoTitulo estadoTituloDisponibles = new EstadoTitulo();
-                            estadoTituloDisponibles.setIdeEstadoTitulo(1); // Título con estado activo
-                            tituloDisponibles.setEstadoTitulo(estadoTituloDisponibles);
-                        } else {
-                            tituloDisponibles.setCanAccTit(tituloDisponibles.getCanAccTit() + (accionesDisponibles - accionesATomar));
+                        // Actualizar observaciones para incluir múltiples orígenes
+                        String obsActual = tituloCompradas.getObsAccTit();
+                        if (!obsActual.contains("TÍTULO ORIGEN: " + tituloOriginal.getConseTitulo())) {
+                            tituloCompradas.setObsAccTit(obsActual + " - TÍTULO ORIGEN: " + tituloOriginal.getConseTitulo());
                         }
                     }
                 }
             }
         }
-        // Guardar los títulos en la base de datos
+
+        // Guardar el título de acciones compradas
         if (tituloCompradas != null) {
             tituloRepository.save(tituloCompradas);
-        }
-        if (tituloDisponibles != null) {
-            tituloRepository.save(tituloDisponibles);
-        }
-
-        //Asociar el titulo sobrante a la persona encontrada
-        for (Persona persona : personasA) {
-            final Titulo tituloDisponible = tituloDisponibles;
-            Optional<Persona> personaOptionalA = personaRepository.findById(persona.getCodUsuario());
-            personaOptionalA.ifPresent(persona1 -> {
-                persona1.getTitulos().add(tituloDisponible); // Usar la variable final dentro de la expresión lambda
-            });
-            EmailDetails emailDetails = EmailDetails.builder()
-                    .recipient(personaOptionalA.get().getCorreoPersona())
-                    .subject("Notificación de nuevo Titulo")
-                    .msgBody("<table border=\"0\" cellspacing=\"0\" style=\"border-collapse:collapse; height:147px; width:600px\">\n" +
-                            "\t<tbody>\n" +
-                            "\t\t<tr>\n" +
-                            "\t\t\t<td style=\"height:91px; text-align:center; width:23.5796%\"><img src=\"https://eebpsa.com.co/wp-content/uploads/2020/08/lOGO-2.1.png\" /></td>\n" +
-                            "\t\t\t<td style=\"height:91px; width:67.4766%\">\n" +
-                            "\t\t\t<h3 style=\"text-align:center\"><strong>BIENVENIDO AL SISTEMA DE ACCIONISTAS </strong></h3>\n" +
-                            "\n" +
-                            "\t\t\t<h3 style=\"text-align:center\"><strong>Empresa de Energ&iacute;a del Bajo Putumayo S.A. E.S.P.</strong></h3>\n" +
-                            "\t\t\t</td>\n" +
-                            "\t\t</tr>\n" +
-                            "\t\t<tr>\n" +
-                            "\t\t\t<td colspan=\"2\" style=\"height:10px; text-align:center; width:91.0562%\">\n" +
-                            "\t\t\t<p>&nbsp;</p>\n" +
-                            "\n" +
-                            "\t\t\t<p style=\"text-align:left\">Se&ntilde;or(a) " + personaOptionalA.get().getNomPri() + " " + personaOptionalA.get().getNomSeg() + " " + personaOptionalA.get().getApePri() +  " " + personaOptionalA.get().getApeSeg()  + ",</p>\n" +
-                            "\n" +
-                            "\t\t\t<p style=\"text-align:left\">Le informamos que de las acciones ofertadas se ha creado un nuevo Titulo"+ " " + tituloDisponible.getConseTitulo() + " " + "con" + " " + tituloDisponible.getCanAccTit() + " " + "acciones restantes.\n" +
-                            "\t\t\t</td>\n" +
-                            "\t\t</tr>\n" +
-                            "\t\t<tr>\n" +
-                            "\t\t\t<td colspan=\"2\" style=\"text-align:center; width:91.0562%\">\n" +
-                            "\t\t\t<p style=\"text-align:left\">&nbsp;</p>\n" +
-                            "\n" +
-                            "\t\t\t<p style=\"text-align:left\"><u>En caso de alguna duda, favor contactarse con servicio al cliente.</u></p>\n" +
-                            "\n" +
-                            "\t\t\t<p style=\"text-align:left\">&nbsp;</p>\n" +
-                            "\n" +
-                            "\t\t\t<p style=\"text-align:left\">Acceso al sistema: <a href=\"http://localhost:4200\">http://localhost:4200</a></p>\n" +
-                            "\t\t\t</td>\n" +
-                            "\t\t</tr>\n" +
-                            "\t</tbody>\n" +
-                            "</table>\n" +
-                            "\n" +
-                            "<p><strong>&nbsp;</strong></p>")
-                    .build();
-            emailService.sendSimpleMail(emailDetails); // Enviar el correo electrónico
         }
 
         // Asociar el nuevo título a los tomadores
@@ -371,6 +301,8 @@ public class TituloService {
             personaOptional.ifPresent(persona -> {
                 persona.getTitulos().add(tituloCompradasFinal);
             });
+
+            // Envío de email de notificación
             EmailDetails emailDetails = EmailDetails.builder()
                     .recipient(personaOptional.get().getCorreoPersona())
                     .subject("Notificación de adquisición de acciones")
@@ -409,7 +341,7 @@ public class TituloService {
                             "\n" +
                             "<p><strong>&nbsp;</strong></p>")
                     .build();
-            emailService.sendSimpleMail(emailDetails); // Enviar el correo electrónico
+            emailService.sendSimpleMail(emailDetails);
         }
 
         //Crear la transaccion
