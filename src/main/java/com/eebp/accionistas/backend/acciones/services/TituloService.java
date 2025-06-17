@@ -259,7 +259,8 @@ public class TituloService {
                     } else {
                         estadoTituloOriginal.setIdeEstadoTitulo(1); // Estado inactivo/agotado si no quedan acciones
                     }
-                    estadoTituloOriginal.setIdeEstadoTitulo(1);
+                    estadoTituloOriginal.setIdeEstadoTitulo(1); // Siempre estado 1
+                    tituloOriginal.setEstadoTitulo(estadoTituloOriginal); // Línea que faltaba
                     tituloRepository.save(tituloOriginal);
 
                     // CREAR NUEVO TÍTULO con las acciones compradas
