@@ -252,13 +252,8 @@ public class TituloService {
                     int accionesRestantes = tituloOriginal.getCanAccTit() - accionesATomar;
                     tituloOriginal.setCanAccTit(accionesRestantes);
 
-                    // Cambiar el estado del título original según las acciones restantes
+                    // Forzar estado del título original a 1 (corregido)
                     EstadoTitulo estadoTituloOriginal = new EstadoTitulo();
-                    if (accionesRestantes > 0) {
-                        estadoTituloOriginal.setIdeEstadoTitulo(2); // Estado activo si quedan acciones
-                    } else {
-                        estadoTituloOriginal.setIdeEstadoTitulo(1); // Estado inactivo/agotado si no quedan acciones
-                    }
                     estadoTituloOriginal.setIdeEstadoTitulo(1); // Siempre estado 1
                     tituloOriginal.setEstadoTitulo(estadoTituloOriginal); // Línea que faltaba
                     tituloRepository.save(tituloOriginal);
