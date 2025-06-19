@@ -614,6 +614,7 @@ public class TituloService {
         // Buscar el título del cual sobraron las acciones
 
         Titulo datosTitulo = tituloRepository.findById(conseTitulo).get();
+        System.out.println("Título encontrado: " + datosTitulo.getConseTitulo());
         Optional<TitulosPersona> tituloPersona = Optional.ofNullable(tituloPersonaRepository.findByConseTitulo(datosTitulo.getConseTitulo()));
         Optional<Persona> datosPersona = personaRepository.findById(String.valueOf(tituloPersona.get().getIdePer()));
 
