@@ -239,9 +239,9 @@ public class TituloService {
         Titulo tituloCompradas = null;
 
         for (TransaccionTitulo titulo : transaccionCompra.getTitulos()) {
-            if (accionesCompradas == cantAccionesAComprar) {
+           /* if (accionesCompradas == cantAccionesAComprar) {
                 break; // Ya se compraron todas las acciones necesarias
-            }
+            }*/
 
             Optional<Titulo> tituloOptional = tituloRepository.findById(titulo.getConseTitulo());
             if (tituloOptional.isPresent()) {
