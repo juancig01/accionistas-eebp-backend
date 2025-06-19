@@ -348,7 +348,7 @@ public class TituloService {
         //Crear la transaccion
         TomadorTitulo primerTomador = transaccionCompra.getTomadores().get(0);
 
-        Titulo tituloTrasanccion = tituloRepository.save(tituloCompradas);
+        //Titulo tituloTrasanccion = tituloRepository.save(tituloCompradas);
 
         TipoTransaccion tipoTransaccion = new TipoTransaccion();
         tipoTransaccion.setCodTipTran(2);
