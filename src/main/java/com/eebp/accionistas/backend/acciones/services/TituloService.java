@@ -614,14 +614,11 @@ public class TituloService {
         // Buscar el título del cual sobraron las acciones
 
         Titulo datosTitulo = tituloRepository.findById(conseTitulo).get();
-        System.out.println("Título encontrado: " + datosTitulo.getConseTitulo());
         Optional<TitulosPersona> tituloPersona = Optional.ofNullable(tituloPersonaRepository.findByConseTitulo(datosTitulo.getConseTitulo()));
         Optional<Persona> datosPersona = personaRepository.findById(String.valueOf(tituloPersona.get().getIdePer()));
 
         File inputHTML = new File("src/main/resources/formatoTituloAcciones.html");
         Document document = Jsoup.parse(inputHTML, "UTF-8");
-
-        System.out.println("Valor inicial en HTML: '" + document.selectFirst("#valor").text() + "'");
 
         //document.selectFirst("#codUsuario").text(datosPersona.getCodUsuario());
         document.selectFirst("#numAcciones").text(String.valueOf(datosTitulo.getCanAccTit()));
@@ -651,7 +648,6 @@ public class TituloService {
         }
 
         document.selectFirst("#codUsuario").text(datosPersona.get().getCodUsuario());
-        document.selectFirst("#valor").text("20000");
         document.selectFirst("#firmaRepresentanteRepresentanteLegal").html("<img width=\"150\" src=\"data:image/png;base64, " + "<img width=\"150\" src=\"data:image/png;base64, " + Base64.getEncoder().encodeToString(datosPersona.get().getFirma()) + "\">");
 
 
