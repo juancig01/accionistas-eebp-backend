@@ -1,6 +1,7 @@
 package com.eebp.accionistas.backend.acciones.services;
 
 import com.eebp.accionistas.backend.acciones.entities.*;
+import com.eebp.accionistas.backend.acciones.repositories.EstadoTituloRepository;
 import com.eebp.accionistas.backend.acciones.repositories.TituloPersonaRepository;
 import com.eebp.accionistas.backend.acciones.repositories.TituloRepository;
 import com.eebp.accionistas.backend.accionistas.entities.Persona;
@@ -56,6 +57,9 @@ public class TituloService {
 
     @Autowired
     TransaccionTituloRepository transaccionTituloRepository;
+
+    @Autowired
+    EstadoTituloRepository estadoTituloRepository;
 
     @Autowired
     private EmailServiceImpl emailService;
@@ -253,9 +257,8 @@ public class TituloService {
                     tituloOriginal.setCanAccTit(accionesRestantes);
 
                     // Forzar estado del título original a 1 (corregido)
-                    EstadoTitulo estadoTituloOriginal = new EstadoTitulo();
-                    estadoTituloOriginal.setIdeEstadoTitulo(1); // Siempre estado 1
-                    tituloOriginal.setEstadoTitulo(estadoTituloOriginal); // Línea que faltaba
+                    Optional<EstadoTitulo> estadoActivoOpt = estadoTituloRepository.findById(1);
+                    estadoActivoOpt.ifPresent(tituloOriginal::setEstadoTitulo);
                     tituloRepository.save(tituloOriginal);
 
                     // CREAR NUEVO TÍTULO con las acciones compradas
