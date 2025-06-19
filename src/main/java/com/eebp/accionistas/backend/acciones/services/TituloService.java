@@ -248,6 +248,11 @@ public class TituloService {
                 Titulo tituloOriginal = tituloOptional.get();
                 int accionesDisponibles = titulo.getNumAcciones();
 
+                EstadoTitulo estadoTituloAnulado = new EstadoTitulo();
+                estadoTituloAnulado.setIdeEstadoTitulo(1); // Anula el título
+                tituloOriginal.setEstadoTitulo(estadoTituloAnulado);
+                tituloRepository.save(tituloOriginal);
+
                 if (accionesDisponibles > 0) {
                     int accionesATomar = Math.min(accionesDisponibles, cantAccionesAComprar - accionesCompradas);
                     accionesCompradas += accionesATomar;
@@ -258,9 +263,9 @@ public class TituloService {
 
                     // Forzar estado del título original a 1 (corregido)
                     // Anular el título utilizado
-                    EstadoTitulo estadoTituloAnulado = new EstadoTitulo();
-                    estadoTituloAnulado.setIdeEstadoTitulo(1); // Anula el título
-                    tituloOriginal.setEstadoTitulo(estadoTituloAnulado);
+                    EstadoTitulo estadoTituloActivo = new EstadoTitulo();
+                    estadoTituloActivo.setIdeEstadoTitulo(1); // Anula el título
+                    tituloOriginal.setEstadoTitulo(estadoTituloActivo);
                     tituloRepository.save(tituloOriginal);
 
                     // CREAR NUEVO TÍTULO con las acciones compradas
