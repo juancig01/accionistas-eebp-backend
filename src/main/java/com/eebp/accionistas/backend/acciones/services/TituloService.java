@@ -648,7 +648,6 @@ public class TituloService {
         }
 
         document.selectFirst("#codUsuario").text(datosPersona.get().getCodUsuario());
-        document.selectFirst("#xxx").text(String.valueOf(datosTitulo.getValAccTit()));
         document.selectFirst("#firmaRepresentanteRepresentanteLegal").html("<img width=\"150\" src=\"data:image/png;base64, " + "<img width=\"150\" src=\"data:image/png;base64, " + Base64.getEncoder().encodeToString(datosPersona.get().getFirma()) + "\">");
 
 
