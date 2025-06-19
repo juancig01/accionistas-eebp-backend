@@ -257,8 +257,10 @@ public class TituloService {
                     tituloOriginal.setCanAccTit(accionesRestantes);
 
                     // Forzar estado del título original a 1 (corregido)
-                    Optional<EstadoTitulo> estadoActivoOpt = estadoTituloRepository.findById(1);
-                    estadoActivoOpt.ifPresent(tituloOriginal::setEstadoTitulo);
+                    // Anular el título utilizado
+                    EstadoTitulo estadoTituloAnulado = new EstadoTitulo();
+                    estadoTituloAnulado.setIdeEstadoTitulo(1); // Anula el título
+                    tituloOriginal.setEstadoTitulo(estadoTituloAnulado);
                     tituloRepository.save(tituloOriginal);
 
                     // CREAR NUEVO TÍTULO con las acciones compradas
