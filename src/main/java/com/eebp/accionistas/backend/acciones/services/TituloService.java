@@ -378,6 +378,10 @@ public class TituloService {
 
         transaccionTituloRepository.save(transaccionTitulo);
 
+        for (Integer idTitulo : titulosModificados) {
+            tituloRepository.updateEstadoTitulo(idTitulo, 1);
+        }
+
         return transaccion;
     }
 
