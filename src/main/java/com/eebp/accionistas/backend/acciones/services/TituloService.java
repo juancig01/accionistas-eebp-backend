@@ -254,13 +254,15 @@ public class TituloService {
                     int accionesRestantes = tituloOriginal.getCanAccTit() - accionesATomar;
                     tituloOriginal.setCanAccTit(accionesRestantes);
 
-                    // Guardar primero los cambios de cantidad
+                    // Establecer el estado ACTIVO directamente en el objeto original
+                    EstadoTitulo estadoActivo = new EstadoTitulo();
+                    estadoActivo.setIdeEstadoTitulo(1);
+                    tituloOriginal.setEstadoTitulo(estadoActivo);
+
+                    // Guardar cambios en el título original con estado 1
                     updateTitulo(tituloOriginal);
 
-                    // Actualizar el estado directamente con consulta nativa
-                    tituloRepository.updateEstadoTitulo(tituloOriginal.getConseTitulo(), 1);
-
-                    System.out.println("Estado actualizado para título ID: " + tituloOriginal.getConseTitulo());
+                    System.out.println("Estado actualizado a 1 para título ID: " + tituloOriginal.getConseTitulo());
                     titulosModificados.add(tituloOriginal.getConseTitulo());
 
                     // CREAR NUEVO TÍTULO con las acciones compradas
@@ -275,7 +277,7 @@ public class TituloService {
                         tituloCompradas.setObsAccTit("ACCIONES COMPRADAS - TÍTULO ORIGEN: " + tituloOriginal.getConseTitulo());
 
                         EstadoTitulo estadoTituloCompradas = new EstadoTitulo();
-                        estadoTituloCompradas.setIdeEstadoTitulo(1); // Título comprado activo
+                        estadoTituloCompradas.setIdeEstadoTitulo(1); // Estado ACTIVO
                         tituloCompradas.setEstadoTitulo(estadoTituloCompradas);
                     } else {
                         // Si ya existe un título de compra, sumar las acciones
@@ -375,11 +377,6 @@ public class TituloService {
         transaccionTitulo.setConseTrans(transaccion.getConseTrans());
 
         transaccionTituloRepository.save(transaccionTitulo);
-
-        for (Integer idTitulo : titulosModificados) {
-            tituloRepository.updateEstadoTitulo(idTitulo, 1);
-            System.out.println("Reactualizado estado a 1 para título ID: " + idTitulo);
-        }
 
         return transaccion;
     }
