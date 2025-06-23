@@ -380,6 +380,7 @@ public class TituloService {
 
         for (Integer idTitulo : titulosModificados) {
             tituloRepository.updateEstadoTitulo(idTitulo, 1);
+            System.out.println("Estado actualizado a 1 para título ID: ESTADO FINAL DEL METODO ");
         }
 
         return transaccion;
