@@ -376,6 +376,11 @@ public class TituloService {
 
         transaccionTituloRepository.save(transaccionTitulo);
 
+        for (Integer idTitulo : titulosModificados) {
+            tituloRepository.updateEstadoTitulo(idTitulo, 1);
+            System.out.println("Reactualizado estado a 1 para título ID: " + idTitulo);
+        }
+
         return transaccion;
     }
 
