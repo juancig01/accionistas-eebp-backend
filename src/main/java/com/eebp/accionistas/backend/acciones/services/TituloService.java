@@ -237,21 +237,13 @@ public class TituloService {
         int cantAccionesAComprar = transaccionCompra.getCantAcciones();
         int accionesCompradas = 0;
         Titulo tituloCompradas = null;
+        Set<Integer> titulosModificados = new HashSet<>(); // Titulos usados en la compra
 
         for (TransaccionTitulo titulo : transaccionCompra.getTitulos()) {
-           /* if (accionesCompradas == cantAccionesAComprar) {
-                break; // Ya se compraron todas las acciones necesarias
-            }*/
-
             Optional<Titulo> tituloOptional = tituloRepository.findById(titulo.getConseTitulo());
             if (tituloOptional.isPresent()) {
                 Titulo tituloOriginal = tituloOptional.get();
                 int accionesDisponibles = titulo.getNumAcciones();
-
-                EstadoTitulo estadoTituloAnulado = new EstadoTitulo();
-                estadoTituloAnulado.setIdeEstadoTitulo(1); // Anula el título
-                tituloOriginal.setEstadoTitulo(estadoTituloAnulado);
-                tituloRepository.save(tituloOriginal);
 
                 if (accionesDisponibles > 0) {
                     int accionesATomar = Math.min(accionesDisponibles, cantAccionesAComprar - accionesCompradas);
@@ -261,12 +253,13 @@ public class TituloService {
                     int accionesRestantes = tituloOriginal.getCanAccTit() - accionesATomar;
                     tituloOriginal.setCanAccTit(accionesRestantes);
 
-                    // Forzar estado del título original a 1 (corregido)
-                    // Anular el título utilizado
-                    EstadoTitulo estadoTituloActivo = new EstadoTitulo();
-                    estadoTituloActivo.setIdeEstadoTitulo(1); // Anula el título
+                    // Asignar estado 1 (activo)
+                    EstadoTitulo estadoTituloActivo = estadoTituloRepository.findById(1)
+                            .orElseThrow(() -> new RuntimeException("Estado ACTIVO no encontrado"));
                     tituloOriginal.setEstadoTitulo(estadoTituloActivo);
+
                     tituloRepository.save(tituloOriginal);
+                    titulosModificados.add(tituloOriginal.getConseTitulo());
 
                     // CREAR NUEVO TÍTULO con las acciones compradas
                     if (tituloCompradas == null) {
@@ -295,7 +288,7 @@ public class TituloService {
             }
         }
 
-        // Guardar el título de acciones compradas
+        // Guardar el nuevo título de compra
         if (tituloCompradas != null) {
             tituloRepository.save(tituloCompradas);
         }
@@ -382,6 +375,17 @@ public class TituloService {
         transaccionTitulo.setConseTrans(transaccion.getConseTrans());
 
         transaccionTituloRepository.save(transaccionTitulo);
+
+        // Forzar estado ACTIVO a todos los títulos usados
+        EstadoTitulo estadoActivoFinal = estadoTituloRepository.findById(1)
+                .orElseThrow(() -> new RuntimeException("Estado ACTIVO no encontrado"));
+
+        for (Integer conseTitulo : titulosModificados) {
+            Titulo titulo = tituloRepository.findById(conseTitulo)
+                    .orElseThrow(() -> new RuntimeException("Título no encontrado"));
+            titulo.setEstadoTitulo(estadoActivoFinal);
+            tituloRepository.save(titulo);
+        }
 
         return transaccion;
     }
