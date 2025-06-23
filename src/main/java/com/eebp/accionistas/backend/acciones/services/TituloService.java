@@ -254,13 +254,13 @@ public class TituloService {
                     int accionesRestantes = tituloOriginal.getCanAccTit() - accionesATomar;
                     tituloOriginal.setCanAccTit(accionesRestantes);
 
-                    // Asignar estado 1 (activo) - SIEMPRE
-                    EstadoTitulo estadoTituloActivo = estadoTituloRepository.findById(1)
-                            .orElseThrow(() -> new RuntimeException("Estado ACTIVO no encontrado"));
-                    tituloOriginal.setEstadoTitulo(estadoTituloActivo);
-
-                    // Usar el método updateTitulo en lugar de llamada directa al repositorio
+                    // Guardar primero los cambios de cantidad
                     updateTitulo(tituloOriginal);
+
+                    // Actualizar el estado directamente con consulta nativa
+                    tituloRepository.updateEstadoTitulo(tituloOriginal.getConseTitulo(), 1);
+
+                    System.out.println("Estado actualizado para título ID: " + tituloOriginal.getConseTitulo());
                     titulosModificados.add(tituloOriginal.getConseTitulo());
 
                     // CREAR NUEVO TÍTULO con las acciones compradas
@@ -348,8 +348,6 @@ public class TituloService {
         //Crear la transaccion
         TomadorTitulo primerTomador = transaccionCompra.getTomadores().get(0);
 
-        //Titulo tituloTrasanccion = tituloRepository.save(tituloCompradas);
-
         TipoTransaccion tipoTransaccion = new TipoTransaccion();
         tipoTransaccion.setCodTipTran(2);
 
@@ -364,16 +362,16 @@ public class TituloService {
         Instant instant = fechaTrans.atZone(ZoneId.systemDefault()).toInstant();
 
         Transaccion transaccion =
-            transaccionRepository.save(
-                Transaccion.builder()
-                        .fecTrans(Date.from(instant))
-                        .idePer(primerTomador.getIdePer())
-                        .intencionCompra(false)
-                        .valTran(tituloCompradas.getValAccTit())
-                        .tipoTransaccion(tipoTransaccion)
-                        .estadoTransaccion(transaccionEstado)
-                .build()
-            );
+                transaccionRepository.save(
+                        Transaccion.builder()
+                                .fecTrans(Date.from(instant))
+                                .idePer(primerTomador.getIdePer())
+                                .intencionCompra(false)
+                                .valTran(tituloCompradas.getValAccTit())
+                                .tipoTransaccion(tipoTransaccion)
+                                .estadoTransaccion(transaccionEstado)
+                                .build()
+                );
         transaccionTitulo.setConseTrans(transaccion.getConseTrans());
 
         transaccionTituloRepository.save(transaccionTitulo);
