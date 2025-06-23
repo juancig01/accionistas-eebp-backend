@@ -253,12 +253,13 @@ public class TituloService {
                     int accionesRestantes = tituloOriginal.getCanAccTit() - accionesATomar;
                     tituloOriginal.setCanAccTit(accionesRestantes);
 
-                    // Asignar estado 1 (activo)
+                    // Asignar estado 1 (activo) - SIEMPRE
                     EstadoTitulo estadoTituloActivo = estadoTituloRepository.findById(1)
                             .orElseThrow(() -> new RuntimeException("Estado ACTIVO no encontrado"));
                     tituloOriginal.setEstadoTitulo(estadoTituloActivo);
 
-                    tituloRepository.save(tituloOriginal);
+                    // Usar el método updateTitulo en lugar de llamada directa al repositorio
+                    updateTitulo(tituloOriginal);
                     titulosModificados.add(tituloOriginal.getConseTitulo());
 
                     // CREAR NUEVO TÍTULO con las acciones compradas
@@ -375,17 +376,6 @@ public class TituloService {
         transaccionTitulo.setConseTrans(transaccion.getConseTrans());
 
         transaccionTituloRepository.save(transaccionTitulo);
-
-        // Forzar estado ACTIVO a todos los títulos usados
-        EstadoTitulo estadoActivoFinal = estadoTituloRepository.findById(1)
-                .orElseThrow(() -> new RuntimeException("Estado ACTIVO no encontrado"));
-
-        for (Integer conseTitulo : titulosModificados) {
-            Titulo titulo = tituloRepository.findById(conseTitulo)
-                    .orElseThrow(() -> new RuntimeException("Título no encontrado"));
-            titulo.setEstadoTitulo(estadoActivoFinal);
-            tituloRepository.save(titulo);
-        }
 
         return transaccion;
     }
