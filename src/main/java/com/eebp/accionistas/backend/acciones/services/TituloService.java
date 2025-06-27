@@ -251,8 +251,8 @@ public class TituloService {
                     accionesCompradas += accionesATomar;
 
                     // MODIFICAR EL TÍTULO ORIGINAL: restar las acciones compradas
-                    int accionesRestantes = tituloOriginal.getCanAccTit() - accionesATomar;
-                    tituloOriginal.setCanAccTit(accionesRestantes);
+                    //int accionesRestantes = tituloOriginal.getCanAccTit() - accionesATomar;
+                    //tituloOriginal.setCanAccTit(accionesRestantes);
 
                     // Establecer el estado ACTIVO directamente en el objeto original
                     EstadoTitulo estadoActivo = new EstadoTitulo();
