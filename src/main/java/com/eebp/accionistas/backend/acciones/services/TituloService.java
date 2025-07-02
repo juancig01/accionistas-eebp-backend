@@ -240,6 +240,13 @@ public class TituloService {
         Titulo tituloCompradas = null;
         Set<Integer> titulosModificados = new HashSet<>(); // Titulos usados en la compra
 
+        // NUEVO: Obtener el ID de la transacción original para actualizarla
+        Integer transaccionOriginalId = null;
+        if (!transaccionCompra.getTitulos().isEmpty()) {
+            // Obtener el conseTrans del primer título para identificar la transacción original
+            transaccionOriginalId = transaccionCompra.getTitulos().get(0).getConseTrans();
+        }
+
         for (TransaccionTitulo titulo : transaccionCompra.getTitulos()) {
             Optional<Titulo> tituloOptional = tituloRepository.findById(titulo.getConseTitulo());
             if (tituloOptional.isPresent()) {
@@ -297,6 +304,24 @@ public class TituloService {
             tituloRepository.save(tituloCompradas);
         }
 
+        // NUEVO: Actualizar el estado de la transacción ORIGINAL a 6 (Ejecutado/Completado)
+        if (transaccionOriginalId != null) {
+            Optional<Transaccion> transaccionOriginalOptional = transaccionRepository.findById(transaccionOriginalId);
+            if (transaccionOriginalOptional.isPresent()) {
+                Transaccion transaccionOriginal = transaccionOriginalOptional.get();
+
+                // Crear y asignar el nuevo estado
+                TransaccionEstado estadoEjecutado = new TransaccionEstado();
+                estadoEjecutado.setIdeEstado(6); // Estado 6 = Ejecutado/Completado
+                transaccionOriginal.setEstadoTransaccion(estadoEjecutado);
+
+                // Guardar la transacción original con el nuevo estado
+                transaccionRepository.save(transaccionOriginal);
+
+                System.out.println("Estado actualizado a 6 para transacción original ID: " + transaccionOriginalId);
+            }
+        }
+
         // Asociar el nuevo título a los tomadores
         for (TomadorTitulo tomador : transaccionCompra.getTomadores()) {
             final Titulo tituloCompradasFinal = tituloCompradas;
@@ -347,7 +372,7 @@ public class TituloService {
             emailService.sendSimpleMail(emailDetails);
         }
 
-        //Crear la transaccion
+        //Crear la transaccion NUEVA (registro de la compra)
         TomadorTitulo primerTomador = transaccionCompra.getTomadores().get(0);
 
         TipoTransaccion tipoTransaccion = new TipoTransaccion();
