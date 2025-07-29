@@ -38,26 +38,30 @@
         .logoeebp {
             height: 90px;
             width: 140px;
-            margin-left: 35px;
+            margin-left: 50px; /* Aumenta el margen izquierdo */
+            margin-right: 20px; /* Agrega margen derecho */
             margin-top: 5px;
         }
 
         .container {
             display: flex;
+            align-items: center; /* Centra verticalmente */
+            justify-content: center; /* Centra horizontalmente */
         }
 
         .logotitulo {
             margin-top: 20px;
-            flex-grow: 0.5;
+            flex-grow: 0; /* Cambiar de 0.5 a 0 para que no crezca */
+            flex-shrink: 0; /* No se encoja */
         }
 
         .titulo {
             margin-top: 10px;
-            margin-right: 90px;
+            margin-right: 50px; /* Reduce el margen derecho */
             line-height: 3px;
             font-family: "Book Antiqua", serif;
             font-size: 12px;
-            flex-grow: 3;
+            flex-grow: 1; /* Cambiar de 3 a 1 */
             text-align: center;
         }
 
