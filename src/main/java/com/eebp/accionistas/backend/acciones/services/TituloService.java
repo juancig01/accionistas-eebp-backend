@@ -657,7 +657,7 @@ public class TituloService {
 
         //document.selectFirst("#codUsuario").text(datosPersona.getCodUsuario());
         document.selectFirst("#numAcciones").text(String.valueOf(datosTitulo.getCanAccTit()));
-        document.selectFirst("#valAccTit").text(String.valueOf(datosTitulo.getValAccTit() * 20000));
+        document.selectFirst("#valAccTit").text(String.valueOf(datosTitulo.getValAccTit() * datosTitulo.getCanAccTit()));
         document.selectFirst("#conseTitulo").text(String.valueOf(datosTitulo.getConseTitulo()));
 
         if (datosTitulo.getClaAccTit().equalsIgnoreCase("A")) {
