@@ -38,30 +38,18 @@
         .logoeebp {
             height: 90px;
             width: 140px;
-            margin-left: 50px; /* Aumenta el margen izquierdo */
-            margin-right: 20px; /* Agrega margen derecho */
-            margin-top: 5px;
         }
 
         .container {
-            display: flex;
-            align-items: center; /* Centra verticalmente */
-            justify-content: center; /* Centra horizontalmente */
-        }
-
-        .logotitulo {
-            margin-top: 20px;
-            flex-grow: 0; /* Cambiar de 0.5 a 0 para que no crezca */
-            flex-shrink: 0; /* No se encoja */
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
         }
 
         .titulo {
-            margin-top: 10px;
-            margin-right: 50px; /* Reduce el margen derecho */
             line-height: 3px;
             font-family: "Book Antiqua", serif;
             font-size: 12px;
-            flex-grow: 1; /* Cambiar de 3 a 1 */
             text-align: center;
         }
 
@@ -149,190 +137,191 @@
 
 <body>
 
-    <!-- Información principal titulo -->
-    <div class="infotitulo">
-        <div class="container">
-            <!-- logo EEBP -->
-            <div class="logotitulo">
+<!-- Información principal titulo -->
+<div class="infotitulo">
+    <table class="container">
+        <tr>
+            <td style="width: 25%; text-align: center; vertical-align: top; padding-top: 15px;">
                 <img class="logoeebp" src="https://eebpsa.com.co/wp-content/uploads/2020/08/lOGO-2.1.png" alt="logoeebp">
-            </div>
+            </td>
+            <td style="width: 75%; text-align: center; vertical-align: top; padding-top: 10px;">
+                <div class="titulo">
+                    <h3>EMPRESA DE ENERGÍA DEL BAJO PUTUMAYO S.A E.S.P.</h3>
+                    <h3>EEBP S.A E.S.P </h3>
+                    <p>Puerto Asís, Putumayo - Colombia</p>
+                    <h2>NIT. 846.000.553 - 0</h2>
+                </div>
+            </td>
+        </tr>
+    </table>
 
-            <!-- titulo, Nit... -->
-            <div class="titulo">
-                <h3>EMPRESA DE ENERGÍA DEL BAJO PUTUMAYO S.A E.S.P.</h3>
-                <h3>EEBP S.A E.S.P </h3>
-                <p>Puerto Asís, Putumayo - Colombia</p>
-                <h2>NIT. 846.000.553 - 0</h2>
-            </div>
+    <!-- subtitulo -->
+    <div class="subtitulo">
+        <p><strong>Sociedad Anónima por acciones constituida por escritura No. 121 del 3 de febrero de 1999</strong>
+        </p>
+        <p><strong>de la Notaria Única del Círculo de Puerto Asís.</strong></p>
+    </div>
+
+    <!-- Numero, valor titulo -->
+    <table class="filas">
+        <tr class="noAcciones">
+
+            <td style="padding-right: 30px;"><strong>No.</strong></td>
+            <td class="celdas" style="width: 80px; padding: 15px;" id="numAcciones"></td>
+            <td></td>
+
+            <td style="padding-right: 5px;"><strong>POR $</strong></td>
+            <td class="celdas" style="width: 160px;" id="valAccTit"></td>
+
+            <td style="padding-right: 5px;"><strong>TITULO</strong></td>
+            <td class="celdas" style="width: 120px;" id="conseTitulo"></td>
+        </tr>
+    </table>
+
+    <!-- acciones a favor, cc, nit ... -->
+    <table class="filas">
+        <tr class="clasesAcciones">
+
+            <td style="padding-right: 10px; width: 95px;"><strong>CLASES DE ACCIONES:</strong></td>
+            <td style="padding-right: 1cap;"><strong>A</strong></td>
+            <td class="celdas" style="width: 40px;" id="claseA"></td>
+            <td style="padding-right: 10px;"><strong>B</strong></td>
+            <td class="celdas" style="width: 40px;" id="claseB"></td>
+
+            <td style="padding-right: 5px; font-size: 9px; width: 120px;"><strong>TIPO DE ACCIONES:</strong></td>
+            <td style="padding-right: 5px; font-size: 9px;"><strong>ORDINARIAS</strong></td>
+            <td class="celdas" style="width: 40px;" id="tipAccTitO"></td>
+            <td style="padding-right: 5px; font-size: 9px;"><strong>PREVILEGIADAS</strong></td>
+            <td class="celdas" style="width: 40px;" id="tipAccTitP"></td>
+
+        </tr>
+    </table>
+
+    <!-- a favor de, cc -->
+    <table class="filas">
+        <tr class="aFavor">
+            <td style="padding-right: 30px;"><strong>A FAVOR DE: </strong></td>
+            <td class="celdas" style="width: 240px; padding: 15px;" id="nomAccionista"></td>
+            <td></td>
+
+            <td style="padding-right: 5px;"><strong>C.C o Nit.:</strong></td>
+            <td class="celdas" style="width: 130px;" id="codUsuario"></td>
+
+        </tr>
+    </table>
+
+    <!-- por en letras -->
+    <table class="filas">
+        <tr class="aFavor">
+            <td style="padding-right: 90px;"><strong>POR: </strong></td>
+            <td class="celdas" style="width: 480px; padding: 15px;" id="valorEnLetras" colspan="2"></td>
+        </tr>
+    </table>
+
+    <!-- informacion acciones nominativas -->
+    <p>ACCIONES NOMINATIVAS, de valor nominal de Veinte Mil Pesos ($ 20.000) cada una.</p>
+
+    <!-- seccion firmas -->
+    <div class="firmas">
+        <div class="firmaIzquierda">
+            <span id="firmaRepresentanteLegal"></span>
+            <h6 class="firmaR" id="firmaRepresentanteRepresentanteLegal">_________________________________________</h6>
+            <p><strong>Representante Legal</strong></p>
         </div>
-
-        <!-- subtitulo -->
-        <div class="subtitulo">
-            <p><strong>Sociedad Anónima por acciones constituida por escritura No. 121 del 3 de febrero de 1999</strong>
+        <div class="firmaDerecha">
+            <span id="firmaDerecha"></span>
+            <h6 class="firmaR" id="firmaSecretaria">__________________________________________</h6>
+            <p><strong>Secretaria</strong></p>
+            <p><span id="fecha"></span></p>
+            <p style="font-size: 7px;">
+                <script>mostrarFecha();</script>
             </p>
-            <p><strong>de la Notaria Única del Círculo de Puerto Asís.</strong></p>
         </div>
 
-        <!-- Numero, valor titulo -->
-        <table class="filas">
-            <tr class="noAcciones">
-
-                <td style="padding-right: 30px;"><strong>No.</strong></td>
-                <td class="celdas" style="width: 80px; padding: 15px;" id="numAcciones"></td>
-                <td></td>
-
-                <td style="padding-right: 5px;"><strong>POR</strong></td>
-                <td class="celdas" style="width: 160px;" id="valAccTit"></td>
-
-                <td style="padding-right: 5px;"><strong>TITULO</strong></td>
-                <td class="celdas" style="width: 120px;" id="conseTitulo"></td>
-            </tr>
-        </table>
-
-        <!-- acciones a favor, cc, nit ... -->
-        <table class="filas">
-            <tr class="clasesAcciones">
-
-                <td style="padding-right: 10px; width: 95px;"><strong>CLASES DE ACCIONES:</strong></td>
-                <td style="padding-right: 1cap;"><strong>A</strong></td>
-                <td class="celdas" style="width: 40px;" id="claseA"></td>
-                <td style="padding-right: 10px;"><strong>B</strong></td>
-                <td class="celdas" style="width: 40px;" id="claseB"></td>
-
-                <td style="padding-right: 5px; font-size: 9px; width: 120px;"><strong>TIPO DE ACCIONES:</strong></td>
-                <td style="padding-right: 5px; font-size: 9px;"><strong>ORDINARIAS</strong></td>
-                <td class="celdas" style="width: 40px;" id="tipAccTitO"></td>
-                <td style="padding-right: 5px; font-size: 9px;"><strong>PREVILEGIADAS</strong></td>
-                <td class="celdas" style="width: 40px;" id="tipAccTitP"></td>
-
-            </tr>
-        </table>
-
-        <!-- a favor de, cc -->
-        <table class="filas">
-            <tr class="aFavor">
-                <td style="padding-right: 30px;"><strong>A FAVOR DE: </strong></td>
-                <td class="celdas" style="width: 240px; padding: 15px;" id="nomAccionista"></td>
-                <td></td>
-
-                <td style="padding-right: 5px;"><strong>C.C o Nit.:</strong></td>
-                <td class="celdas" style="width: 130px;" id="codUsuario"></td>
-
-            </tr>
-        </table>
-
-        <!-- por  -->
-        <table class="filas">
-            <tr class="aFavor">
-                <td style="padding-right: 90px;"><strong>POR: </strong></td>
-                <td class="celdas" style="width: 480px; padding: 15px;" id="valorEnLetras" colspan="2"></td>
-            </tr>
-        </table>
-
-        <!-- informacion acciones nominativas -->
-        <p>ACCIONES NOMINATIVAS, de valor nominal de Veinte Mil Pesos ($ 20.000) cada una.</p>
-
-        <!-- seccion firmas -->
-        <div class="firmas">
-            <div class="firmaIzquierda">
-                <span id="firmaRepresentanteLegal"></span>
-                <h6 class="firmaR" id="firmaRepresentanteRepresentanteLegal">_________________________________________</h6>
-                <p><strong>Representante Legal</strong></p>
-            </div>
-            <div class="firmaDerecha">
-                <span id="firmaDerecha"></span>
-                <h6 class="firmaR" id="firmaSecretaria">__________________________________________</h6>
-                <p><strong>Secretaria</strong></p>
-                <p><span id="fecha"></span></p>
-                <p style="font-size: 7px;">
-                    <script>mostrarFecha();</script>
-                </p>
-            </div>
-
-        </div>
     </div>
+</div>
 
-    <!-- Información principal titulo -->
+<!-- Información principal titulo -->
 
-    <!-- Información clausulas -->
+<!-- Información clausulas -->
 
-    <!-- Información clausulas -->
-    <div class="terminos">
-        <div class="container-clausulas">
+<!-- Información clausulas -->
+<div class="terminos">
+    <div class="container-clausulas">
 
-            <!-- clasulas, articulos, etc -->
-            <div class="parrafo">
+        <!-- clasulas, articulos, etc -->
+        <div class="parrafo">
 
-                <p class="parrafo"><strong>ARTICULO 15. ENAJENACIONES DE ACCIONES:</strong> Para enajenar las acciones
-                    debe observar el Derecho de preferencia, la venta se presentará mediante oferta escrita a la
-                    empresa, transcurridos 15 días calendario si ésta <strong>NO</strong> las adquiere la oferta se
-                    extenderá a los accionistas, si después de 5 días calendario los accionistas no la adquieren en la
-                    última instancia La oferta se extenderá a un tercero. Salvo arreglos judiciales.<br>
-                </p>
+            <p class="parrafo"><strong>ARTICULO 15. ENAJENACIONES DE ACCIONES:</strong> Para enajenar las acciones
+                debe observar el Derecho de preferencia, la venta se presentará mediante oferta escrita a la
+                empresa, transcurridos 15 días calendario si ésta <strong>NO</strong> las adquiere la oferta se
+                extenderá a los accionistas, si después de 5 días calendario los accionistas no la adquieren en la
+                última instancia La oferta se extenderá a un tercero. Salvo arreglos judiciales.<br>
+            </p>
 
-                <p class="parrafo">
-                    <strong>PARAGRAFO 1:</strong> No se aplicará lo referido en este artículo cuando se trate de
-                    donaciones hasta el cuarto grado de consanguinidad, ante lo cual las acciones serán de libre
-                    disposición.
-                </p>
+            <p class="parrafo">
+                <strong>PARAGRAFO 1:</strong> No se aplicará lo referido en este artículo cuando se trate de
+                donaciones hasta el cuarto grado de consanguinidad, ante lo cual las acciones serán de libre
+                disposición.
+            </p>
 
-                <p class="parrafo">
-                    <strong>PARÁGRAFO 2.</strong> Como prueba del grado de consanguinidad se deberá anexar al contrato
-                    de donación declaración extra juicio que establezca el vínculo consanguíneo.
-                </p>
+            <p class="parrafo">
+                <strong>PARÁGRAFO 2.</strong> Como prueba del grado de consanguinidad se deberá anexar al contrato
+                de donación declaración extra juicio que establezca el vínculo consanguíneo.
+            </p>
 
-                <p class="parrafo">
-                    <strong>PARÁGRAFO 3.</strong> Quienes ingresen como nuevos accionistas a la empresa deberán
-                    suscribir un monto mínimo de trescientas (300) acciones. <br>
-                    Las donaciones entre consanguíneos cuando se trate de un nuevo accionista, deberán hacerse como
-                    mínimo en paquetes de trescientas (300) acciones. <br>
-                    Quienes tengan acciones inferiores a trescientas (300), para enajenarlas o donarlas deberá hacerlo
-                    en su totalidad, a la empresa o a un accionista
-                </p>
+            <p class="parrafo">
+                <strong>PARÁGRAFO 3.</strong> Quienes ingresen como nuevos accionistas a la empresa deberán
+                suscribir un monto mínimo de trescientas (300) acciones. <br>
+                Las donaciones entre consanguíneos cuando se trate de un nuevo accionista, deberán hacerse como
+                mínimo en paquetes de trescientas (300) acciones. <br>
+                Quienes tengan acciones inferiores a trescientas (300), para enajenarlas o donarlas deberá hacerlo
+                en su totalidad, a la empresa o a un accionista
+            </p>
 
-                <p class="parrafo">
-                    <strong>PARAGRAFO 4.</strong> Siempre que en el proceso de compra de acciones se beneficie un menor
-                    de edad, se debe establecer quien ejercerá el derecho de representación legal del menor ante la
-                    Empresa de acuerdo al ordenamiento legal, la cual se entenderá revocada cuando la autoridad judicial
-                    o competente designe lo contrario.
-                </p>
+            <p class="parrafo">
+                <strong>PARAGRAFO 4.</strong> Siempre que en el proceso de compra de acciones se beneficie un menor
+                de edad, se debe establecer quien ejercerá el derecho de representación legal del menor ante la
+                Empresa de acuerdo al ordenamiento legal, la cual se entenderá revocada cuando la autoridad judicial
+                o competente designe lo contrario.
+            </p>
 
-                <p class="parrafo">
-                    <strong>ARTICULO 21. ACCIONISTA EN MORA.</strong> Cuando un accionista está en mora de pagar las
-                    acciones que haya suscrito, no podrá ejercer los derechos inherentes a ellas. Para tal efecto, la
-                    sociedad anotará los pagos efectuados y los saldos pendientes. Si la sociedad tuviere obligaciones
-                    vencidas a cargo de los accionistas por concepto de cuotas de las acciones suscritas, optará a
-                    elección de la Junta Directiva al cobro judicial o por vender por cuenta y riesgos del moroso y por
-                    el conducto de un comisionista.
-                </p>
+            <p class="parrafo">
+                <strong>ARTICULO 21. ACCIONISTA EN MORA.</strong> Cuando un accionista está en mora de pagar las
+                acciones que haya suscrito, no podrá ejercer los derechos inherentes a ellas. Para tal efecto, la
+                sociedad anotará los pagos efectuados y los saldos pendientes. Si la sociedad tuviere obligaciones
+                vencidas a cargo de los accionistas por concepto de cuotas de las acciones suscritas, optará a
+                elección de la Junta Directiva al cobro judicial o por vender por cuenta y riesgos del moroso y por
+                el conducto de un comisionista.
+            </p>
 
-                <p class="parrafo">
-                    <strong>Se expide este Titulo de acuerdo at Art. 401 del Código de Comercio y Artículo 22 de los
-                        Estatutos Sociales de la Empresa.</strong>
-                </p>
-            </div>
-
-            <div class="dividendo">
-                <h1>DIVIDENDO</h1>
-                <p class="parrafo" style="margin-left: 0px;"><u>Aqui va la descripcion de dividendos</u></p>
-                <span id="firma"></span>
-                <p class="parrafo" style="margin-left: 0px;">
-                    _________________________________________ <br>
-                    Firma
-                </p>
-            </div>
-
-            <!-- dividendos.. -->
-            <div class="traspasos">
-                <h1>TRASPASOS</h1>
-                <p class="parrafo" style="margin-left: 0px;">
-                    Dado, endoso o traspaso el presente título a:
-                </p>
-                <p class="parrafo" style="margin-left: 0px;"><u>Aqui va la descripcion de traspasos</u></p>
-            </div>
-
+            <p class="parrafo">
+                <strong>Se expide este Titulo de acuerdo at Art. 401 del Código de Comercio y Artículo 22 de los
+                    Estatutos Sociales de la Empresa.</strong>
+            </p>
         </div>
+
+        <div class="dividendo">
+            <h1>DIVIDENDO</h1>
+            <p class="parrafo" style="margin-left: 0px;"><u>Aqui va la descripcion de dividendos</u></p>
+            <span id="firma"></span>
+            <p class="parrafo" style="margin-left: 0px;">
+                _________________________________________ <br>
+                Firma
+            </p>
+        </div>
+
+        <!-- dividendos.. -->
+        <div class="traspasos">
+            <h1>TRASPASOS</h1>
+            <p class="parrafo" style="margin-left: 0px;">
+                Dado, endoso o traspaso el presente título a:
+            </p>
+            <p class="parrafo" style="margin-left: 0px;"><u>Aqui va la descripcion de traspasos</u></p>
+        </div>
+
     </div>
+</div>
 
 
 
