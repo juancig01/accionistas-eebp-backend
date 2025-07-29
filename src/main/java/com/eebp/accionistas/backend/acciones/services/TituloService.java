@@ -645,6 +645,112 @@ public class TituloService {
         return transaccionEmbargo;
     }
 
+    public class NumeroALetras {
+        private static final String[] UNIDADES = {
+                "", "uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve"
+        };
+        private static final String[] DIEZ_A_DIECINUEVE = {
+                "diez", "once", "doce", "trece", "catorce", "quince",
+                "dieciséis", "diecisiete", "dieciocho", "diecinueve"
+        };
+        private static final String[] DECENAS = {
+                "", "", "veinte", "treinta", "cuarenta", "cincuenta",
+                "sesenta", "setenta", "ochenta", "noventa"
+        };
+        private static final String[] CENTENAS = {
+                "", "ciento", "doscientos", "trescientos", "cuatrocientos",
+                "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"
+        };
+
+        public static String convertir(long numero) {
+            if (numero == 0) return "cero";
+            if (numero == 100) return "cien";
+            return convertirNumero(numero).trim();
+        }
+
+        private static String convertirNumero(long numero) {
+            StringBuilder resultado = new StringBuilder();
+
+            // Billones
+            if (numero >= 1_000_000_000_000L) {
+                long billones = numero / 1_000_000_000_000L;
+                resultado.append(convertirNumero(billones)).append(" billón");
+                if (billones > 1) resultado.append("es");
+                numero %= 1_000_000_000_000L;
+                if (numero > 0) resultado.append(" ");
+            }
+
+            // Miles de millones
+            if (numero >= 1_000_000_000L) {
+                long milesMillones = numero / 1_000_000_000L;
+                resultado.append(convertirNumero(milesMillones)).append(" mil millones");
+                numero %= 1_000_000_000L;
+                if (numero > 0) resultado.append(" ");
+            }
+
+            // Millones
+            if (numero >= 1_000_000) {
+                long millones = numero / 1_000_000;
+                resultado.append(convertirNumero(millones)).append(" millón");
+                if (millones > 1) resultado.append("es");
+                numero %= 1_000_000;
+                if (numero > 0) resultado.append(" ");
+            }
+
+            // Miles
+            if (numero >= 1000) {
+                long miles = numero / 1000;
+                if (miles == 1) {
+                    resultado.append("mil");
+                } else {
+                    resultado.append(convertirNumero(miles)).append(" mil");
+                }
+                numero %= 1000;
+                if (numero > 0) resultado.append(" ");
+            }
+
+            // Centenas
+            if (numero >= 100) {
+                int centenas = (int)(numero / 100);
+                resultado.append(CENTENAS[centenas]);
+                numero %= 100;
+                if (numero > 0) resultado.append(" ");
+            }
+
+            // Decenas y unidades
+            if (numero >= 20) {
+                int decenas = (int)(numero / 10);
+                resultado.append(DECENAS[decenas]);
+                numero %= 10;
+                if (numero > 0) {
+                    if (decenas == 2) {
+                        resultado.append("i").append(UNIDADES[(int)numero]); // veintiuno, veintidós...
+                    } else {
+                        resultado.append(" y ").append(UNIDADES[(int)numero]);
+                    }
+                }
+            } else if (numero >= 10) {
+                resultado.append(DIEZ_A_DIECINUEVE[(int)numero - 10]);
+            } else if (numero > 0) {
+                resultado.append(UNIDADES[(int)numero]);
+            }
+
+            return resultado.toString();
+        }
+
+        // Método específico para pesos colombianos
+        public static String convertirAPesos(long numero) {
+            if (numero == 0) return "cero pesos";
+
+            String numeroEnLetras = convertir(numero);
+
+            // Capitalizar primera letra
+            numeroEnLetras = numeroEnLetras.substring(0, 1).toUpperCase() + numeroEnLetras.substring(1);
+
+            return numeroEnLetras + " pesos";
+        }
+    }
+
     public byte[] getFormatoTitulo(Integer conseTitulo) throws IOException {
         // Buscar el título del cual sobraron las acciones
 
@@ -685,6 +791,8 @@ public class TituloService {
         }
 
         document.selectFirst("#codUsuario").text(datosPersona.get().getCodUsuario());
+        // Para el campo POR: (formato en letras) - AGREGAR ESTA LÍNEA
+        document.selectFirst("#valorEnLetras").text(NumeroALetras.convertirAPesos(valorTotal));
         document.selectFirst("#firmaRepresentanteRepresentanteLegal").html("<img width=\"150\" src=\"data:image/png;base64, " + "<img width=\"150\" src=\"data:image/png;base64, " + Base64.getEncoder().encodeToString(datosPersona.get().getFirma()) + "\">");
 
 
