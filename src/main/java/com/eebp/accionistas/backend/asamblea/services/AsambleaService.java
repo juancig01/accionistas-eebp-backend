@@ -153,65 +153,74 @@ public class AsambleaService {
         if (asamblea.isPresent()) {
             List<Persona> personas = personaService.getPersonas();
 
+            // Filtrar solo los accionistas activos
             List<Persona> accionistasActivos = personas.stream()
-                    .filter(a -> a.getEsAccionista().equals("S"))
+                    .filter(a -> "S".equals(a.getEsAccionista()))
                     .collect(Collectors.toList());
 
-            String[] correosAccionistas = accionistasActivos.stream()
-                    .map(Persona::getCorreoPersona)
-                    .toArray(String[]::new);
+            System.out.println("Total de accionistas activos: " + accionistasActivos.size());
 
-            System.out.println("Correos electrónicos de los accionistas: " + Arrays.toString(correosAccionistas));
+            int batchSize = 50; // tamaño del bloque
 
-            EmailDetails emailDetails = EmailDetails.builder()
-                    .recipient(String.join(", ", correosAccionistas))
-                    .subject("Asamblea" + " " + asamblea.get().getTipoAsamblea())
-                    .msgBody("<table border=\"0\" cellspacing=\"0\" style=\"border-collapse:collapse; height:147px; width:600px\">\n" +
-                            "\t<tbody>\n" +
-                            "\t\t<tr>\n" +
-                            "\t\t\t<td style=\"height:91px; text-align:center; width:23.5796%\"><img src=\"https://eebpsa.com.co/wp-content/uploads/2020/08/lOGO-2.1.png\" /></td>\n" +
-                            "\t\t\t<td style=\"height:91px; width:67.4766%\">\n" +
-                            "\t\t\t<h3 style=\"text-align:center\"><strong>BIENVENIDO AL SISTEMA DE ACCIONISTAS </strong></h3>\n" +
-                            "\n" +
-                            "\t\t\t<h3 style=\"text-align:center\"><strong>Empresa de Energ&iacute;a del Bajo Putumayo S.A. E.S.P.</strong></h3>\n" +
-                            "\t\t\t</td>\n" +
-                            "\t\t</tr>\n" +
-                            "\t\t<tr>\n" +
-                            "\t\t\t<td colspan=\"2\" style=\"height:10px; text-align:center; width:91.0562%\">\n" +
-                            "\t\t\t<p>&nbsp;</p>\n" +
-                            "\n" +
-                            //"\t\t\t<p style=\"text-align:left\">Se&ntilde;or(a) " + accionistasActivos.get().getNomPri() + " " + accionistasActivos.get().getNomSeg() + " " + accionistasActivos.get().getApePri() +  " " + accionistasActivos.get().getApeSeg()  + ",</p>\n" +
-                            "\n" +
-                            "\t\t\t<p style=\"text-align:left\">Queremos informarle que se programó una asamblea de tipo" + " " + asamblea.get().getTipoAsamblea() +"," + "la cual se realizará el día" + " " + asamblea.get().getFechaAsamblea()  + " " + "a las " + " " + asamblea.get().getHoraAsamblea() +
-                            "\t\t\t</td>\n" +
-                            "\t\t</tr>\n" +
-                            "\t\t<tr>\n" +
-                            "\t\t\t<td colspan=\"2\" style=\"text-align:center; width:91.0562%\">\n" +
-                            "\t\t\t<p style=\"text-align:left\">&nbsp;</p>\n" +
-                            "\n" +
-                            "\t\t\t<p style=\"text-align:left\"><u>En caso de alguna duda, favor contactarse con servicio al cliente.</u></p>\n" +
-                            "\n" +
-                            "\t\t\t<p style=\"text-align:left\">&nbsp;</p>\n" +
-                            "\n" +
-                            "\t\t\t<p style=\"text-align:left\">Acceso al sistema: <a href=\"http://localhost:4200\">http://localhost:4200</a></p>\n" +
-                            "\t\t\t</td>\n" +
-                            "\t\t</tr>\n" +
-                            "\t</tbody>\n" +
-                            "</table>\n" +
-                            "\n" +
-                            "<p><strong>&nbsp;</strong></p>")
-                    .build();
-            emailService.sendSimpleMailArray(emailDetails, correosAccionistas);
+            // Dividir la lista en lotes de 50
+            for (int i = 0; i < accionistasActivos.size(); i += batchSize) {
+                List<Persona> lote = accionistasActivos.subList(i, Math.min(i + batchSize, accionistasActivos.size()));
 
-            // Aquí puedes realizar las operaciones necesarias con la lista filtrada de accionistas activos
-            // ...
+                String[] correosLote = lote.stream()
+                        .map(Persona::getCorreoPersona)
+                        .filter(Objects::nonNull)
+                        .toArray(String[]::new);
+
+                System.out.println("Enviando correo a los siguientes destinatarios: " + Arrays.toString(correosLote));
+
+                // Construir el cuerpo del correo
+                String cuerpoHtml = "<table border=\"0\" cellspacing=\"0\" style=\"border-collapse:collapse; height:147px; width:600px\">\n" +
+                        "\t<tbody>\n" +
+                        "\t\t<tr>\n" +
+                        "\t\t\t<td style=\"height:91px; text-align:center; width:23.5796%\"><img src=\"https://eebpsa.com.co/wp-content/uploads/2020/08/lOGO-2.1.png\" /></td>\n" +
+                        "\t\t\t<td style=\"height:91px; width:67.4766%\">\n" +
+                        "\t\t\t<h3 style=\"text-align:center\"><strong>BIENVENIDO AL SISTEMA DE ACCIONISTAS </strong></h3>\n" +
+                        "\t\t\t<h3 style=\"text-align:center\"><strong>Empresa de Energ&iacute;a del Bajo Putumayo S.A. E.S.P.</strong></h3>\n" +
+                        "\t\t\t</td>\n" +
+                        "\t\t</tr>\n" +
+                        "\t\t<tr>\n" +
+                        "\t\t\t<td colspan=\"2\" style=\"height:10px; text-align:center; width:91.0562%\">\n" +
+                        "\t\t\t<p>&nbsp;</p>\n" +
+                        "\t\t\t<p style=\"text-align:left\">Queremos informarle que se programó una asamblea de tipo " + asamblea.get().getTipoAsamblea() + ", la cual se realizará el día " + asamblea.get().getFechaAsamblea() + " a las " + asamblea.get().getHoraAsamblea() + ".</p>\n" +
+                        "\t\t\t</td>\n" +
+                        "\t\t</tr>\n" +
+                        "\t\t<tr>\n" +
+                        "\t\t\t<td colspan=\"2\" style=\"text-align:center; width:91.0562%\">\n" +
+                        "\t\t\t<p style=\"text-align:left\"><u>En caso de alguna duda, favor contactarse con servicio al cliente.</u></p>\n" +
+                        "\t\t\t<p style=\"text-align:left\">Acceso al sistema: <a href=\"http://localhost:4200\">http://localhost:4200</a></p>\n" +
+                        "\t\t\t</td>\n" +
+                        "\t\t</tr>\n" +
+                        "\t</tbody>\n" +
+                        "</table>";
+
+                EmailDetails emailDetails = EmailDetails.builder()
+                        .recipient(String.join(", ", correosLote))
+                        .subject("Asamblea " + asamblea.get().getTipoAsamblea())
+                        .msgBody(cuerpoHtml)
+                        .build();
+
+                // Enviar el correo a este bloque
+                emailService.sendSimpleMailArray(emailDetails, correosLote);
+
+                // Esperar 2 segundos entre lotes (opcional, ayuda a no saturar Gmail)
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
 
             return asamblea.get();
         }
 
-
         return null;
     }
+
 
     public Map<String, List<Asset>> getFormatosActas() {
         Integer consecutivo = 0;
