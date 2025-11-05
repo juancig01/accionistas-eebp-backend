@@ -354,25 +354,43 @@ public class AccionistaService {
             System.out.println("  aprobado: " + accionista.getAprobado());
             System.out.println("  tipoAccionista: " + accionista.getTipoAccionista());
 
-            Optional<Persona> optRepresentante;
-            Optional<Persona> optAccionista;
+            Optional<Persona> optRepresentante = Optional.empty();
+            Optional<Persona> optAccionista = Optional.empty();
 
-            // Obtener representante
-            if (accionista.getCodRepresentante() == null) {
-                System.out.println("⚙️  No tiene representante, se usa el mismo codUsuario como representante");
-                optRepresentante = personaService.getPersona(accionista.getCodUsuario());
-            } else {
-                System.out.println("⚙️  Tiene representante con código: " + accionista.getCodRepresentante());
-                optRepresentante = personaService.getPersona(accionista.getCodRepresentante());
+            try {
+                // ==== DEBUG REPRESENTANTE ====
+                if (accionista.getCodRepresentante() == null) {
+                    System.out.println("⚙️  No tiene representante, se usa el mismo codUsuario como representante (" + accionista.getCodUsuario() + ")");
+                    System.out.println("🔍 Buscando persona con código: " + accionista.getCodUsuario());
+                    optRepresentante = personaService.getPersona(accionista.getCodUsuario());
+                } else {
+                    System.out.println("⚙️  Tiene representante con código: " + accionista.getCodRepresentante());
+                    System.out.println("🔍 Buscando representante con código: " + accionista.getCodRepresentante());
+                    optRepresentante = personaService.getPersona(accionista.getCodRepresentante());
+                }
+                System.out.println("📄 Resultado búsqueda representante: " + (optRepresentante.isPresent() ? "✅ encontrado" : "❌ no encontrado"));
+            } catch (Exception e) {
+                System.out.println("❌ Error al obtener representante (codRepresentante=" + accionista.getCodRepresentante() + "): " + e.getMessage());
+                e.printStackTrace(System.out);
+                continue;
             }
 
             if (optRepresentante.isEmpty()) {
                 System.out.println("⚠️  No se encontró representante con código: " + accionista.getCodRepresentante());
-                continue; // salta este registro y sigue con el siguiente
+                continue;
             }
 
-            // Obtener accionista
-            optAccionista = personaService.getPersona(accionista.getCodUsuario());
+            try {
+                // ==== DEBUG ACCIONISTA ====
+                System.out.println("🔍 Buscando accionista con código: " + accionista.getCodUsuario());
+                optAccionista = personaService.getPersona(accionista.getCodUsuario());
+                System.out.println("📄 Resultado búsqueda accionista: " + (optAccionista.isPresent() ? "✅ encontrado" : "❌ no encontrado"));
+            } catch (Exception e) {
+                System.out.println("❌ Error al obtener accionista (codUsuario=" + accionista.getCodUsuario() + "): " + e.getMessage());
+                e.printStackTrace(System.out);
+                continue;
+            }
+
             if (optAccionista.isEmpty()) {
                 System.out.println("⚠️  No se encontró accionista con código: " + accionista.getCodUsuario());
                 continue;
