@@ -473,25 +473,25 @@ public class AccionistaService {
         List<AccionistaRepresentanteResponse> lista = new ArrayList<>();
         List<Accionista> accionistas = accionistaRepository.findAll();
 
-        System.out.println("Total de accionistas encontrados: " + accionistas.size());
+        System.out.println("Total de accionistas encontrados tipo tres: " + accionistas.size());
 
         for (Accionista accionista : accionistas) {
             System.out.println("----------------------------------------------------");
-            System.out.println("Procesando accionista con:");
-            System.out.println("  codUsuario: " + accionista.getCodUsuario());
-            System.out.println("  codRepresentante: " + accionista.getCodRepresentante());
-            System.out.println("  aprobado: " + accionista.getAprobado());
-            System.out.println("  tipoAccionista: " + accionista.getTipoAccionista());
+            System.out.println("Procesando accionista con tipo tres:");
+            System.out.println("  codUsuario 3: " + accionista.getCodUsuario());
+            System.out.println("  codRepresentante 3: " + accionista.getCodRepresentante());
+            System.out.println("  aprobado 3: " + accionista.getAprobado());
+            System.out.println("  tipoAccionista 3: " + accionista.getTipoAccionista());
 
             Optional<Persona> optRepresentante;
             Optional<Persona> optAccionista;
 
             // Obtener representante
             if (accionista.getCodRepresentante() == null) {
-                System.out.println("⚙️  No tiene representante, se usa el mismo codUsuario como representante");
+                System.out.println("⚙️  No tiene representante, se usa el mismo codUsuario como representante 3");
                 optRepresentante = personaService.getPersona(accionista.getCodUsuario());
             } else {
-                System.out.println("⚙️  Tiene representante con código: " + accionista.getCodRepresentante());
+                System.out.println("⚙️  Tiene representante con código 3: " + accionista.getCodRepresentante());
                 optRepresentante = personaService.getPersona(accionista.getCodRepresentante());
             }
 
