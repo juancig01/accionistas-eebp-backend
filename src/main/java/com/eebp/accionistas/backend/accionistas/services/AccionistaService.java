@@ -339,28 +339,65 @@ public class AccionistaService {
     }
 
     public List<AccionistaRepresentanteResponse> getAccionistas() throws UserNotFoundException {
+        System.out.println("=== Iniciando método getAccionistas ===");
+
         List<AccionistaRepresentanteResponse> lista = new ArrayList<>();
         List<Accionista> accionistas = accionistaRepository.findAll();
+
+        System.out.println("Total de accionistas encontrados: " + accionistas.size());
+
         for (Accionista accionista : accionistas) {
-            Persona pRepresentante = Persona.builder().build();
+            System.out.println("----------------------------------------------------");
+            System.out.println("Procesando accionista con:");
+            System.out.println("  codUsuario: " + accionista.getCodUsuario());
+            System.out.println("  codRepresentante: " + accionista.getCodRepresentante());
+            System.out.println("  aprobado: " + accionista.getAprobado());
+            System.out.println("  tipoAccionista: " + accionista.getTipoAccionista());
+
+            Optional<Persona> optRepresentante;
+            Optional<Persona> optAccionista;
+
+            // Obtener representante
             if (accionista.getCodRepresentante() == null) {
-                pRepresentante = personaService.getPersona(accionista.getCodUsuario()).get();
+                System.out.println("⚙️  No tiene representante, se usa el mismo codUsuario como representante");
+                optRepresentante = personaService.getPersona(accionista.getCodUsuario());
             } else {
-                pRepresentante = personaService.getPersona(accionista.getCodRepresentante()).get();
+                System.out.println("⚙️  Tiene representante con código: " + accionista.getCodRepresentante());
+                optRepresentante = personaService.getPersona(accionista.getCodRepresentante());
             }
-            Persona pAccionista = personaService.getPersona(accionista.getCodUsuario()).get();
+
+            if (optRepresentante.isEmpty()) {
+                System.out.println("⚠️  No se encontró representante con código: " + accionista.getCodRepresentante());
+                continue; // salta este registro y sigue con el siguiente
+            }
+
+            // Obtener accionista
+            optAccionista = personaService.getPersona(accionista.getCodUsuario());
+            if (optAccionista.isEmpty()) {
+                System.out.println("⚠️  No se encontró accionista con código: " + accionista.getCodUsuario());
+                continue;
+            }
+
+            Persona pRepresentante = optRepresentante.get();
+            Persona pAccionista = optAccionista.get();
+
+            // Validar si es persona jurídica
             if (pAccionista.getNomPri() == null) {
+                System.out.println("🏢 Persona jurídica detectada (sin nombres personales). Usando razón social: " + pAccionista.getRazonSocial());
                 pAccionista.setNomPri(pAccionista.getRazonSocial());
                 pAccionista.setNomSeg("");
                 pAccionista.setApePri("");
                 pAccionista.setApeSeg("");
             }
 
-            // Agregar esta condición
+            // Solo agregar si está aprobado
             if ("S".equals(accionista.getAprobado())) {
+                System.out.println("✅ Accionista aprobado. Agregando a la lista...");
                 lista.add(AccionistaRepresentanteResponse.builder()
-                        .nomAccionista(pAccionista.getNomPri() + " " + pAccionista.getNomSeg() + " " + pAccionista.getApePri() + " " + pAccionista.getApeSeg())
-                        .nomRepresentante(pRepresentante.getNomPri() + " " + pRepresentante.getNomSeg() + " " + pRepresentante.getApePri() + " " + pRepresentante.getApeSeg())
+                        .nomAccionista(pAccionista.getNomPri() + " " + pAccionista.getNomSeg() + " " +
+                                pAccionista.getApePri() + " " + pAccionista.getApeSeg())
+                        .nomRepresentante(pRepresentante.getNomPri() + " " + pRepresentante.getNomSeg() + " " +
+                                pRepresentante.getApePri() + " " + pRepresentante.getApeSeg())
                         .codAccionista(accionista.getCodUsuario())
                         .tipoAccionista(accionista.getTipoAccionista())
                         .codRepresentante(pRepresentante.getCodUsuario())
@@ -368,8 +405,12 @@ public class AccionistaService {
                         .tipoDocAccionista(pAccionista.getTipDocumento())
                         .tipoDocRepresentante(pRepresentante.getTipDocumento())
                         .build());
+            } else {
+                System.out.println("⏩ Accionista no aprobado. Se omite (codUsuario=" + accionista.getCodUsuario() + ")");
             }
         }
+
+        System.out.println("=== Finalizando método getAccionistas. Total procesados: " + lista.size() + " ===");
         return lista;
     }
 
