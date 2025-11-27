@@ -17,26 +17,39 @@ public interface PoderRepository extends JpaRepository<Poder, Integer> {
             "pow.consecutivoPoder AS consecutivo, " +
             "pd.codUsuario AS idPoderdante, " +
             "CONCAT(pd.nomPri, ' ', pd.nomSeg, ' ', pd.apePri, ' ', pd.apeSeg) AS nombrePoderdante, " +
-            "SUM(t.canAccTit) AS accionesPoderdante, " +
+
+            // CÁLCULO MODIFICADO: Suma de acciones del Poderdante (usando pd_t)
+            // y acciones del Apoderado (usando ap_t)
+            "SUM(pd_t.canAccTit) + COALESCE(SUM(ap_t.canAccTit), 0) AS accionesPoderdante, " +
+
             "CONCAT(p.nomPri, ' ', p.nomSeg, ' ', p.apePri, ' ', p.apeSeg) AS nombreApoderado, " +
             "p.codUsuario AS idApoderado, " +
             "pow.estado AS estado " +
             "FROM " +
             "Persona p " +
-            "JOIN " +
-            "Accionista a ON p.codUsuario = a.codUsuario " +
-            "JOIN " +
-            "TitulosPersona tp ON CAST(p.codUsuario AS Integer) = tp.idePer " +
-            "JOIN " +
-            "Titulo t ON tp.conseTitulo = t.conseTitulo " +
+
+            // Se mantienen las uniones originales (pero se IGNORAN en el SELECT final)
+            // JOIN Accionista a ON p.codUsuario = a.codUsuario " +
+            // JOIN TitulosPersona tp ON CAST(p.codUsuario AS Integer) = tp.idePer " +
+            // JOIN Titulo t ON tp.conseTitulo = t.conseTitulo " +
+
             "JOIN " +
             "Poder pow ON p.codUsuario = pow.idApoderado " +
             "JOIN " +
             "Persona pd ON pow.idPoderdante = pd.codUsuario " +
+
+            // 🆕 UNIONES NECESARIAS para obtener las acciones del PODERDANTE (pd)
+            "LEFT JOIN TitulosPersona pd_tp ON CAST(pd.codUsuario AS Integer) = pd_tp.idePer " +
+            "LEFT JOIN Titulo pd_t ON pd_tp.conseTitulo = pd_t.conseTitulo " +
+
+            // 🆕 UNIONES NECESARIAS para obtener las acciones del APODERADO (p)
+            "LEFT JOIN TitulosPersona ap_tp ON CAST(p.codUsuario AS Integer) = ap_tp.idePer " +
+            "LEFT JOIN Titulo ap_t ON ap_tp.conseTitulo = ap_t.conseTitulo " +
+
             "JOIN " +
-            "Asamblea asmb ON pow.consecutivo = asmb.consecutivo " +  // Cambiado para unirse por consecutivo
+            "Asamblea asmb ON pow.consecutivo = asmb.consecutivo " +
             "WHERE " +
-            "asmb.consecutivo = (SELECT MAX(a.consecutivo) FROM Asamblea a) " +  // Subconsulta para obtener la última asamblea
+            "asmb.consecutivo = (SELECT MAX(a.consecutivo) FROM Asamblea a) " +
             "GROUP BY " +
             "pow.consecutivoPoder, " +
             "pd.codUsuario, " +
