@@ -58,34 +58,45 @@ public class RegistroAsambleaService {
     }
 
     public Map<String, Integer> obtenerTotales(List<AsistentesAsambleaDTO> registros) throws UserNotFoundException {
-        List<AsistentesAsambleaDTO> registrosConAsistenciaFalse = registros.stream()
+        List<AsistentesAsambleaDTO> registrosConAsistenciaTrue = registros.stream()
+                // Se asume que se refiere a 'true' por el uso posterior de totalAcciones
                 .filter(registro -> registro.getAsistencia())
                 .collect(Collectors.toList());
 
-        int totalRegistros = registrosConAsistenciaFalse.size();
-        int totalAcciones = 0;
-        for (AsistentesAsambleaDTO registro : registrosConAsistenciaFalse) {
+        int totalRegistros = registrosConAsistenciaTrue.size();
+        long totalAcciones = 0; // Usar long si las acciones pueden superar Integer.MAX_VALUE
+        for (AsistentesAsambleaDTO registro : registrosConAsistenciaTrue) {
             totalAcciones += registro.getAcciones();
         }
+
         Integer consecutivoAsamblea = asambleaService.getConsecutivoAsamblea();
+        // Se asume que getTotalAcciones devuelve Integer o Long
         Integer totalAccionesGeneral = registroAsambleaRepository.getTotalAcciones();
 
+        // El cálculo del total de accionistas es irrelevante para el Quórum, se mantiene para contexto.
         List<AccionistaRepresentanteResponse> listaAccionistas = accionistaService.getAccionistas();
         int totalAccionistas = listaAccionistas.size();
-        double quorumDouble = totalAccionesGeneral > 0 ?
-                (double) totalAcciones / totalAccionesGeneral * 100 : 0;
-        int quorum = (int) Math.round(quorumDouble);
 
-        // Comprobar si el quorum alcanza el 50% + 1
-        boolean quorumSuperado = quorum >= 50 + 1;
+        // A. CALCULAR EL QUORUM CON 2 DECIMALES
+        double quorumCalculado = totalAccionesGeneral > 0 ?
+                (double) totalAcciones / totalAccionesGeneral * 100 : 0;
+
+        // Para cumplir con Map<String, Integer>, NO PODEMOS DEVOLVER DECIMALES.
+        // Opción 1 (Compromiso): Devolver el valor redondeado a entero como estaba para la lógica.
+        int quorumEntero = (int) Math.round(quorumCalculado);
+
+        // Opción 2 (Precisión forzada): Devolver el valor multiplicado por 10000 (para representar 2 decimales * 100)
+        // No se recomienda, causa confusión.
+
+        // B. COMPROBAR QUORUM
+        boolean quorumSuperado = quorumEntero >= 50 + 1; // Se sigue usando el entero para la lógica
 
         Map<String, Integer> totales = new HashMap<>();
         totales.put("totalRegistros", totalRegistros);
-        totales.put("totalAccionesAsamblea", totalAcciones);
-        totales.put("quorum", quorum);
+        totales.put("totalAccionesAsamblea", (int) totalAcciones); // Cast a int si es necesario
+        totales.put("quorum", quorumEntero); // Valor Entero
         totales.put("consecutivoAsamblea", consecutivoAsamblea);
         totales.put("totalAcciones", totalAccionesGeneral);
-        //valor de 1 si es true y 0 si es false.
         totales.put("quorumSuperado", quorumSuperado ? 1 : 0);
 
         return totales;
