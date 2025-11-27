@@ -19,8 +19,21 @@ public interface RegistroAsambleaRepository extends JpaRepository<RegistroAsambl
             "COALESCE(CONCAT(p.nomPri, ' ', p.nomSeg), p.razonSocial) AS nombres, " +
             "COALESCE(CONCAT(p.apePri, ' ', p.apeSeg), p.razonSocial) AS apellidos, " +
 
-            // CÁLCULO MODIFICADO: Suma de acciones propias (ap_t) + acciones representadas (pd_t)
-            "COALESCE(SUM(ap_t.canAccTit), 0) + COALESCE(SUM(pd_t.canAccTit), 0) AS acciones, " +
+            // 1. Subconsulta para Acciones Propias (del asistente p)
+            "COALESCE((" +
+            "SELECT SUM(t_ap.canAccTit) FROM TitulosPersona tp_ap " +
+            "JOIN Titulo t_ap ON tp_ap.conseTitulo = t_ap.conseTitulo " +
+            "WHERE CAST(p.codUsuario AS Integer) = tp_ap.idePer" +
+            "), 0) + " +
+
+            // 2. Subconsulta para Acciones Representadas (por el asistente p, para esta asamblea ra)
+            "COALESCE((" +
+            "SELECT SUM(t_pd.canAccTit) FROM Poder pow " +
+            "JOIN Persona pd ON pow.idPoderdante = pd.codUsuario " +
+            "JOIN TitulosPersona tp_pd ON CAST(pd.codUsuario AS Integer) = tp_pd.idePer " +
+            "JOIN Titulo t_pd ON tp_pd.conseTitulo = t_pd.conseTitulo " +
+            "WHERE pow.idApoderado = p.codUsuario AND pow.consecutivo = ra.consecutivo" +
+            "), 0) AS acciones, " +
 
             "p.celPersona AS celPersona, " +
             "p.correoPersona AS correoPersona " +
@@ -28,19 +41,6 @@ public interface RegistroAsambleaRepository extends JpaRepository<RegistroAsambl
             "Persona p " +
             "JOIN " +
             "RegistroAsamblea ra ON ra.idePer = p.codUsuario " +
-
-            // 1. UNIONES PARA ACCIONES PROPIAS DEL ASISTENTE ('p' / Apoderado)
-            // Usamos LEFT JOIN y nuevos alias (ap_tp, ap_t) para manejar a asistentes sin acciones.
-            "LEFT JOIN TitulosPersona ap_tp ON CAST(p.codUsuario AS Integer) = ap_tp.idePer " +
-            "LEFT JOIN Titulo ap_t ON ap_tp.conseTitulo = ap_t.conseTitulo " +
-
-            // 2. UNIONES PARA ACCIONES REPRESENTADAS (Poderdante)
-            // Buscamos los Poderes donde 'p' es el Apoderado
-            "LEFT JOIN Poder pow ON p.codUsuario = pow.idApoderado " +
-            "LEFT JOIN Persona pd ON pow.idPoderdante = pd.codUsuario " +
-            "LEFT JOIN TitulosPersona pd_tp ON CAST(pd.codUsuario AS Integer) = pd_tp.idePer " +
-            "LEFT JOIN Titulo pd_t ON pd_tp.conseTitulo = pd_t.conseTitulo " +
-
             "WHERE " +
             "ra.consecutivo = (SELECT MAX(a1.consecutivo) FROM Asamblea a1) " +
             "GROUP BY " +
