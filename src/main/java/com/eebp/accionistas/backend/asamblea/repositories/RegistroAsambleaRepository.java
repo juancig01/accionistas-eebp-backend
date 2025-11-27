@@ -19,18 +19,18 @@ public interface RegistroAsambleaRepository extends JpaRepository<RegistroAsambl
             "COALESCE(CONCAT(p.nomPri, ' ', p.nomSeg), p.razonSocial) AS nombres, " +
             "COALESCE(CONCAT(p.apePri, ' ', p.apeSeg), p.razonSocial) AS apellidos, " +
 
-            // 1. Subconsulta para Acciones Propias (del asistente p)
+            // 1. Acciones Propias (Suma de los títulos del asistente 'p')
             "COALESCE((" +
-            "SELECT SUM(t_ap.canAccTit) FROM TitulosPersona tp_ap " +
-            "JOIN Titulo t_ap ON tp_ap.conseTitulo = t_ap.conseTitulo " +
+            "SELECT SUM(t_ap.canAccTit) FROM Titulo t_ap " +
+            "JOIN TitulosPersona tp_ap ON t_ap.conseTitulo = tp_ap.conseTitulo " +
             "WHERE CAST(p.codUsuario AS Integer) = tp_ap.idePer" +
             "), 0) + " +
 
-            // 2. Subconsulta para Acciones Representadas (por el asistente p, para esta asamblea ra)
+            // 2. Acciones Representadas (Suma de los títulos de todos los poderdantes que 'p' representa en 'ra')
             "COALESCE((" +
-            "SELECT SUM(t_pd.canAccTit) FROM Poder pow " +
-            "JOIN Persona pd ON pow.idPoderdante = pd.codUsuario " +
-            "JOIN TitulosPersona tp_pd ON CAST(pd.codUsuario AS Integer) = tp_pd.idePer " +
+            "SELECT SUM(t_pd.canAccTit) " +
+            "FROM Poder pow " +
+            "JOIN TitulosPersona tp_pd ON CAST(pow.idPoderdante AS Integer) = tp_pd.idePer " +
             "JOIN Titulo t_pd ON tp_pd.conseTitulo = t_pd.conseTitulo " +
             "WHERE pow.idApoderado = p.codUsuario AND pow.consecutivo = ra.consecutivo" +
             "), 0) AS acciones, " +
