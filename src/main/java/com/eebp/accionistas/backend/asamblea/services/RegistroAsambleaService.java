@@ -3,7 +3,9 @@ package com.eebp.accionistas.backend.asamblea.services;
 import com.eebp.accionistas.backend.accionistas.entities.response.AccionistaRepresentanteResponse;
 import com.eebp.accionistas.backend.accionistas.services.AccionistaService;
 import com.eebp.accionistas.backend.asamblea.entities.AsistentesAsambleaDTO;
+import com.eebp.accionistas.backend.asamblea.entities.Poder;
 import com.eebp.accionistas.backend.asamblea.entities.RegistroAsamblea;
+import com.eebp.accionistas.backend.asamblea.repositories.PoderRepository;
 import com.eebp.accionistas.backend.asamblea.repositories.RegistroAsambleaRepository;
 import com.eebp.accionistas.backend.financiero.repositories.UtilidadRepository;
 import com.eebp.accionistas.backend.seguridad.exceptions.UserNotFoundException;
@@ -27,6 +29,9 @@ public class RegistroAsambleaService {
     UtilidadRepository utilidadRepository;
 
     @Autowired
+    PoderRepository poderRepository;
+
+    @Autowired
     AsambleaService asambleaService;
 
     @Autowired
@@ -37,17 +42,29 @@ public class RegistroAsambleaService {
         Integer consecutivoAsamblea = asambleaService.getConsecutivoAsamblea();
         String idePer = registroAsamblea.getIdePer();
 
-        Optional<RegistroAsamblea> existingRegistro = registroAsambleaRepository.findByConsecutivoAndIdePer(consecutivoAsamblea, idePer);
+        // 1. Validar si ya existe registrado en la asamblea
+        Optional<RegistroAsamblea> existingRegistro =
+                registroAsambleaRepository.findByConsecutivoAndIdePer(consecutivoAsamblea, idePer);
 
         if (existingRegistro.isPresent()) {
             throw new IllegalArgumentException("El registro de asamblea ya existe para este miembro con el consecutivo dado.");
         }
 
+        // 2. Validar si la persona es poderdante
+        Optional<Poder> poderComoPoderdante =
+                poderRepository.findByConsecutivoAndIdPoderdanteAndEstado(consecutivoAsamblea, idePer);
+
+        if (poderComoPoderdante.isPresent()) {
+            throw new IllegalArgumentException("El miembro no puede asistir porque otorgó poder para esta asamblea.");
+        }
+
+        // 3. Registrar asistencia
         registroAsamblea.setAsistencia(true);
         registroAsamblea.setConsecutivo(consecutivoAsamblea);
 
         return registroAsambleaRepository.save(registroAsamblea);
     }
+
 
     public RegistroAsamblea updateRegistroAsamblea(RegistroAsamblea registroAsamblea) {
         return registroAsambleaRepository.save(registroAsamblea);

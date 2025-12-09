@@ -86,4 +86,14 @@ public interface PoderRepository extends JpaRepository<Poder, Integer> {
             "WHERE ra.consecutivo = (SELECT MAX(r.consecutivo) FROM registro_asamblea r) " +
             "AND ra.ide_per = :idePer", nativeQuery = true)
     List<Object[]> obtenerDetallesPorIdePer(@Param("idePer") String idePer);
+
+    @Query("SELECT p FROM Poder p " +
+            "WHERE p.consecutivo = :consecutivo " +
+            "AND p.idPoderdante = :idPoderdante " +
+            "AND p.estado = 'APROBADO'")
+    Optional<Poder> findByConsecutivoAndIdPoderdanteAndEstado(
+            @Param("consecutivo") Integer consecutivo,
+            @Param("idPoderdante") String idPoderdante
+    );
+
 }
