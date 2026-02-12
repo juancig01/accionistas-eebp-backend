@@ -37,7 +37,7 @@ public class RegistroAsambleaService {
     @Autowired
     AccionistaService accionistaService;
 
-    public RegistroAsamblea addRegistroAsamblea(RegistroAsamblea registroAsamblea) {
+    public RegistroAsamblea addegistroAsamblea(RegistroAsamblea registroAsamblea) {
 
         Integer consecutivoAsamblea = asambleaService.getConsecutivoAsamblea();
         String idePer = registroAsamblea.getIdePer();
