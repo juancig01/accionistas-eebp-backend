@@ -131,7 +131,7 @@ public class EncuestaService {
     }
 
 */
-    public Map<String, List<Map<String, Object>>> obtenerEncuestasYRespuestas(Integer idPersona) {
+    public Map<String, List<Map<String, Object>>> obtenerEncuestasYRespuestasMal(Integer idPersona) {
         Map<String, List<Map<String, Object>>> resultado = new HashMap<>();
 
         List<Object[]> preguntasEncuestas = encuestaRepository.obtenerPreguntasEncuestas(idPersona);
