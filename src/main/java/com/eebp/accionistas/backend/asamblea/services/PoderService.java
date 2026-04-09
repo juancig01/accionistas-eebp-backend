@@ -37,8 +37,8 @@ public class PoderService {
         return poderRepository.save(poder);
     }
 
-    public List<Asset> getFilesPoder(@PathVariable Integer consecutivoPoder) {
-        return FileUploadUtil.files(String.valueOf(consecutivoPoder), "formatoRegistroPoder").stream().map(file -> {
+    public List<Asset> getFilesPoder(String idPoderdante) {  // cambia Integer por String
+        return FileUploadUtil.files(idPoderdante, "formatoRegistroPoder").stream().map(file -> {
             file.setUrl("/assets/images/avatars/" + file.getFileName());
             return file;
         }).collect(Collectors.toList());
@@ -48,7 +48,7 @@ public class PoderService {
         List<PoderesDTO> poderes = poderRepository.obtenerDatosPoderes();
         return poderes.stream()
                 .map(poder -> {
-                    List<Asset> files = getFilesPoder(poder.getConsecutivo());
+                    List<Asset> files = getFilesPoder(poder.getIdPoderdante()); // ← cambio aquí
                     return new PoderDTOImpl(poder, files);
                 })
                 .collect(Collectors.toList());
