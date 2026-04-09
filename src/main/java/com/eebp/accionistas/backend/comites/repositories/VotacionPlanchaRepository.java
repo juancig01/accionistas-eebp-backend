@@ -20,8 +20,18 @@ public interface VotacionPlanchaRepository extends JpaRepository<VotacionPlancha
             "JOIN plancha pl ON vp.id_plancha = pl.id_plancha " +
             "JOIN persona p_principal ON pl.id_principal = p_principal.COD_USUARIO " +
             "LEFT JOIN persona p_suplente ON pl.id_suplente = p_suplente.COD_USUARIO " +
-            "LEFT JOIN titulos_persona tp ON vp.id_persona = tp.ide_per " +
+            // -- CAMBIO: reemplaza el JOIN directo por el subquery que incluye poderdantes --
+            "LEFT JOIN ( " +
+            "    SELECT vp2.id_persona AS votante, vp2.id_persona AS persona_acciones " +
+            "    FROM votacion_planchas vp2 " +
+            "    UNION " +
+            "    SELECT vp3.id_persona AS votante, po.id_poderdante AS persona_acciones " +
+            "    FROM votacion_planchas vp3 " +
+            "    JOIN poder po ON po.id_apoderado = vp3.id_persona " +
+            ") personas_votos ON personas_votos.votante = vp.id_persona " +
+            "LEFT JOIN titulos_persona tp ON personas_votos.persona_acciones = tp.ide_per " +
             "LEFT JOIN titulos t ON tp.conse_titulo = t.conse_titulo " +
+            // -- FIN CAMBIO --
             "WHERE vp.id_plancha IN (SELECT id_plancha FROM plancha WHERE id_asamblea = (SELECT MAX(consecutivo) FROM asamblea)) " +
             "GROUP BY c.desc_comite, vp.id_comite, vp.id_plancha, p_principal.COD_USUARIO, p_principal.nomPri, p_principal.nomSeg, p_principal.apePri, p_principal.apeSeg, p_suplente.COD_USUARIO, p_suplente.nomPri, p_suplente.nomSeg, p_suplente.apePri, p_suplente.apeSeg", nativeQuery = true)
     List<Object[]> obtenerVotosPorComiteYPlancha();
