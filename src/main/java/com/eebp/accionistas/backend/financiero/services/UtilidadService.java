@@ -109,7 +109,8 @@ public class UtilidadService {
 
         Row row = sheet.createRow(5);
 
-        List<Utilidad> utilidades = utilidadRepository.findByAnio(anio+1);
+        //List<Utilidad> utilidades = utilidadRepository.findByAnio(anio+1);
+        List<Utilidad> utilidades = utilidadRepository.findByAnio(anio);
 
         if (!utilidades.isEmpty()) {
             Utilidad utilidad = utilidades.get(0);
@@ -293,9 +294,14 @@ public class UtilidadService {
 
                         row.createCell(11).setCellValue(valorPatrimonial); // Valor patrimonial acciones o aportes al 31-12
 
-                        Integer porcentajeParticipacion = (int) ((accionista.getTotalAcciones() * 100) / Double.parseDouble(utilidad.getNumAccMercado().replace(",", ".")));
-                        row.createCell(12).setCellValue(porcentajeParticipacion);
-                        row.createCell(13).setCellValue(porcentajeParticipacion / 100);
+                        //Integer porcentajeParticipacion = (int) ((accionista.getTotalAcciones() * 100) / Double.parseDouble(utilidad.getNumAccMercado().replace(",", ".")));
+                        //row.createCell(12).setCellValue(porcentajeParticipacion);
+                        //row.createCell(13).setCellValue(porcentajeParticipacion / 100);
+                        double porcentajeParticipacion = (accionista.getTotalAcciones() * 100.0)
+                                / Double.parseDouble(utilidad.getNumAccMercado().replace(",", "."));
+                        double porcentajeDecimal = porcentajeParticipacion / 100.0;
+                        row.createCell(12).setCellValue(Math.round(porcentajeParticipacion * 100.0) / 100.0);
+                        row.createCell(13).setCellValue(Math.round(porcentajeDecimal * 10000.0) / 10000.0);
                     }
                 }
             }
